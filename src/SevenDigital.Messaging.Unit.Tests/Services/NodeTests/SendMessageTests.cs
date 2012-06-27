@@ -4,7 +4,6 @@ using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Domain;
 using SevenDigital.Messaging.Services;
-using SevenDigital.Messaging.Types;
 
 namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
 {
