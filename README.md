@@ -8,7 +8,13 @@ Parts
 
 SevenDigital.Messaging
 ----------------------
-The core abstraction over RabbitMQ / MassTransit. Your starting point is INodeFactory.
+All of the below wrapped up in a single dll package.
+You *MUST* call `ConfigureMessaging` before using any of it's parts.
+If you don't want the one-dll and structuremap stuff, use the parts you want from below:
+
+SevenDigital.Messaging.Core
+---------------------------
+The actual messaging system! An abstraction over RabbitMQ / MassTransit. Your starting point is INodeFactory.
 
 SevenDigital.Messaging.StructureMap
 -----------------------------------

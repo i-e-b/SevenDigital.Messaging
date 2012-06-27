@@ -1,9 +1,10 @@
 using System;// ReSharper disable InconsistentNaming
 using NUnit.Framework;
-using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Core;
+using SevenDigital.Messaging.Core.Domain;
+using SevenDigital.Messaging.Core.Services;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using SevenDigital.Messaging.Services;
 using SevenDigital.Messaging.StructureMap;
 using StructureMap;
 

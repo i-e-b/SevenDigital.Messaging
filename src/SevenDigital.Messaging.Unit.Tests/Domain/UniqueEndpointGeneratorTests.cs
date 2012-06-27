@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Core.Domain;
 
 namespace SevenDigital.Messaging.Unit.Tests.Domain
 {

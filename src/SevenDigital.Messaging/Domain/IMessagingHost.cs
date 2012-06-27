@@ -1,4 +1,4 @@
-﻿namespace SevenDigital.Messaging.Domain
+﻿namespace SevenDigital.Messaging.Core.Domain
 {
 	public interface IMessagingHost{}
 }
