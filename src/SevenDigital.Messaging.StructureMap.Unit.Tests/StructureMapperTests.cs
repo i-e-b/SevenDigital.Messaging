@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
-using SevenDigital.Messaging.Core;
-using SevenDigital.Messaging.Core.Domain;
-using SevenDigital.Messaging.Core.Services;
+using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Services;
 using StructureMap;
 
 namespace SevenDigital.Messaging.StructureMap.Unit.Tests

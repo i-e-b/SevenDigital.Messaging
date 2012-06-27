@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1578F154-1C86-4A00-881C-CB7517C594AE}</ProjectGuid>
+    <ProjectGuid>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SevenDigital.Messaging.Unit.Tests</RootNamespace>
-    <AssemblyName>SevenDigital.Messaging.Unit.Tests</AssemblyName>
+    <RootNamespace>SevenDigital.Messaging</RootNamespace>
+    <AssemblyName>SevenDigital.Messaging</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,14 +31,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Magnum">
+      <HintPath>..\..\packages\Magnum.2.0.0.4\lib\NET40\Magnum.dll</HintPath>
+    </Reference>
     <Reference Include="MassTransit">
       <HintPath>..\..\packages\MassTransit.2.1.1\lib\net40\MassTransit.dll</HintPath>
     </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    <Reference Include="MassTransit.Transports.MSMQ">
+      <HintPath>..\..\packages\MassTransit.2.1.1\lib\net40\MassTransit.Transports.MSMQ.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
+    <Reference Include="MassTransit.Transports.RabbitMq">
+      <HintPath>..\..\packages\MassTransit.RabbitMQ.2.1.1\lib\net40\MassTransit.Transports.RabbitMq.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\..\packages\RabbitMQ.Client.2.8.1\lib\net30\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,15 +55,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\SenderEndpointGeneratorTests.cs" />
-    <Compile Include="Domain\UniqueEndpointGeneratorTests.cs" />
+    <Compile Include="Domain\Endpoint.cs" />
+    <Compile Include="Domain\Host.cs" />
+    <Compile Include="Domain\IEndpointGenerator.cs" />
+    <Compile Include="Domain\IMessagingHost.cs" />
+    <Compile Include="Domain\SenderEndpointGenerator.cs" />
+    <Compile Include="Domain\UniqueEndpointGenerator.cs" />
+    <Compile Include="IReceiverNode.cs" />
+    <Compile Include="ISenderNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\NodeFactoryTests\CompeteForTests.cs" />
-    <Compile Include="Services\NodeFactoryTests\ListenerTests.cs" />
-    <Compile Include="Services\NodeFactoryTests\SenderTests.cs" />
-    <Compile Include="Services\NodeTests\AddressTests.cs" />
-    <Compile Include="Services\NodeTests\ReceiveMessageTests.cs" />
-    <Compile Include="Services\NodeTests\SendMessageTests.cs" />
+    <Compile Include="IHandle.cs" />
+    <Compile Include="INodeFactory.cs" />
+    <Compile Include="Services\IServiceBusFactory.cs" />
+    <Compile Include="Services\MessageBinding.cs" />
+    <Compile Include="Services\Node.cs" />
+    <Compile Include="Services\NodeFactory.cs" />
+    <Compile Include="Services\ReceiverNode.cs" />
+    <Compile Include="Services\SenderNode.cs" />
+    <Compile Include="Services\ServiceBusFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -66,10 +81,6 @@
     <ProjectReference Include="..\SevenDigital.Messaging.Types\Messaging.Types.csproj">
       <Project>{D24B3022-DF19-4E06-9588-54A16A195B84}</Project>
       <Name>Messaging.Types</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SevenDigital.Messaging\Messaging.csproj">
-      <Project>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</Project>
-      <Name>Messaging</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

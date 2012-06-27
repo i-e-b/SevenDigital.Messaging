@@ -1,7 +1,7 @@
 using System;
 using MassTransit;
 
-namespace SevenDigital.Messaging.Core.Services
+namespace SevenDigital.Messaging.Services
 {
 	public class ServiceBusFactory : IServiceBusFactory
 	{

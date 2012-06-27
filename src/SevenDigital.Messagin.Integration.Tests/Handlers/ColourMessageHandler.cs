@@ -1,6 +1,6 @@
 using System.Threading;
-using SevenDigital.Messaging.Core;
 using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.Services;
 
 namespace SevenDigital.Messaging.Integration.Tests.Handlers
 {

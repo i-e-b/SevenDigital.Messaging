@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Core", "src\SevenDigital.Messaging\Messaging.Core.csproj", "{703B2D01-1D82-4249-979E-2A9EE5BE27AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging", "src\SevenDigital.Messaging\Messaging.csproj", "{703B2D01-1D82-4249-979E-2A9EE5BE27AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Unit.Tests", "src\SevenDigital.Messaging.Unit.Tests\Messaging.Unit.Tests.csproj", "{1578F154-1C86-4A00-881C-CB7517C594AE}"
 EndProject

@@ -1,6 +1,6 @@
 using System;
 using MassTransit;
-using SevenDigital.Messaging.Core.Services;
+using SevenDigital.Messaging.Services;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {

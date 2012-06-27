@@ -1,4 +1,4 @@
-namespace SevenDigital.Messaging.Core.Domain
+namespace SevenDigital.Messaging.Domain
 {
 	public interface IEndpointGenerator
 	{

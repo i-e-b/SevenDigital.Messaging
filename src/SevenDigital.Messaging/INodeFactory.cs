@@ -1,6 +1,6 @@
-using SevenDigital.Messaging.Core.Domain;
+using SevenDigital.Messaging.Domain;
 
-namespace SevenDigital.Messaging.Core
+namespace SevenDigital.Messaging
 {
 	public interface INodeFactory
 	{

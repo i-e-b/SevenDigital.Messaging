@@ -2,8 +2,8 @@ using System;
 using MassTransit;
 using Moq;
 using NUnit.Framework;
-using SevenDigital.Messaging.Core.Domain;
-using SevenDigital.Messaging.Core.Services;
+using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Services;
 using SevenDigital.Messaging.Types;
 
 namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests

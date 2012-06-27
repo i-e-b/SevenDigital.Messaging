@@ -1,8 +1,8 @@
 using System;
 using MassTransit;
-using SevenDigital.Messaging.Core.Domain;
+using SevenDigital.Messaging.Domain;
 
-namespace SevenDigital.Messaging.Core.Services
+namespace SevenDigital.Messaging.Services
 {
 	public class Node
 	{
