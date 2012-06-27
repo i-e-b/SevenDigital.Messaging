@@ -37,9 +37,6 @@
     <Reference Include="MassTransit">
       <HintPath>..\..\packages\MassTransit.2.1.1\lib\net40\MassTransit.dll</HintPath>
     </Reference>
-    <Reference Include="MassTransit.Transports.MSMQ">
-      <HintPath>..\..\packages\MassTransit.2.1.1\lib\net40\MassTransit.Transports.MSMQ.dll</HintPath>
-    </Reference>
     <Reference Include="MassTransit.Transports.RabbitMq">
       <HintPath>..\..\packages\MassTransit.RabbitMQ.2.1.1\lib\net40\MassTransit.Transports.RabbitMq.dll</HintPath>
     </Reference>
@@ -51,32 +48,30 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigureMessaging.cs" />
-    <Compile Include="Domain\Endpoint.cs" />
-    <Compile Include="Domain\Host.cs" />
-    <Compile Include="Domain\IEndpointGenerator.cs" />
-    <Compile Include="Domain\IMessagingHost.cs" />
-    <Compile Include="Domain\SenderEndpointGenerator.cs" />
-    <Compile Include="Domain\UniqueEndpointGenerator.cs" />
+    <Compile Include="EventStoreHooks\ConsoleEventStoreHook.cs" />
+    <Compile Include="MessagingConfiguration.cs" />
+    <Compile Include="Routing\Endpoint.cs" />
+    <Compile Include="Routing\Host.cs" />
+    <Compile Include="Routing\IEndpointGenerator.cs" />
+    <Compile Include="Routing\IMessagingHost.cs" />
+    <Compile Include="EventStoreHooks\NoEventStoreHook.cs" />
+    <Compile Include="Routing\SenderEndpointGenerator.cs" />
+    <Compile Include="Routing\UniqueEndpointGenerator.cs" />
+    <Compile Include="IEventStoreHook.cs" />
     <Compile Include="IReceiverNode.cs" />
     <Compile Include="ISenderNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IHandle.cs" />
     <Compile Include="INodeFactory.cs" />
-    <Compile Include="Services\IServiceBusFactory.cs" />
-    <Compile Include="Services\MessageBinding.cs" />
-    <Compile Include="Services\Node.cs" />
-    <Compile Include="Services\NodeFactory.cs" />
-    <Compile Include="Services\ReceiverNode.cs" />
-    <Compile Include="Services\SenderNode.cs" />
-    <Compile Include="Services\ServiceBusFactory.cs" />
+    <Compile Include="MessageSending\IServiceBusFactory.cs" />
+    <Compile Include="MessageSending\MessageBinding.cs" />
+    <Compile Include="MessageSending\Node.cs" />
+    <Compile Include="MessageSending\NodeFactory.cs" />
+    <Compile Include="MessageSending\ReceiverNode.cs" />
+    <Compile Include="MessageSending\SenderNode.cs" />
+    <Compile Include="MessageSending\ServiceBusFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

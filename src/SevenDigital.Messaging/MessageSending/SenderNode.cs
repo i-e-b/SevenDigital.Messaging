@@ -1,7 +1,8 @@
 using MassTransit;
-using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Routing;
+using StructureMap;
 
-namespace SevenDigital.Messaging.Services
+namespace SevenDigital.Messaging.MessageSending
 {
 	public class SenderNode : ISenderNode
 	{
@@ -12,9 +13,17 @@ namespace SevenDigital.Messaging.Services
 			_node = new Node(host, endpoint, serviceBusFactory);
 		}
 
+		~SenderNode()
+		{
+			if (_node != null) _node.Dispose();
+		}
+
 		public void SendMessage<T>(T message) where T : class, IMessage
 		{
 			_node.EnsureConnection().Publish(message);
+
+			//TODO: test drive this properly!
+			ObjectFactory.GetInstance<IEventStoreHook>().MessageSent(message);
 		}
 
 		public bool Equals(SenderNode other)
@@ -35,11 +44,6 @@ namespace SevenDigital.Messaging.Services
 		public override int GetHashCode()
 		{
 			return (_node != null ? _node.GetHashCode() : 0);
-		}
-
-		public void Dispose()
-		{
-			_node.Dispose();
 		}
 	}
 }

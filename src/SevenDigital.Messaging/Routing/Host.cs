@@ -1,6 +1,6 @@
 using System;
 
-namespace SevenDigital.Messaging.Domain
+namespace SevenDigital.Messaging.Routing
 {
 	public class Host: IMessagingHost, IEquatable<Host>
 	{
