@@ -1,6 +1,8 @@
+using System;
+
 namespace SevenDigital.Messaging.Domain
 {
-	public class Host
+	public class Host: IMessagingHost, IEquatable<Host>
 	{
 		readonly string _machineName;
 

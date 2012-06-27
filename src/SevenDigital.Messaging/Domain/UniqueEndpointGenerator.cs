@@ -2,11 +2,11 @@ using System;
 
 namespace SevenDigital.Messaging.Domain
 {
-	public class UniqueEndpointGenerator : IEndpointGenerator
+	public class UniqueEndpointGenerator : IUniqueEndpointGenerator
 	{
 		public Endpoint Generate()
 		{
-			return new Endpoint(Guid.NewGuid().ToString());
+			return new Endpoint(Environment.MachineName + Guid.NewGuid());
 		}
 	}
 }

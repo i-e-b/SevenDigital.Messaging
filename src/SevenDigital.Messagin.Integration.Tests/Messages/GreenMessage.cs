@@ -1,6 +1,6 @@
 using System;
 
-namespace SevenDigital.Jester.Delivery.Messaging.Integration.Tests.Messages
+namespace SevenDigital.Messaging.Integration.Tests.Messages
 {
 	public class GreenMessage : IColourMessage {
 		public GreenMessage()

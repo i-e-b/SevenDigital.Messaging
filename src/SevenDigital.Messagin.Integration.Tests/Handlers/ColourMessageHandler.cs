@@ -1,8 +1,8 @@
 using System.Threading;
-using SevenDigital.Jester.Delivery.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.Integration.Tests.Messages;
 using SevenDigital.Messaging.Services;
 
-namespace SevenDigital.Jester.Delivery.Messaging.Integration.Tests.Handlers
+namespace SevenDigital.Messaging.Integration.Tests.Handlers
 {
 	public class ColourMessageHandler : IHandle<IColourMessage>
 	{

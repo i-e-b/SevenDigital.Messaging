@@ -8,7 +8,7 @@ namespace SevenDigital.Messaging.Services
 	{
 		readonly Node _node;
 
-		public SenderNode(Host host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
+		public SenderNode(IMessagingHost host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
 			_node = new Node(host, endpoint, serviceBusFactory);
 		}

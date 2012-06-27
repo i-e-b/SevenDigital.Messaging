@@ -58,13 +58,14 @@
     <Compile Include="Domain\Endpoint.cs" />
     <Compile Include="Domain\Host.cs" />
     <Compile Include="Domain\IEndpointGenerator.cs" />
+    <Compile Include="Domain\IMessagingHost.cs" />
     <Compile Include="Domain\SenderEndpointGenerator.cs" />
     <Compile Include="Domain\UniqueEndpointGenerator.cs" />
     <Compile Include="IReceiverNode.cs" />
     <Compile Include="ISenderNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IHandle.cs" />
-    <Compile Include="Services\INodeFactory.cs" />
+    <Compile Include="IHandle.cs" />
+    <Compile Include="INodeFactory.cs" />
     <Compile Include="Services\IServiceBusFactory.cs" />
     <Compile Include="Services\MessageBinding.cs" />
     <Compile Include="Services\Node.cs" />
@@ -77,9 +78,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SevenDigital.Messaging.Types\SevenDigital.Messaging.Types.csproj">
+    <ProjectReference Include="..\SevenDigital.Messaging.Types\Messaging.Types.csproj">
       <Project>{D24B3022-DF19-4E06-9588-54A16A195B84}</Project>
-      <Name>SevenDigital.Messaging.Types</Name>
+      <Name>Messaging.Types</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

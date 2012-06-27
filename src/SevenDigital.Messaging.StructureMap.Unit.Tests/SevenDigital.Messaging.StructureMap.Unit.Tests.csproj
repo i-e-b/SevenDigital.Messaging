@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{305495D2-0885-4EDC-9156-D47C049AE936}</ProjectGuid>
+    <ProjectGuid>{B85310C8-7306-4867-A99A-EE15BB2C73A4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SevenDigital.Messaging.Integration.Tests</RootNamespace>
-    <AssemblyName>SevenDigital.Messaging.Integration.Tests</AssemblyName>
+    <RootNamespace>SevenDigital.Messaging.StructureMap.Unit.Tests</RootNamespace>
+    <AssemblyName>SevenDigital.Messaging.StructureMap.Unit.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,21 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Magnum">
-      <HintPath>..\..\packages\Magnum.2.0.0.4\lib\NET40\Magnum.dll</HintPath>
-    </Reference>
-    <Reference Include="MassTransit">
-      <HintPath>..\..\packages\MassTransit.2.1.1\lib\net40\MassTransit.dll</HintPath>
-    </Reference>
-    <Reference Include="MassTransit.Transports.RabbitMq">
-      <HintPath>..\..\packages\MassTransit.RabbitMQ.2.1.1\lib\net40\MassTransit.Transports.RabbitMq.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="RabbitMQ.Client">
-      <HintPath>..\..\packages\RabbitMQ.Client.2.8.1\lib\net30\RabbitMQ.Client.dll</HintPath>
+    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="StructureMap">
+      <HintPath>..\..\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,29 +44,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handlers\ColourMessageHandler.cs" />
-    <Compile Include="Handlers\SuperHeroMessageHandler.cs" />
-    <Compile Include="Handlers\VillainMessageHandler.cs" />
-    <Compile Include="IntegrationTestServiceBusFactory.cs" />
-    <Compile Include="MessageBusTests.cs" />
-    <Compile Include="Messages\GreenMessage.cs" />
-    <Compile Include="Messages\IColourMessage.cs" />
-    <Compile Include="Messages\IComicBookCharacterMessage.cs" />
-    <Compile Include="Messages\IVillainMessage.cs" />
-    <Compile Include="Messages\JokerMessage.cs" />
-    <Compile Include="Messages\RedMessage.cs" />
-    <Compile Include="Messages\RiddlerMessage.cs" />
-    <Compile Include="Messages\SuperHeroMessage.cs" />
+    <Compile Include="StructureMapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SevenDigital.Messaging.StructureMap\Messaging.StructureMap.csproj">
       <Project>{C165A4CD-8550-456E-BDA6-763BC8275861}</Project>
       <Name>Messaging.StructureMap</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SevenDigital.Messaging.Types\Messaging.Types.csproj">
-      <Project>{D24B3022-DF19-4E06-9588-54A16A195B84}</Project>
-      <Name>Messaging.Types</Name>
     </ProjectReference>
     <ProjectReference Include="..\SevenDigital.Messaging\Messaging.csproj">
       <Project>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</Project>
