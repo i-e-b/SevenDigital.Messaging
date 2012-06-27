@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MassTransit.Transports.RabbitMq</name>
+    </assembly>
+    <members>
+        <member name="T:MassTransit.Transports.RabbitMq.Configuration.Configurators.ConnectionFactoryBuilderConfigurator">
+            <summary>
+            <para>A configurator for the connection factory builder, i.e.
+            a thing that actually lets you configure the settings that will go
+            into creating the connection factory.
+            </para>
+            <para>Digression: There are three turtles on the way down, then there's Atlas.</para>
+            </summary>
+        </member>
+        <member name="M:MassTransit.Transports.RabbitMq.Configuration.Configurators.ConnectionFactoryBuilderConfigurator.Configure(MassTransit.Transports.RabbitMq.Configuration.Builders.ConnectionFactoryBuilder)">
+            <summary>
+            Configure the connection factory builder.
+            </summary>
+            <param name="builder">The builder</param>
+            <returns>An updated builder</returns>
+        </member>
+        <member name="T:MassTransit.Transports.RabbitMq.Configuration.Configurators.SslConnectionFactoryConfigurator">
+            <summary>
+            Configures SSL/TLS for RabbitMQ. See http://www.rabbitmq.com/ssl.html
+            for details on how to set up RabbitMQ for SSL.
+            </summary>
+        </member>
+        <member name="T:MassTransit.Transports.RabbitMq.PublishEndpointInterceptor">
+            <summary>
+            Makes sure that the exchange for the published message is available. This ensures
+            that we'll never get 404 exchange not found for published messages. If someone is
+            listening to them; that's another question (there might be no queue bound to it).
+            </summary>
+        </member>
+        <member name="M:MassTransit.Transports.RabbitMq.PublishEndpointInterceptor.FindOrAddEndpoint(System.Type,MassTransit.Transports.RabbitMq.IRabbitMqEndpointAddress)">
+            <summary>
+            Finds all endpoints in the outbound pipeline and starts routing messages
+            to that endpoint.
+            </summary>
+            <param name="messageType">type of message</param>
+            <param name="address">The message endpoint address.</param>
+        </member>
+        <member name="T:MassTransit.Transports.RabbitMq.PublishEndpointSinkLocator">
+            <summary>
+            Finds publish endpoints that consume the message type specified in the c'tor of this
+            class.
+            </summary>
+        </member>
+        <member name="M:MassTransit.Transports.RabbitMq.PublishEndpointSinkLocator.Inspect``1(MassTransit.Pipeline.Sinks.EndpointMessageSink{``0})">
+            <summary>
+            Called by the reflective visitor base.
+            </summary>
+        </member>
+        <member name="P:MassTransit.Transports.RabbitMq.PublishEndpointSinkLocator.Found">
+            <summary>
+            Gets whether the publish endpoint sink locator found a message sink
+            that matched the type passed in the c'tor.
+            </summary>
+        </member>
+        <member name="T:MassTransit.RabbitMqConfigurationExtensions">
+            <summary>
+            Extensions for configuring RabbitMq.
+            </summary>
+        </member>
+        <member name="M:MassTransit.RabbitMqConfigurationExtensions.UseRabbitMqRouting(MassTransit.BusConfigurators.ServiceBusConfigurator)">
+            <summary>
+            <para>This specifies that the routing conventions for RabbitMQ should be used by MassTransit.
+            Without these conventions, the automatic routing for RabbitMQ won't happen, and you'd have
+            to manually find and send messages to the endpoints. This method calls
+            <see cref="M:MassTransit.RabbitMqServiceBusExtensions.UseRabbitMq``1(``0)"/> in turn.</para>
+            
+            <para>If you are using RMQ you *probably* want to call this method when configuring
+            your bus!</para>
+            </summary>
+            <param name="configurator">The configurator that is used to configure
+            the message bus instance.</param>
+        </member>
+        <member name="M:MassTransit.RabbitMqServiceBusExtensions.GetEndpoint``1(MassTransit.IServiceBus)">
+            <summary>
+            Returns the endpoint for the specified message type using the default
+            exchange/queue convention for naming
+            </summary>
+            <typeparam name="TMessage">The message type to convert to a URI</typeparam>
+            <param name="bus">The bus instance used to resolve the endpoint</param>
+            <returns>The IEndpoint instance, resolved from the service bus</returns>
+        </member>
+        <member name="M:MassTransit.RabbitMqServiceBusExtensions.GetEndpoint(MassTransit.IServiceBus,System.Type)">
+            <summary>
+            Returns the endpoint for the specified message type using the default
+            exchange/queue convention for naming.
+            
+            TODO: FIX!!!
+            
+            </summary>
+            <param name="bus">The bus instance used to resolve the endpoint</param>
+            <param name="messageType">The message type to convert to a URI</param>
+            <returns>The IEndpoint instance, resolved from the service bus</returns>
+        </member>
+        <member name="M:MassTransit.RabbitMqServiceBusExtensions.UseRabbitMq``1(``0)">
+            <summary>
+            <see cref="M:MassTransit.RabbitMqServiceBusExtensions.UseRabbitMq``1(``0,System.Action{MassTransit.Transports.RabbitMq.Configuration.Configurators.RabbitMqTransportFactoryConfigurator})"/>
+            </summary>
+        </member>
+        <member name="M:MassTransit.RabbitMqServiceBusExtensions.UseRabbitMq``1(``0,System.Action{MassTransit.Transports.RabbitMq.Configuration.Configurators.RabbitMqTransportFactoryConfigurator})">
+            <summary>
+            <para>This method specifies that the container under configuration is to 
+            use RabbitMQ for message queueing but not necessarily for routing
+            polymorphically. See http://readthedocs.org/docs/masstransit/en/latest/configuration/transports/rabbitmq.html.
+            This method also calls <see cref="M:MassTransit.SerializerConfigurationExtensions.UseJsonSerializer``1(``0)"/>.</para>
+            
+            <para>Contrast with <see cref="M:MassTransit.RabbitMqConfigurationExtensions.UseRabbitMqRouting(MassTransit.BusConfigurators.ServiceBusConfigurator)"/></para>
+            and its documentation.
+            </summary>
+            <typeparam name="T">configurator type param</typeparam>
+            <param name="configurator">configurator instance</param>
+            <param name="configureFactory">custom action used to call APIs on the configurator</param>
+            <returns>the configurator instance</returns>
+        </member>
+        <member name="T:MassTransit.Testing.BusTestScenarioExtensions">
+            <summary>
+            Extensions for configuring a test RabbitMQ instance that can be used
+            in the test. See <see cref="T:MassTransit.Testing.RabbitMqBusScenarioBuilder"/> docs.
+            </summary>
+        </member>
+        <member name="M:MassTransit.Testing.BusTestScenarioExtensions.UseRabbitMqBusScenario(MassTransit.Testing.TestInstanceConfigurators.TestInstanceConfigurator{MassTransit.Testing.BusTestScenario})">
+             <summary>
+             Extensions for configuring a test RabbitMQ instance that can be used
+             in the test. See <see cref="T:MassTransit.Testing.RabbitMqBusScenarioBuilder"/> docs.
+             
+             Sample usage:
+             <code>
+            using Magnum.TestFramework;
+            using MassTransit.Testing;
+            [Scenario]
+            public class Using_the_handler_test_factory
+            {
+                HandlerTest&lt;A&gt; _test;
+            
+                [When]
+                public void Setup()
+                {
+                    _test = TestFactory.ForHandler&lt;A&gt;()
+                        .New(x =&gt;
+                            {
+                                x.UseRabbitMqBusScenario();
+                                x.Send(new A());
+                                x.Send(new B());
+                            });
+                    _test.Execute();
+                }
+                [Finally]
+                public void Teardown()
+                {
+                    _test.Dispose();
+                    _test = null;
+                }
+                [Then]
+                public void Should_have_received_a_message_of_type_a()
+                {
+                    _test.Received.Any&lt;A&gt;().ShouldBeTrue();
+                }
+            }
+            </code>
+             </summary>
+             <param name="configurator">The configurator that is passed via the lambda that you are calling this method from.</param>
+        </member>
+        <member name="T:MassTransit.Testing.RabbitMqBusScenarioBuilder">
+            <summary>
+            A RabbitMQ bus scenario builder. Will consume off
+            'rabbitmq://localhost/mt_client', and use RabbitMQ routing. Timeout = 100 ms.
+            </summary>
+        </member>
+    </members>
+</doc>
