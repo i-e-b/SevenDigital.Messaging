@@ -1,5 +1,4 @@
 using SevenDigital.Messaging.Domain;
-using SevenDigital.Messaging.Types;
 
 namespace SevenDigital.Messaging.Services
 {

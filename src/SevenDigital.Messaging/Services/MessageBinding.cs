@@ -1,5 +1,4 @@
 using MassTransit;
-using SevenDigital.Messaging.Types;
 
 namespace SevenDigital.Messaging.Services
 {

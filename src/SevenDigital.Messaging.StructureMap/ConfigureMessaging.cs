@@ -2,7 +2,7 @@
 using SevenDigital.Messaging.Services;
 using StructureMap;
 
-namespace SevenDigital.Messaging.StructureMap
+namespace SevenDigital.Messaging
 {
 	/// <summary>
 	/// Configuration helper for structure map and SevenDigital.Messaging

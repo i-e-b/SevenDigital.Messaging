@@ -1,6 +1,5 @@
 using System;
 using SevenDigital.Messaging.Services;
-using SevenDigital.Messaging.Types;
 
 namespace SevenDigital.Messaging
 {
