@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SevenDigital.Messaging.Unit.Tests")]
+[assembly: AssemblyTitle("SevenDigital.Messaging.Types")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SevenDigital.Messaging.Unit.Tests")]
+[assembly: AssemblyProduct("SevenDigital.Messaging.Types")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("78790d80-2f51-47fe-811b-92318fbd1b7a")]
+[assembly: Guid("79b56d87-24a1-4cf9-a88f-fe36e2bedf2b")]
 
 // Version information for an assembly consists of the following four values:
 //
