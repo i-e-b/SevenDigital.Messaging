@@ -1,7 +1,8 @@
 using Moq;
 using NUnit.Framework;
-using SevenDigital.Messaging.Domain;
-using SevenDigital.Messaging.Services;
+using SevenDigital.Messaging.Core;
+using SevenDigital.Messaging.Core.Domain;
+using SevenDigital.Messaging.Core.Services;
 
 namespace SevenDigital.Messaging.Unit.Tests.Services.NodeFactoryTests
 {

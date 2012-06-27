@@ -1,8 +1,8 @@
 using MassTransit;
-using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Core.Domain;
 using SevenDigital.Messaging.Types;
 
-namespace SevenDigital.Messaging.Services
+namespace SevenDigital.Messaging.Core.Services
 {
 	public class SenderNode : ISenderNode
 	{

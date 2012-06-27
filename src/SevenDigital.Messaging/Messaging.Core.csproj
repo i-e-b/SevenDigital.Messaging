@@ -8,8 +8,8 @@
     <ProjectGuid>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SevenDigital.Messaging</RootNamespace>
-    <AssemblyName>SevenDigital.Messaging</AssemblyName>
+    <RootNamespace>SevenDigital.Messaging.Core</RootNamespace>
+    <AssemblyName>SevenDigital.Messaging.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
