@@ -1,11 +1,11 @@
-using System;
+using System;// ReSharper disable InconsistentNaming
 using NUnit.Framework;
 using SevenDigital.Messaging.Domain;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.Services;
 using SevenDigital.Messaging.StructureMap;
-
-// ReSharper disable InconsistentNaming
+using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
@@ -21,7 +21,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void SetUp()
 		{
 			ConfigureMessaging.WithDefaults();
-			//_nodeFactory = new NodeFactory(new Host("localhost"), new UniqueEndpointGenerator(), new  new IntegrationTestServiceBusFactory());
+			ObjectFactory.Configure(map=> map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
+			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
 		}
 
 		[Test]

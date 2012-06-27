@@ -10,8 +10,9 @@ namespace SevenDigital.Messaging.StructureMap
 	public class ConfigureMessaging: IHaveDefaults
 	{
 		/// <summary>
-		/// Configure all default providers.
+		/// Configure SevenDigital.Messaging with defaults.
 		/// After calling this method, you can use the INodeFactory as a collaborator.
+		/// The default host is "localhost"
 		/// </summary>
 		public static IHaveDefaults WithDefaults()
 		{
@@ -20,6 +21,7 @@ namespace SevenDigital.Messaging.StructureMap
 				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
+				map.For<IServiceBusFactory>().Use<ServiceBusFactory>();
 			});
 			return new ConfigureMessaging();
 		}
@@ -29,7 +31,7 @@ namespace SevenDigital.Messaging.StructureMap
 		/// running RabbitMQ service.
 		/// </summary>
 		/// <param name="host">IP or hostname of a server running RabbitMQ service</param>
-		public IHaveDefaults WithMessagingServer(string host)
+		public IHaveDefaults AndMessagingServer(string host)
 		{
 			ObjectFactory.Configure(map => map.For<IMessagingHost>().Use(()=> new Host(host)));
 			return new ConfigureMessaging();
@@ -38,6 +40,6 @@ namespace SevenDigital.Messaging.StructureMap
 
 	public interface IHaveDefaults
 	{
-		IHaveDefaults WithMessagingServer(string host);
+		IHaveDefaults AndMessagingServer(string host);
 	}
 }
