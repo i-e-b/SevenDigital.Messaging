@@ -14,7 +14,7 @@ Path of Least Resistence
 
 Notes
 -----
-* Creating listener nodes takes time and resources. Do it infrequently.
+* Creating listener nodes takes time and resources. Do it infrequently -- usually one at the start of your app.
 * Your handler will get `new()`'d for every message. Don't do heavy things in the handler!
 
 Moving Parts
