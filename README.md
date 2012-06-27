@@ -3,8 +3,26 @@ SevenDigital.Messaging
 
 A distributed contracts-based sender/handler messaging system built on RabbitMQ and MassTransit
 
-Parts
-=====
+Path of Least Resistence
+========================
+* Install Erlang [http://www.erlang.org/download.html] and RabbitMQ server [http://www.rabbitmq.com/download.html]
+* Add all references from `/binaries`, call `ConfigureMessaging.WithDefaults()` in your app startup.
+* Use ObjectFactory to get a new `INodeFactory` instance
+* To listen to messages, `factory.Listener().Handle<IMyMessageInterface>().With<MyHandlerType>()`
+* To send a message, `factory.Sender().SendMessage(new MyMessage())`
+
+Notes
+-----
+* Creating nodes takes time and resources. Do it infrequently.
+* Your handler will get `new()`'d for every message. Don't do heavy things in the handler!
+
+Moving Parts
+============
+
+binaries
+--------
+These are all the projects and their dependencies.
+You may wish to pull the non-SevenDigital dependencies from NuGet.
 
 SevenDigital.Messaging
 ----------------------
