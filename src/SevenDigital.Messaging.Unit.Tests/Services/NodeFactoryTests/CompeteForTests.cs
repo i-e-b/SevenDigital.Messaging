@@ -15,12 +15,13 @@ namespace SevenDigital.Messaging.Unit.Tests.Services.NodeFactoryTests
 		[SetUp]
 		public void SetUp()
 		{
-			var uniqueEndPointGenerator = new Mock<IEndpointGenerator>();
+			var uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
+			var senderEndPointGenerator = new Mock<ISenderEndpointGenerator>();
 			
 			_host = new Host("myMachine");
 			_endpoint = new Endpoint("doStuff");
 			
-			var subject = new NodeFactory(_host, uniqueEndPointGenerator.Object, new ServiceBusFactory());
+			var subject = new NodeFactory(_host, uniqueEndPointGenerator.Object, senderEndPointGenerator.Object, new ServiceBusFactory());
 
 			_result = subject.ListenOn(_endpoint);
 		}

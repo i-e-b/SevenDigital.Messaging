@@ -10,18 +10,20 @@ namespace SevenDigital.Messaging.Unit.Tests.Services.NodeFactoryTests
 	{
 		INodeFactory _subject;
 		Host _host;
-		Mock<IEndpointGenerator> _uniqueEndPointGenerator;
+		Mock<IUniqueEndpointGenerator> _uniqueEndPointGenerator;
+		Mock<ISenderEndpointGenerator> _senderEndPointGenerator;
 		ISenderNode _result;
-		Endpoint _uniqueEndpoint;
+		Endpoint _senderEndpoint;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_uniqueEndPointGenerator = new Mock<IEndpointGenerator>();
+			_uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
+			_senderEndPointGenerator = new Mock<ISenderEndpointGenerator>();
 			_host = new Host("myMachine");
-			_subject = new NodeFactory(_host, _uniqueEndPointGenerator.Object, new ServiceBusFactory());
-			_uniqueEndpoint = new Endpoint("some wordz");
-			_uniqueEndPointGenerator.Setup(x => x.Generate()).Returns(_uniqueEndpoint);
+			_subject = new NodeFactory(_host, _uniqueEndPointGenerator.Object, _senderEndPointGenerator.Object, new ServiceBusFactory());
+			_senderEndpoint = new Endpoint("a.sender.com");
+			_senderEndPointGenerator.Setup(x => x.Generate()).Returns(_senderEndpoint);
 
 			_result = _subject.Sender();
 		}
@@ -35,13 +37,13 @@ namespace SevenDigital.Messaging.Unit.Tests.Services.NodeFactoryTests
 		[Test]
 		public void Sender_should_get_a_unique_endpoint()
 		{
-			_uniqueEndPointGenerator.Verify(x => x.Generate());
+			_senderEndPointGenerator.Verify(x => x.Generate());
 		}
 
 		[Test]
 		public void Sender_should_create_sender_node_with_unique_endpoint()
 		{
-			Assert.That(_result, Is.EqualTo(new SenderNode(_host, _uniqueEndpoint, null)));
+			Assert.That(_result, Is.EqualTo(new SenderNode(_host, _senderEndpoint, null)));
 		}
 	}
 }

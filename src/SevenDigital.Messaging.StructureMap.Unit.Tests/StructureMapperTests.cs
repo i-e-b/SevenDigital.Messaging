@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Services;
 using StructureMap;
 
 namespace SevenDigital.Messaging.StructureMap.Unit.Tests
@@ -7,12 +8,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 	[TestFixture]
 	public class StructureMapperTests
 	{
-		const string HostName = "localhost";
+		const string HostName = "my.unique.host";
 
 		[SetUp]
 		public void Setup()
 		{
-			ConfigureMessaging.WithDefaults().WithMessagingServer(HostName);
+			ConfigureMessaging.WithDefaults().AndMessagingServer(HostName);
 		}
 
 		[Test]
@@ -33,18 +34,25 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		{
 			Assert.That(ObjectFactory.GetInstance<IUniqueEndpointGenerator>(), Is.InstanceOf<UniqueEndpointGenerator>());
 		}
+
 		[Test]
 		public void Should_have_sender_name_generator_instance ()
 		{
 			Assert.That(ObjectFactory.GetInstance<ISenderEndpointGenerator>(), Is.InstanceOf<SenderEndpointGenerator>());
 		}
 
-		/*[Test]
+		[Test]
+		public void Should_have_service_bus_factory_instance ()
+		{
+			Assert.That(ObjectFactory.GetInstance<IServiceBusFactory>(), Is.InstanceOf<ServiceBusFactory>());
+		}
+
+		[Test]
 		public void Should_get_node_factory_implementation ()
 		{
 			var factory = ObjectFactory.GetInstance<INodeFactory>();
 			Assert.That(factory, Is.Not.Null);
-		}*/
+		}
 
 	}
 }
