@@ -48,10 +48,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SevenDigital.Messaging.StructureMap\Messaging.StructureMap.csproj">
-      <Project>{C165A4CD-8550-456E-BDA6-763BC8275861}</Project>
-      <Name>Messaging.StructureMap</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SevenDigital.Messaging\Messaging.csproj">
       <Project>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</Project>
       <Name>Messaging</Name>

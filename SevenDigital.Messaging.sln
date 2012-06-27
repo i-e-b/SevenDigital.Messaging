@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Types", "src\Seve
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B92FE733-3A36-4F1A-83C3-9E61E21E3722}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.StructureMap", "src\SevenDigital.Messaging.StructureMap\Messaging.StructureMap.csproj", "{C165A4CD-8550-456E-BDA6-763BC8275861}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenDigital.Messaging.StructureMap.Unit.Tests", "src\SevenDigital.Messaging.StructureMap.Unit.Tests\SevenDigital.Messaging.StructureMap.Unit.Tests.csproj", "{B85310C8-7306-4867-A99A-EE15BB2C73A4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Info", "Info", "{5B19FBF1-A119-4A38-9098-67A04182B935}"
@@ -42,10 +40,6 @@ Global
 		{D24B3022-DF19-4E06-9588-54A16A195B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D24B3022-DF19-4E06-9588-54A16A195B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D24B3022-DF19-4E06-9588-54A16A195B84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C165A4CD-8550-456E-BDA6-763BC8275861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C165A4CD-8550-456E-BDA6-763BC8275861}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C165A4CD-8550-456E-BDA6-763BC8275861}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C165A4CD-8550-456E-BDA6-763BC8275861}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
