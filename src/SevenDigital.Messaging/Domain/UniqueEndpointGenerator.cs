@@ -1,6 +1,6 @@
 using System;
 
-namespace SevenDigital.Messaging.Core.Domain
+namespace SevenDigital.Messaging.Domain
 {
 	public class UniqueEndpointGenerator : IUniqueEndpointGenerator
 	{

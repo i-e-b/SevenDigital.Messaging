@@ -1,8 +1,8 @@
 using System;
-using SevenDigital.Messaging.Core.Services;
+using SevenDigital.Messaging.Services;
 using SevenDigital.Messaging.Types;
 
-namespace SevenDigital.Messaging.Core
+namespace SevenDigital.Messaging
 {
 	public interface IReceiverNode : IDisposable
 	{

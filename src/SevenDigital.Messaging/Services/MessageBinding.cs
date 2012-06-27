@@ -1,7 +1,7 @@
 using MassTransit;
 using SevenDigital.Messaging.Types;
 
-namespace SevenDigital.Messaging.Core.Services
+namespace SevenDigital.Messaging.Services
 {
 	public class MessageBinding<TMessage> where TMessage : class, IMessage
 	{

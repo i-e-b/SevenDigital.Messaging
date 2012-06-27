@@ -1,7 +1,7 @@
 using System;
 using SevenDigital.Messaging.Types;
 
-namespace SevenDigital.Messaging.Core
+namespace SevenDigital.Messaging
 {
 	public interface ISenderNode : IDisposable
 	{
