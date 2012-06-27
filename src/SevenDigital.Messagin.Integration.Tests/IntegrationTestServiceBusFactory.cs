@@ -2,7 +2,7 @@ using System;
 using MassTransit;
 using SevenDigital.Messaging.Services;
 
-namespace SevenDigital.Jester.Delivery.Messaging.Integration.Tests
+namespace SevenDigital.Messaging.Integration.Tests
 {
 	public class IntegrationTestServiceBusFactory : IServiceBusFactory
 	{

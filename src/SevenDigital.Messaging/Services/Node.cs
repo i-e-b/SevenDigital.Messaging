@@ -6,12 +6,12 @@ namespace SevenDigital.Messaging.Services
 {
 	public class Node
 	{
-		readonly Host _host;
+		readonly IMessagingHost _host;
 		readonly Endpoint _endpoint;
 		readonly IServiceBusFactory _serviceBusFactory;
 		IServiceBus _serviceBus;
 
-		public Node(Host host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
+		public Node(IMessagingHost host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
 			_host = host;
 			_endpoint = endpoint;

@@ -5,12 +5,12 @@ namespace SevenDigital.Messaging.Services
 {
 	public class ReceiverNode : IReceiverNode
 	{
-		readonly Host _host;
+		readonly IMessagingHost _host;
 		readonly Endpoint _endpoint;
 		readonly IServiceBusFactory _serviceBusFactory;
 		readonly Node _node;
 
-		public ReceiverNode(Host host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
+		public ReceiverNode(IMessagingHost host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
 			_host = host;
 			_endpoint = endpoint;

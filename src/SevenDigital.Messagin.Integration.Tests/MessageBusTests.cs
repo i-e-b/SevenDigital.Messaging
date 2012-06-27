@@ -1,16 +1,18 @@
-using System;// ReSharper disable InconsistentNaming
+using System;
 using NUnit.Framework;
-using SevenDigital.Jester.Delivery.Messaging.Integration.Tests.Handlers;
-using SevenDigital.Jester.Delivery.Messaging.Integration.Tests.Messages;
 using SevenDigital.Messaging.Domain;
-using SevenDigital.Messaging.Services;
+using SevenDigital.Messaging.Integration.Tests.Handlers;
+using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.StructureMap;
 
-namespace SevenDigital.Jester.Delivery.Messaging.Integration.Tests
+// ReSharper disable InconsistentNaming
+
+namespace SevenDigital.Messaging.Integration.Tests
 {
 	[TestFixture]
 	public class MessageBusTests
 	{
-		NodeFactory _nodeFactory;
+		INodeFactory _nodeFactory;
 
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
@@ -18,7 +20,8 @@ namespace SevenDigital.Jester.Delivery.Messaging.Integration.Tests
 		[TestFixtureSetUp]
 		public void SetUp()
 		{
-			_nodeFactory = new NodeFactory(new Host("localhost"), new UniqueEndpointGenerator(), new IntegrationTestServiceBusFactory());
+			ConfigureMessaging.WithDefaults();
+			//_nodeFactory = new NodeFactory(new Host("localhost"), new UniqueEndpointGenerator(), new  new IntegrationTestServiceBusFactory());
 		}
 
 		[Test]

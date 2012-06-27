@@ -1,4 +1,4 @@
-namespace SevenDigital.Jester.Delivery.Messaging.Integration.Tests.Messages
+namespace SevenDigital.Messaging.Integration.Tests.Messages
 {
 	public interface IVillainMessage : IComicBookCharacterMessage
 	{

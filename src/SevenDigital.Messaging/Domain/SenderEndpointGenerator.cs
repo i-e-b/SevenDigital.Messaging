@@ -1,6 +1,6 @@
 ﻿namespace SevenDigital.Messaging.Domain
 {
-	public class SenderEndpointGenerator:IEndpointGenerator
+	public class SenderEndpointGenerator:ISenderEndpointGenerator
 	{
 		public Endpoint Generate()
 		{

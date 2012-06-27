@@ -4,4 +4,7 @@ namespace SevenDigital.Messaging.Domain
 	{
 		Endpoint Generate();
 	}
+
+	public interface IUniqueEndpointGenerator : IEndpointGenerator {}
+	public interface ISenderEndpointGenerator : IEndpointGenerator {}
 }

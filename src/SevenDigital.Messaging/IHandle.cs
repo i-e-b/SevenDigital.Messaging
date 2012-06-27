@@ -1,6 +1,6 @@
 using SevenDigital.Messaging.Types;
 
-namespace SevenDigital.Messaging.Services
+namespace SevenDigital.Messaging
 {
 	public interface IHandle<T> where T : IMessage
 	{
