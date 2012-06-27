@@ -1,5 +1,5 @@
 using System;
-using SevenDigital.Messaging.Services;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging
 {

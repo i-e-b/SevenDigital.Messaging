@@ -1,7 +1,7 @@
 using MassTransit;
 using StructureMap;
 
-namespace SevenDigital.Messaging.Services
+namespace SevenDigital.Messaging.MessageSending
 {
 	public class MessageBinding<TMessage> where TMessage : class, IMessage
 	{
@@ -14,9 +14,12 @@ namespace SevenDigital.Messaging.Services
 
 		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			_serviceBus.SubscribeHandler<TMessage>(msg =>
-				ObjectFactory.GetInstance<THandler>().Handle(msg)
-				);
+			_serviceBus.SubscribeHandler<TMessage>(msg => {
+				ObjectFactory.GetInstance<THandler>().Handle(msg);
+				
+				//TODO: test drive this properly!
+				ObjectFactory.GetInstance<IEventStoreHook>().MessageReceived(msg);
+			});
 		}
 	}
 }

@@ -1,6 +1,6 @@
-using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.Services
+namespace SevenDigital.Messaging.MessageSending
 {
 	public class NodeFactory : INodeFactory
 	{

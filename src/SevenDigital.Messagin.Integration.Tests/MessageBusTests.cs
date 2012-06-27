@@ -1,9 +1,10 @@
 using System;// ReSharper disable InconsistentNaming
 using NUnit.Framework;
-using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.EventStoreHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using SevenDigital.Messaging.Services;
+using SevenDigital.Messaging.MessageSending;
+using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
@@ -19,8 +20,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[TestFixtureSetUp]
 		public void SetUp()
 		{
-			ConfigureMessaging.WithDefaults();
+			new MessagingConfiguration().WithDefaults();
 			ObjectFactory.Configure(map=> map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
+			ObjectFactory.Configure(map=> map.For<IEventStoreHook>().Use<ConsoleEventStoreHook>());
 			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
 		}
 

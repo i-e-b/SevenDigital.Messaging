@@ -1,4 +1,4 @@
-namespace SevenDigital.Messaging.Domain
+namespace SevenDigital.Messaging.Routing
 {
 	public class Endpoint
 	{

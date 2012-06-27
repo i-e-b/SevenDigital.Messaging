@@ -6,7 +6,7 @@ A distributed contracts-based sender/handler messaging system built on RabbitMQ 
 Path of Least Resistence
 ========================
 * Install Erlang [http://www.erlang.org/download.html] and RabbitMQ server [http://www.rabbitmq.com/download.html]
-* Add all references from `/binaries`, call `ConfigureMessaging.WithDefaults()` in your app startup.
+* Add all references from `/binaries`, call `new MessagingConfiguration().WithDefaults()` in your app startup.
 * Use ObjectFactory to get a new `INodeFactory` instance
 * To listen to messages, `factory.Listener().Handle<IMyMessageInterface>().With<MyHandlerType>()`
 * Each listener can handle any number of message=> handler pairs, and a message can have more than one handler (they all fire in parallel)

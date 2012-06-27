@@ -1,5 +1,6 @@
-﻿using SevenDigital.Messaging.Domain;
-using SevenDigital.Messaging.Services;
+﻿using SevenDigital.Messaging.EventStoreHooks;
+using SevenDigital.Messaging.MessageSending;
+using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging
@@ -7,14 +8,14 @@ namespace SevenDigital.Messaging
 	/// <summary>
 	/// Configuration helper for structure map and SevenDigital.Messaging
 	/// </summary>
-	public class ConfigureMessaging: IHaveDefaults
+	public class MessagingConfiguration
 	{
 		/// <summary>
 		/// Configure SevenDigital.Messaging with defaults.
 		/// After calling this method, you can use the INodeFactory as a collaborator.
 		/// The default host is "localhost"
 		/// </summary>
-		public static IHaveDefaults WithDefaults()
+		public MessagingConfiguration WithDefaults()
 		{
 			ObjectFactory.Configure(map => {
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
@@ -22,8 +23,13 @@ namespace SevenDigital.Messaging
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IServiceBusFactory>().Use<ServiceBusFactory>();
+				map.For<IEventStoreHook>().Use<NoEventStoreHook>();
 			});
-			return new ConfigureMessaging();
+
+#if DEBUG
+			ReferenceLibraries();
+#endif
+			return this;
 		}
 
 		/// <summary>
@@ -31,15 +37,23 @@ namespace SevenDigital.Messaging
 		/// running RabbitMQ service.
 		/// </summary>
 		/// <param name="host">IP or hostname of a server running RabbitMQ service</param>
-		public IHaveDefaults AndMessagingServer(string host)
+		public MessagingConfiguration WithMessagingServer(string host)
 		{
 			ObjectFactory.Configure(map => map.For<IMessagingHost>().Use(()=> new Host(host)));
-			return new ConfigureMessaging();
+			return this;
 		}
-	}
 
-	public interface IHaveDefaults
-	{
-		IHaveDefaults AndMessagingServer(string host);
+		public MessagingConfiguration WithEventStoreHook<T>() where T : IEventStoreHook
+		{
+			ObjectFactory.Configure(map => map.For<IEventStoreHook>().Use<T>());
+			return this;
+		}
+
+		/// <summary>These two libraries are used but not referenced. This method quietens optimisation tools</summary>
+		static void ReferenceLibraries()
+		{
+			new RabbitMQ.Client.AmqpTimestamp(); // to get a reference usage
+			Magnum.CombGuid.Generate(); // to get a reference usage
+		}
 	}
 }

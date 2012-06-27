@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
-using SevenDigital.Messaging.Domain;
-using SevenDigital.Messaging.Services;
+using SevenDigital.Messaging.EventStoreHooks;
+using SevenDigital.Messaging.MessageSending;
+using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.StructureMap.Unit.Tests
@@ -13,7 +14,7 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[SetUp]
 		public void Setup()
 		{
-			ConfigureMessaging.WithDefaults().AndMessagingServer(HostName);
+			new MessagingConfiguration().WithDefaults().WithMessagingServer(HostName);
 		}
 
 		[Test]
@@ -45,6 +46,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		public void Should_have_service_bus_factory_instance ()
 		{
 			Assert.That(ObjectFactory.GetInstance<IServiceBusFactory>(), Is.InstanceOf<ServiceBusFactory>());
+		}
+
+		[Test]
+		public void Should_get_NoEventStoreHook_implementation ()
+		{
+			Assert.That(ObjectFactory.GetInstance<IEventStoreHook>(), Is.InstanceOf<NoEventStoreHook>());
 		}
 
 		[Test]

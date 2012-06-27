@@ -1,4 +1,4 @@
-using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging
 {

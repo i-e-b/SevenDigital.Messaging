@@ -1,34 +1,23 @@
-using System;
-using MassTransit;
-using SevenDigital.Messaging.Domain;
+using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.Services
+namespace SevenDigital.Messaging.MessageSending
 {
-	public class Node
+	public class ReceiverNode : IReceiverNode
 	{
 		readonly IMessagingHost _host;
 		readonly Endpoint _endpoint;
 		readonly IServiceBusFactory _serviceBusFactory;
-		IServiceBus _serviceBus;
+		readonly Node _node;
 
-		public Node(IMessagingHost host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
+		public ReceiverNode(IMessagingHost host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
 			_host = host;
 			_endpoint = endpoint;
 			_serviceBusFactory = serviceBusFactory;
+			_node = new Node(host, endpoint, _serviceBusFactory);
 		}
 
-		public Uri Address
-		{
-			get { return new Uri( "rabbitmq://" + _host + "/" + _endpoint); }
-		}
-
-		public IServiceBus EnsureConnection()
-		{
-			return _serviceBus ?? (_serviceBus = _serviceBusFactory.Create(Address));
-		}
-
-		public bool Equals(Node other)
+		public bool Equals(ReceiverNode other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
@@ -39,8 +28,8 @@ namespace SevenDigital.Messaging.Services
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != typeof (Node)) return false;
-			return Equals((Node) obj);
+			if (obj.GetType() != typeof (ReceiverNode)) return false;
+			return Equals((ReceiverNode) obj);
 		}
 
 		public override int GetHashCode()
@@ -53,7 +42,13 @@ namespace SevenDigital.Messaging.Services
 
 		public void Dispose()
 		{
-			if (_serviceBus != null) _serviceBus.Dispose();
+			_node.Dispose();
+		}
+
+		public MessageBinding<T> Handle<T>() where T : class, IMessage
+		{
+			var serviceBus = _node.EnsureConnection();
+			return new MessageBinding<T>(serviceBus);
 		}
 	}
 }

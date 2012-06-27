@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using SevenDigital.Messaging.Domain;
-using SevenDigital.Messaging.Services;
+using SevenDigital.Messaging.MessageSending;
+using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
 {
