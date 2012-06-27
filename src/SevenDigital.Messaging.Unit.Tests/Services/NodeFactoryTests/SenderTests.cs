@@ -21,10 +21,12 @@ namespace SevenDigital.Messaging.Unit.Tests.Services.NodeFactoryTests
 			_uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
 			_senderEndPointGenerator = new Mock<ISenderEndpointGenerator>();
 			_host = new Host("myMachine");
-			_subject = new NodeFactory(_host, _uniqueEndPointGenerator.Object, _senderEndPointGenerator.Object, new ServiceBusFactory());
 			_senderEndpoint = new Endpoint("a.sender.com");
 			_senderEndPointGenerator.Setup(x => x.Generate()).Returns(_senderEndpoint);
 
+
+			_subject = new NodeFactory(_host, _uniqueEndPointGenerator.Object, _senderEndPointGenerator.Object, new ServiceBusFactory());
+			
 			_result = _subject.Sender();
 		}
 

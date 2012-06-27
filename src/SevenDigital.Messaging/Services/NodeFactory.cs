@@ -6,8 +6,9 @@ namespace SevenDigital.Messaging.Services
 	{
 		private readonly IMessagingHost _host;
 		private readonly IEndpointGenerator _uniqueEndPointGenerator;
-		readonly ISenderEndpointGenerator _senderEndpointGenerator;
+		private readonly ISenderEndpointGenerator _senderEndpointGenerator;
 		private readonly IServiceBusFactory _serviceBusFactory;
+		private readonly SenderNode _singletonSenderNode;
 
 		public NodeFactory(IMessagingHost host, IUniqueEndpointGenerator uniqueEndPointGenerator, ISenderEndpointGenerator senderEndpoint, IServiceBusFactory serviceBusFactory)
 		{
@@ -15,6 +16,7 @@ namespace SevenDigital.Messaging.Services
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
 			_senderEndpointGenerator = senderEndpoint;
 			_serviceBusFactory = serviceBusFactory;
+			_singletonSenderNode = new SenderNode(_host, _senderEndpointGenerator.Generate(), _serviceBusFactory);
 		}
 
 		public IReceiverNode ListenOn(Endpoint endpoint)
@@ -29,7 +31,7 @@ namespace SevenDigital.Messaging.Services
 
 		public ISenderNode Sender()
 		{
-			return new SenderNode(_host, _senderEndpointGenerator.Generate(), _serviceBusFactory);
+			return _singletonSenderNode;
 		}
 	}
 }
