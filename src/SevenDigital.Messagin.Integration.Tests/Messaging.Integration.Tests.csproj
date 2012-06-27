@@ -59,10 +59,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\ChainHandler.cs" />
     <Compile Include="Handlers\ColourMessageHandler.cs" />
     <Compile Include="Handlers\SuperHeroMessageHandler.cs" />
     <Compile Include="Handlers\VillainMessageHandler.cs" />
-    <Compile Include="IntegrationTestServiceBusFactory.cs" />
+    <Compile Include="Helpers\IntegrationTestServiceBusFactory.cs" />
     <Compile Include="MessageBusTests.cs" />
     <Compile Include="Messages\GreenMessage.cs" />
     <Compile Include="Messages\IColourMessage.cs" />

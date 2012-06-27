@@ -129,5 +129,23 @@ namespace SevenDigital.Messaging.Integration.Tests
 				
 			}
 		}
+
+		[Test]
+		public void Handler_which_sends_a_new_message_should_get_that_message_handled ()
+		{
+			using (var receiverNode = _nodeFactory.Listener())
+			{
+				receiverNode.Handle<IColourMessage>().With<ChainHandler>();
+				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
+
+				var senderNode = _nodeFactory.Sender();
+				
+				senderNode.SendMessage(new GreenMessage());
+				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+
+				Assert.That(villainSignal, Is.True);
+			}
+		}
+
 	}
 }

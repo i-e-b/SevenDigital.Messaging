@@ -1,4 +1,5 @@
 using MassTransit;
+using StructureMap;
 
 namespace SevenDigital.Messaging.Services
 {
@@ -11,9 +12,11 @@ namespace SevenDigital.Messaging.Services
 			_serviceBus = serviceBus;
 		}
 
-		public void With<THandler>() where THandler : IHandle<TMessage>, new()
+		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			_serviceBus.SubscribeHandler<TMessage>(msg => new THandler().Handle(msg));
+			_serviceBus.SubscribeHandler<TMessage>(msg =>
+				ObjectFactory.GetInstance<THandler>().Handle(msg)
+				);
 		}
 	}
 }
