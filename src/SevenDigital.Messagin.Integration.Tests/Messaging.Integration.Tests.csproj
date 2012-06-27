@@ -8,8 +8,8 @@
     <ProjectGuid>{305495D2-0885-4EDC-9156-D47C049AE936}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SevenDigital.Messagin.Integration.Tests</RootNamespace>
-    <AssemblyName>SevenDigital.Messagin.Integration.Tests</AssemblyName>
+    <RootNamespace>SevenDigital.Messaging.Integration.Tests</RootNamespace>
+    <AssemblyName>SevenDigital.Messaging.Integration.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
