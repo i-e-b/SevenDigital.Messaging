@@ -32,7 +32,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
-		public void Sender_should_trigger_event_store_hook_with_message_when_sending()
+		public void Sender_should_trigger_event_hook_with_message_when_sending()
 		{
 			var message = new GreenMessage();
 			var senderNode = node_factory.Sender();
