@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.Unit.Tests.Domain
+namespace SevenDigital.Messaging.Unit.Tests.Routing
 {
 	[TestFixture]
 	public class SenderEndpointGeneratorTests

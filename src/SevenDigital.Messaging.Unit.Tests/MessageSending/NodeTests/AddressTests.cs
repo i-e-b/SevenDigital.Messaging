@@ -2,7 +2,7 @@
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
+namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 {
 	[TestFixture]
 	public class AddressTests

@@ -1,4 +1,3 @@
-using MassTransit;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -8,22 +7,18 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		readonly Node _node;
 
-		public SenderNode(IMessagingHost host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
+		public SenderNode(IMessagingHost host, IRoutingEndpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
 			_node = new Node(host, endpoint, serviceBusFactory);
 		}
 
-		~SenderNode()
+		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			if (_node != null) _node.Dispose();
-		}
-
-		public void SendMessage<T>(T message) where T : class, IMessage
-		{
-			_node.EnsureConnection().Publish(message);
+			_node.EnsureConnection().Publish(message, c => { });
 
 			//TODO: test drive this properly!
-			ObjectFactory.GetInstance<IEventStoreHook>().MessageSent(message);
+			var hook = ObjectFactory.TryGetInstance<IEventStoreHook>();
+			if (hook != null) hook.MessageSent(message);
 		}
 
 		public bool Equals(SenderNode other)
