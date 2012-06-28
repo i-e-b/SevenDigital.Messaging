@@ -16,8 +16,9 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			_node.EnsureConnection().Publish(message, c => {});
 
-			var hook = ObjectFactory.TryGetInstance<IEventHook>();
-			if (hook != null) hook.MessageSent(message);
+			ObjectFactory
+				.GetAllInstances<IEventHook>()
+				.ForEach(hook => hook.MessageSent(message));
 		}
 
 		public bool Equals(SenderNode other)

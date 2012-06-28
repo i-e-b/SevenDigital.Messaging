@@ -1,6 +1,6 @@
 using System;
 
-namespace SevenDigital.Messaging.EventStoreHooks
+namespace SevenDigital.Messaging.EventHooks
 {
 	public class ConsoleEventHook : IEventHook
 	{

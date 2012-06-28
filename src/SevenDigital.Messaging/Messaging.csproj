@@ -51,12 +51,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
+    <Compile Include="MessageSending\EnumerableExtensions.cs" />
     <Compile Include="MessagingConfiguration.cs" />
     <Compile Include="Routing\Endpoint.cs" />
     <Compile Include="Routing\Host.cs" />
     <Compile Include="Routing\IEndpointGenerator.cs" />
     <Compile Include="Routing\IMessagingHost.cs" />
-    <Compile Include="EventHooks\NoEventHook.cs" />
     <Compile Include="Routing\IRoutingEndpoint.cs" />
     <Compile Include="Routing\SenderEndpointGenerator.cs" />
     <Compile Include="Routing\UniqueEndpointGenerator.cs" />
