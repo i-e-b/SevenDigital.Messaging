@@ -57,6 +57,7 @@
     <Compile Include="Routing\IEndpointGenerator.cs" />
     <Compile Include="Routing\IMessagingHost.cs" />
     <Compile Include="EventStoreHooks\NoEventStoreHook.cs" />
+    <Compile Include="Routing\IRoutingEndpoint.cs" />
     <Compile Include="Routing\SenderEndpointGenerator.cs" />
     <Compile Include="Routing\UniqueEndpointGenerator.cs" />
     <Compile Include="IEventStoreHook.cs" />

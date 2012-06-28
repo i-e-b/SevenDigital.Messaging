@@ -7,11 +7,11 @@ namespace SevenDigital.Messaging.MessageSending
 	public class Node: IDisposable
 	{
 		readonly IMessagingHost _host;
-		readonly Endpoint _endpoint;
+		readonly IRoutingEndpoint _endpoint;
 		readonly IServiceBusFactory _serviceBusFactory;
 		IServiceBus _serviceBus;
 
-		public Node(IMessagingHost host, Endpoint endpoint, IServiceBusFactory serviceBusFactory)
+		public Node(IMessagingHost host, IRoutingEndpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
 			_host = host;
 			_endpoint = endpoint;

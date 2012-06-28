@@ -5,7 +5,7 @@ using NUnit.Framework;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
+namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 {
 	[TestFixture]
 	public class ReceiveMessageTests
@@ -21,6 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
 			_serviceBusFactory = new Mock<IServiceBusFactory>();
 			_serviceBus = new Mock<IServiceBus>();
 			_serviceBusFactory.Setup(sbf => sbf.Create(It.IsAny<Uri>())).Returns(_serviceBus.Object);
+
 			_receiverNode = new ReceiverNode(new Host("host"), new Endpoint("endpoint"), _serviceBusFactory.Object);
 
 			_messageBinding = _receiverNode.Handle<IFakeMessage>();

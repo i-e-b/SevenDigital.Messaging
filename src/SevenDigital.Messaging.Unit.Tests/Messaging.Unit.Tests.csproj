@@ -49,15 +49,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\SenderEndpointGeneratorTests.cs" />
-    <Compile Include="Domain\UniqueEndpointGeneratorTests.cs" />
+    <Compile Include="Routing\SenderEndpointGeneratorTests.cs" />
+    <Compile Include="Routing\UniqueEndpointGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\NodeFactoryTests\CompeteForTests.cs" />
-    <Compile Include="Services\NodeFactoryTests\ListenerTests.cs" />
-    <Compile Include="Services\NodeFactoryTests\SenderTests.cs" />
-    <Compile Include="Services\NodeTests\AddressTests.cs" />
-    <Compile Include="Services\NodeTests\ReceiveMessageTests.cs" />
-    <Compile Include="Services\NodeTests\SendMessageTests.cs" />
+    <Compile Include="MessageSending\NodeFactoryTests\CompeteForTests.cs" />
+    <Compile Include="MessageSending\NodeFactoryTests\ListenerTests.cs" />
+    <Compile Include="MessageSending\NodeFactoryTests\SenderTests.cs" />
+    <Compile Include="MessageSending\NodeTests\AddressTests.cs" />
+    <Compile Include="MessageSending\NodeTests\ReceiveMessageTests.cs" />
+    <Compile Include="MessageSending\NodeTests\SendMessageTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -5,7 +5,7 @@ using NUnit.Framework;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
+namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 {
 	[TestFixture]
 	public class SendMessageTests
@@ -20,6 +20,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
 			_serviceBus = new Mock<IServiceBus>();
 			_serviceBusFactory = new Mock<IServiceBusFactory>();
 			_serviceBusFactory.Setup(f => f.Create(It.IsAny<Uri>())).Returns(_serviceBus.Object);
+
 			_subject = new SenderNode(new Host("host"), new Endpoint("endpoint"), _serviceBusFactory.Object);
 		}
 
@@ -33,6 +34,21 @@ namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
 		}
 
 		[Test]
+		public void Should_call_send_message_on_service_bus ()
+		{
+			var msg = new DummyMessage();
+			_subject.SendMessage(msg);
+
+			// This form of publish is an instance method and can be mocked. The others are extensions and can't be mocked
+			_serviceBus.Verify(b=>b.Publish(msg, AnyContextCallback()));
+		}
+
+		static Action<IPublishContext<DummyMessage>> AnyContextCallback()
+		{
+			return It.IsAny<Action<IPublishContext<DummyMessage>>>();
+		}
+
+		[Test]
 		public void Should_create_service_bus_with_address_property()
 		{
 			_subject.SendMessage(new Mock<IMessage>().Object);
@@ -40,5 +56,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Services.NodeTests
 
 			_serviceBusFactory.Verify(f => f.Create(address), Times.Once());
 		}
+
+		class DummyMessage : IMessage{public Guid CorrelationId{get { return Guid.Empty; }}}
 	}
 }

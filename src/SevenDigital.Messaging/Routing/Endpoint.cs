@@ -1,6 +1,6 @@
 namespace SevenDigital.Messaging.Routing
 {
-	public class Endpoint
+	public class Endpoint : IRoutingEndpoint
 	{
 		readonly string _name;
 

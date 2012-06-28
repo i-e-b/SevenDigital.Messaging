@@ -3,7 +3,7 @@ using NUnit.Framework;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.Unit.Tests.Services.NodeFactoryTests
+namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 {
 	[TestFixture]
 	public class SenderTests
