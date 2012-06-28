@@ -18,8 +18,9 @@ namespace SevenDigital.Messaging.MessageSending
 			{
 				ObjectFactory.GetInstance<THandler>().Handle(msg);
 
-				var hook = ObjectFactory.TryGetInstance<IEventHook>();
-				if (hook != null) hook.MessageReceived(msg);
+				ObjectFactory
+					.GetAllInstances<IEventHook>()
+					.ForEach(hook => hook.MessageReceived(msg));
 			});
 		}
 	}

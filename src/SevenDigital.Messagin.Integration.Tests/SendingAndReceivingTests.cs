@@ -1,6 +1,6 @@
 using System;// ReSharper disable InconsistentNaming
 using NUnit.Framework;
-using SevenDigital.Messaging.EventStoreHooks;
+using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
 using SevenDigital.Messaging.MessageSending;

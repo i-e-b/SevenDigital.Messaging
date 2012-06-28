@@ -1,5 +1,4 @@
-﻿using SevenDigital.Messaging.EventStoreHooks;
-using SevenDigital.Messaging.MessageSending;
+﻿using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -23,7 +22,6 @@ namespace SevenDigital.Messaging
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IServiceBusFactory>().Use<ServiceBusFactory>();
-				map.For<IEventHook>().Use<NoEventHook>();
 			});
 
 #if DEBUG
@@ -43,10 +41,21 @@ namespace SevenDigital.Messaging
 			return this;
 		}
 
-		public MessagingConfiguration WithEventStoreHook<T>() where T : IEventHook
+		/// <summary>
+		/// Add an event hook the the messaging system
+		/// </summary>
+		public MessagingConfiguration WithEventHook<T>() where T : IEventHook
 		{
 			ObjectFactory.Configure(map => map.For<IEventHook>().Use<T>());
 			return this;
+		}
+
+		/// <summary>
+		/// Remove all event hooks from the event system
+		/// </summary>
+		public void ClearEventHooks()
+		{
+			ObjectFactory.EjectAllInstancesOf<IEventHook>();
 		}
 
 		/// <summary>These two libraries are used but not referenced. This method quietens optimisation tools</summary>
@@ -55,5 +64,6 @@ namespace SevenDigital.Messaging
 			new RabbitMQ.Client.AmqpTimestamp(); // to get a reference usage
 			Magnum.CombGuid.Generate(); // to get a reference usage
 		}
+
 	}
 }
