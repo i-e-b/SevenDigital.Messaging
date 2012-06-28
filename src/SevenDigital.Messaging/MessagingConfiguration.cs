@@ -23,7 +23,7 @@ namespace SevenDigital.Messaging
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IServiceBusFactory>().Use<ServiceBusFactory>();
-				map.For<IEventStoreHook>().Use<NoEventStoreHook>();
+				map.For<IEventHook>().Use<NoEventHook>();
 			});
 
 #if DEBUG
@@ -43,9 +43,9 @@ namespace SevenDigital.Messaging
 			return this;
 		}
 
-		public MessagingConfiguration WithEventStoreHook<T>() where T : IEventStoreHook
+		public MessagingConfiguration WithEventStoreHook<T>() where T : IEventHook
 		{
-			ObjectFactory.Configure(map => map.For<IEventStoreHook>().Use<T>());
+			ObjectFactory.Configure(map => map.For<IEventHook>().Use<T>());
 			return this;
 		}
 

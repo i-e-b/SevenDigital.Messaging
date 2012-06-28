@@ -2,7 +2,7 @@ using System;
 
 namespace SevenDigital.Messaging.EventStoreHooks
 {
-	public class ConsoleEventStoreHook : IEventStoreHook
+	public class ConsoleEventHook : IEventHook
 	{
 		public void MessageSent(IMessage msg){
 			Console.WriteLine("Sent: "+msg);

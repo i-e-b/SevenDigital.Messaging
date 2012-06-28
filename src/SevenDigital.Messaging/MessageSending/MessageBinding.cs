@@ -14,11 +14,12 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			_serviceBus.SubscribeHandler<TMessage>(msg => {
+			_serviceBus.SubscribeHandler<TMessage>(msg =>
+			{
 				ObjectFactory.GetInstance<THandler>().Handle(msg);
-				
-				//TODO: test drive this properly!
-				ObjectFactory.GetInstance<IEventStoreHook>().MessageReceived(msg);
+
+				var hook = ObjectFactory.TryGetInstance<IEventHook>();
+				if (hook != null) hook.MessageReceived(msg);
 			});
 		}
 	}

@@ -10,7 +10,7 @@ using StructureMap;
 namespace SevenDigital.Messaging.Integration.Tests
 {
 	[TestFixture]
-	public class MessageBusTests
+	public class SendingAndReceivingTests
 	{
 		INodeFactory _nodeFactory;
 
@@ -22,7 +22,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			new MessagingConfiguration().WithDefaults();
 			ObjectFactory.Configure(map=> map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
-			ObjectFactory.Configure(map=> map.For<IEventStoreHook>().Use<ConsoleEventStoreHook>());
+			ObjectFactory.Configure(map=> map.For<IEventHook>().Use<ConsoleEventHook>());
 			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
 		}
 

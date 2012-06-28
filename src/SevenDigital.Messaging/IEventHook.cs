@@ -1,6 +1,6 @@
 namespace SevenDigital.Messaging
 {
-	public interface IEventStoreHook
+	public interface IEventHook
 	{
 		void MessageSent(IMessage msg);
 		void MessageReceived(IMessage msg);
