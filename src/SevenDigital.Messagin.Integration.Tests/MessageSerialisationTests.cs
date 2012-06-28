@@ -23,6 +23,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 			received = msg;
 			AutoResetEvent.Set();
 		}
+
+		public void HandlerFailed(IMessage message, Type handler, Exception ex){}
 	}
 
 	[TestFixture]

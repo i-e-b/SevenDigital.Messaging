@@ -1,3 +1,4 @@
+using System;
 using MassTransit;
 using StructureMap;
 
@@ -16,7 +17,18 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			_serviceBus.SubscribeHandler<TMessage>(msg =>
 			{
-				ObjectFactory.GetInstance<THandler>().Handle(msg);
+				try
+				{
+					ObjectFactory.GetInstance<THandler>().Handle(msg);
+				}
+				catch (Exception ex)
+				{
+					ObjectFactory
+					.GetAllInstances<IEventHook>()
+					.ForEach(hook => hook.HandlerFailed(msg, typeof(THandler), ex));
+
+					throw;
+				}
 
 				ObjectFactory
 					.GetAllInstances<IEventHook>()

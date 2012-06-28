@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
@@ -21,9 +20,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[TestFixtureSetUp]
 		public void SetUp()
 		{
-			new MessagingConfiguration().WithDefaults()
-				.WithEventHook<WaitingHookOne>()
-				.WithEventHook<WaitingHookTwo>();
+			new MessagingConfiguration().WithDefaults();
 
 			ObjectFactory.Configure(map=> map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
 
@@ -33,6 +30,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_trigger_all_event_hooks_with_message_when_sending_and_receiving_a_message()
 		{
+			new MessagingConfiguration()
+				.WithEventHook<WaitingHookOne>()
+				.WithEventHook<WaitingHookTwo>();
+
 			using (var receiverNode = node_factory.Listener())
 			{
 				var message = new GreenMessage();
@@ -66,10 +67,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-				Assert.That(WaitingHookOne.SentEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get sent event");
-				Assert.That(WaitingHookOne.ReceivedEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get received event");
-				Assert.That(WaitingHookTwo.SentEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get sent event");
-				Assert.That(WaitingHookTwo.ReceivedEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get received event");
+				Assert.That(WaitingHookOne.SentEvent.WaitOne(ShortInterval), Is.False, "Hook one didn't get sent event");
+				Assert.That(WaitingHookOne.ReceivedEvent.WaitOne(ShortInterval), Is.False, "Hook one didn't get received event");
+				Assert.That(WaitingHookTwo.SentEvent.WaitOne(ShortInterval), Is.False, "Hook one didn't get sent event");
+				Assert.That(WaitingHookTwo.ReceivedEvent.WaitOne(ShortInterval), Is.False, "Hook one didn't get received event");
 			}
 		}
 
@@ -87,6 +88,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				ReceivedEvent.Set();
 			}
+
+			public void HandlerFailed(IMessage message, Type handler, Exception ex){}
 		}
 		public class WaitingHookTwo : IEventHook
 		{
@@ -102,6 +105,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				ReceivedEvent.Set();
 			}
+			public void HandlerFailed(IMessage message, Type handler, Exception ex){}
 		}
 	}
 }
