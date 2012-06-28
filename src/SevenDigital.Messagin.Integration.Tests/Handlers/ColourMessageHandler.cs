@@ -12,4 +12,13 @@ namespace SevenDigital.Messaging.Integration.Tests.Handlers
 			AutoResetEvent.Set();
 		}
 	}
+	public class AnotherColourMessageHandler : IHandle<IColourMessage>
+	{
+		public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
+
+		public void Handle(IColourMessage message)
+		{
+			AutoResetEvent.Set();
+		}
+	}
 }

@@ -14,10 +14,9 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			_node.EnsureConnection().Publish(message, c => { });
+			_node.EnsureConnection().Publish(message, c => {});
 
-			//TODO: test drive this properly!
-			var hook = ObjectFactory.TryGetInstance<IEventStoreHook>();
+			var hook = ObjectFactory.TryGetInstance<IEventHook>();
 			if (hook != null) hook.MessageSent(message);
 		}
 

@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Types", "src\Seve
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B92FE733-3A36-4F1A-83C3-9E61E21E3722}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenDigital.Messaging.StructureMap.Unit.Tests", "src\SevenDigital.Messaging.StructureMap.Unit.Tests\SevenDigital.Messaging.StructureMap.Unit.Tests.csproj", "{B85310C8-7306-4867-A99A-EE15BB2C73A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.StructureMap.Unit.Tests", "src\SevenDigital.Messaging.StructureMap.Unit.Tests\Messaging.StructureMap.Unit.Tests.csproj", "{B85310C8-7306-4867-A99A-EE15BB2C73A4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Info", "Info", "{5B19FBF1-A119-4A38-9098-67A04182B935}"
 	ProjectSection(SolutionItems) = preProject

@@ -40,6 +40,9 @@
     <Reference Include="MassTransit.Transports.RabbitMq">
       <HintPath>..\..\packages\MassTransit.RabbitMQ.2.1.1\lib\net40\MassTransit.Transports.RabbitMq.dll</HintPath>
     </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
@@ -59,12 +62,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageSerialisationTests.cs" />
+    <Compile Include="EventHookTests.cs" />
     <Compile Include="Handlers\ChainHandler.cs" />
     <Compile Include="Handlers\ColourMessageHandler.cs" />
     <Compile Include="Handlers\SuperHeroMessageHandler.cs" />
     <Compile Include="Handlers\VillainMessageHandler.cs" />
     <Compile Include="Helpers\IntegrationTestServiceBusFactory.cs" />
-    <Compile Include="MessageBusTests.cs" />
+    <Compile Include="SendingAndReceivingTests.cs" />
     <Compile Include="Messages\GreenMessage.cs" />
     <Compile Include="Messages\IColourMessage.cs" />
     <Compile Include="Messages\IComicBookCharacterMessage.cs" />
