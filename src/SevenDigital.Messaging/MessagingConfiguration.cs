@@ -24,9 +24,6 @@ namespace SevenDigital.Messaging
 				map.For<IServiceBusFactory>().Use<ServiceBusFactory>();
 			});
 
-#if DEBUG
-			ReferenceLibraries();
-#endif
 			return this;
 		}
 
@@ -44,9 +41,9 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Add an event hook the the messaging system
 		/// </summary>
-		public MessagingConfiguration WithEventHook<T>() where T : IEventHook
+		public MessagingConfiguration AddEventHook<T>() where T : IEventHook
 		{
-			ObjectFactory.Configure(map => map.For<IEventHook>().Use<T>());
+			ObjectFactory.Configure(map => map.For<IEventHook>().Add<T>());
 			return this;
 		}
 
@@ -57,13 +54,5 @@ namespace SevenDigital.Messaging
 		{
 			ObjectFactory.EjectAllInstancesOf<IEventHook>();
 		}
-
-		/// <summary>These two libraries are used but not referenced. This method quietens optimisation tools</summary>
-		static void ReferenceLibraries()
-		{
-			new RabbitMQ.Client.AmqpTimestamp(); // to get a reference usage
-			Magnum.CombGuid.Generate(); // to get a reference usage
-		}
-
 	}
 }
