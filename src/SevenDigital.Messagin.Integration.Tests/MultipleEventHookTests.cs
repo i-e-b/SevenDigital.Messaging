@@ -31,8 +31,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Should_trigger_all_event_hooks_with_message_when_sending_and_receiving_a_message()
 		{
 			new MessagingConfiguration()
-				.WithEventHook<WaitingHookOne>()
-				.WithEventHook<WaitingHookTwo>();
+				.AddEventHook<WaitingHookOne>()
+				.AddEventHook<WaitingHookTwo>();
 
 			using (var receiverNode = node_factory.Listener())
 			{

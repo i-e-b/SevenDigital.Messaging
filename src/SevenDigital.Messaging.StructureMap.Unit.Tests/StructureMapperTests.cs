@@ -57,7 +57,7 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[Test]
 		public void Should_be_able_to_set_and_clear_event_hooks ()
 		{
-			new MessagingConfiguration().WithEventHook<DummyEventHook>();
+			new MessagingConfiguration().AddEventHook<DummyEventHook>();
 			Assert.That(ObjectFactory.GetInstance<IEventHook>(), Is.InstanceOf<DummyEventHook>());
 
 			new MessagingConfiguration().ClearEventHooks();
