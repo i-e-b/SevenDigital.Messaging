@@ -5,16 +5,16 @@ namespace SevenDigital.Messaging.MessageSending
 {
 	public class SenderNode : ISenderNode
 	{
-		readonly Node _node;
+		readonly Node node;
 
 		public SenderNode(IMessagingHost host, IRoutingEndpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
-			_node = new Node(host, endpoint, serviceBusFactory);
+			node = new Node(host, endpoint, serviceBusFactory);
 		}
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			_node.EnsureConnection().Publish(message, c => {});
+			node.EnsureConnection().Publish(message, c => {});
 
 			ObjectFactory
 				.GetAllInstances<IEventHook>()
@@ -25,7 +25,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return Equals(other._node, _node);
+			return Equals(other.node, node);
 		}
 
 		public override bool Equals(object obj)
@@ -38,7 +38,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public override int GetHashCode()
 		{
-			return (_node != null ? _node.GetHashCode() : 0);
+			return (node != null ? node.GetHashCode() : 0);
 		}
 	}
 }

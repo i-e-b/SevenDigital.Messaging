@@ -4,24 +4,24 @@ namespace SevenDigital.Messaging.MessageSending
 {
 	public class ReceiverNode : IReceiverNode
 	{
-		readonly IMessagingHost _host;
-		readonly IRoutingEndpoint _endpoint;
-		readonly IServiceBusFactory _serviceBusFactory;
-		readonly Node _node;
+		readonly IMessagingHost host;
+		readonly IRoutingEndpoint endpoint;
+		readonly IServiceBusFactory serviceBusFactory;
+		readonly Node node;
 
 		public ReceiverNode(IMessagingHost host, IRoutingEndpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
-			_host = host;
-			_endpoint = endpoint;
-			_serviceBusFactory = serviceBusFactory;
-			_node = new Node(host, endpoint, _serviceBusFactory);
+			this.host = host;
+			this.endpoint = endpoint;
+			this.serviceBusFactory = serviceBusFactory;
+			node = new Node(host, endpoint, this.serviceBusFactory);
 		}
 
 		public bool Equals(ReceiverNode other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return Equals(other._host, _host) && Equals(other._endpoint, _endpoint);
+			return Equals(other.host, host) && Equals(other.endpoint, endpoint);
 		}
 
 		public override bool Equals(object obj)
@@ -36,18 +36,18 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			unchecked
 			{
-				return ((_host != null ? _host.GetHashCode() : 0)*397) ^ (_endpoint != null ? _endpoint.GetHashCode() : 0);
+				return ((host != null ? host.GetHashCode() : 0)*397) ^ (endpoint != null ? endpoint.GetHashCode() : 0);
 			}
 		}
 
 		public void Dispose()
 		{
-			_node.Dispose();
+			node.Dispose();
 		}
 
 		public MessageBinding<T> Handle<T>() where T : class, IMessage
 		{
-			var serviceBus = _node.EnsureConnection();
+			var serviceBus = node.EnsureConnection();
 			return new MessageBinding<T>(serviceBus);
 		}
 	}
