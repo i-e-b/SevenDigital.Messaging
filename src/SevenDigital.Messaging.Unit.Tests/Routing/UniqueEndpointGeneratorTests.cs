@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.Unit.Tests.Routing
@@ -7,16 +8,14 @@ namespace SevenDigital.Messaging.Unit.Tests.Routing
 	public class UniqueEndpointGeneratorTests
 	{
 		[Test]
-		public void Should_generate_a_unique_endpoint()
+		public void Should_generate_a_name_based_on_hostname_and_running_assembly_and_a_hash()
 		{
+			// This one is a bugger to test, but the implemented behaviour is generally helpful!
 			var uniqueEndpointGenerator = new UniqueEndpointGenerator();
-			var endpointA = uniqueEndpointGenerator.Generate();
-			var endpointB = uniqueEndpointGenerator.Generate();
-			var endpointC = uniqueEndpointGenerator.Generate();
+			var endpoint = uniqueEndpointGenerator.Generate();
 
-			Assert.That(endpointA, Is.Not.EqualTo(endpointB));
-			Assert.That(endpointA, Is.Not.EqualTo(endpointC));
-			Assert.That(endpointB, Is.Not.EqualTo(endpointC));
+			Assert.That(endpoint.ToString(), Contains.Substring(Environment.MachineName));
+			Assert.That(endpoint.ToString().Length,Is.GreaterThan(Environment.MachineName.Length));
 		}
 	}
 }
