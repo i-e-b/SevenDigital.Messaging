@@ -16,6 +16,7 @@ Notes
 -----
 * Creating listener nodes takes time and resources. Do it infrequently -- usually one at the start of your app.
 * Your handler will get `new()`'d for every message. Don't do heavy things in the handler!
+* Each listening *process* with the name exe name on a single machine should be started from it's own directory (this is for continue-on-failure behaviour)
 
 Moving Parts
 ============
