@@ -57,6 +57,13 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 			_serviceBusFactory.Verify(f => f.Create(address), Times.Once());
 		}
 
-		class DummyMessage : IMessage{public Guid CorrelationId{get { return Guid.Empty; }}}
+		class DummyMessage : IMessage
+		{
+			public Guid CorrelationId
+			{
+				get { return Guid.Empty; }
+				set { }
+			}
+		}
 	}
 }
