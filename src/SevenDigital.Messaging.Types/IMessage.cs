@@ -3,6 +3,6 @@
 namespace SevenDigital.Messaging
 {
 	public interface IMessage {
-		Guid CorrelationId { get; }
+		Guid CorrelationId { get; set; }
 	}
 }
