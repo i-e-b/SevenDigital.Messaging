@@ -1,0 +1,74 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using SevenDigital.Messaging.Routing;
+using StructureMap;
+
+namespace SevenDigital.Messaging.MessageSending.Loopback
+{
+	public class LoopbackNodeFactory:INodeFactory
+	{
+		readonly Dictionary<Type, List<Type>> listenerBindings;
+		readonly List<string> capturedEndpoints;
+
+		public LoopbackNodeFactory()
+		{
+			listenerBindings = new Dictionary<Type, List<Type>>();
+			capturedEndpoints = new List<string>();
+		}
+
+		public IReceiverNode ListenOn(Endpoint endpoint)
+		{
+			// In the real version, agents compete for incoming messages.
+			// In this test version, we only really bind the first listener for a given endpoint -- roughly the same effect!
+			if (capturedEndpoints.Contains(endpoint.ToString())) return new DummyReceiver(); 
+			return new LoopbackReceiver(this);
+		}
+
+		public IReceiverNode Listener()
+		{
+			return new LoopbackReceiver(this);
+		}
+
+		public ISenderNode Sender()
+		{
+			return new LoopbackSender(this);
+		}
+
+		public void Bind<TMessage, THandler>()
+		{
+			var msg = typeof(TMessage);
+			var handler = typeof(THandler);
+			
+			if (!listenerBindings.ContainsKey(msg))
+				listenerBindings.Add(msg, new List<Type>());
+			
+			if (listenerBindings[msg].Contains(handler)) return;
+
+			listenerBindings[msg].Add(handler);
+		}
+
+		public void Send<T>(T message)
+		{
+			FireCooperativeListeners(message);
+		}
+
+		void FireCooperativeListeners<T>(T message)
+		{
+			var msg = typeof (T);
+			var matches = listenerBindings.Keys.Where(k => k.IsAssignableFrom(msg));
+			foreach (var key in matches)
+			{
+				var handlers = listenerBindings[key].Select(ObjectFactory.GetInstance);
+				foreach (var handler in handlers)
+				{
+					handler.GetType().InvokeMember("Handle", BindingFlags.InvokeMethod, null, handler, new object[] {message});
+				}
+			}
+		}
+	}
+
+
+	
+}
