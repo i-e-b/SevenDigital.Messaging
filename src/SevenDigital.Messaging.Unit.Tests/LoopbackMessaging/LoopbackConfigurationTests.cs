@@ -1,4 +1,5 @@
 ﻿using System;
+using Moq;
 using NUnit.Framework;
 using StructureMap;
 
@@ -7,14 +8,25 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 	[TestFixture]
 	public class LoopbackConfigurationTests
 	{
+		Mock<IEventHook> mock_event_hook;
+
 		[SetUp]
-		public void When_configuring_with_loopback ()
+		public void When_configuring_with_loopback_even_if_default_configuration_used ()
+		{
+			new MessagingConfiguration().WithLoopback();
+			new MessagingConfiguration().WithDefaults();
+			
+			mock_event_hook = new Mock<IEventHook>();
+			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));
+
+			ResetHandlers();
+		}
+
+		static void ResetHandlers()
 		{
 			DummyHandler.Reset();
 			OtherHandler.Reset();
 			DifferentHandler.Reset();
-
-			new MessagingConfiguration().WithLoopback();
 		}
 
 		[Test]
@@ -52,7 +64,6 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 			}
 		}
 
-		
 		[Test]
 		public void Should_receive_competing_messages_at_only_one_handler ()
 		{
@@ -71,6 +82,44 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 			receiver2.Dispose();
 
 			Assert.That(DummyHandler.CallCount, Is.EqualTo(1));
+		}
+
+		[Test]
+		public void Should_fire_sent_and_received_event_hooks ()
+		{
+			var node = ObjectFactory.GetInstance<INodeFactory>();
+			using (var receiver = node.Listener())
+			{
+				var sender = node.Sender();
+				receiver.Handle<IDummyMessage>().With<DummyHandler>();
+				sender.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
+			}
+
+			mock_event_hook.Verify(h=>h.MessageSent(It.IsAny<DummyMessage>()));
+			mock_event_hook.Verify(h=>h.MessageReceived(It.IsAny<DummyMessage>()));
+		}
+		
+		[Test]
+		public void Should_fire_failure_hook_on_failure ()
+		{
+			var node = ObjectFactory.GetInstance<INodeFactory>();
+			using (var receiver = node.Listener())
+			{
+				var sender = node.Sender();
+				receiver.Handle<IDummyMessage>().With<CrappyHandler>();
+				sender.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
+			}
+
+			mock_event_hook.Verify(h=>h.MessageSent(It.IsAny<DummyMessage>()));
+			mock_event_hook.Verify(h=>h.HandlerFailed(It.IsAny<DummyMessage>(), It.Is<Type>(t=> t == typeof(CrappyHandler)), It.IsAny<Exception>()));
+		}
+	}
+
+	public class CrappyHandler:IHandle<IDummyMessage>
+	{
+		public void Handle(IDummyMessage message)
+		{
+			throw new Exception("I failed");
 		}
 	}
 

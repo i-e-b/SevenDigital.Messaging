@@ -71,7 +71,7 @@
     <Compile Include="IHandle.cs" />
     <Compile Include="INodeFactory.cs" />
     <Compile Include="MessageSending\IServiceBusFactory.cs" />
-    <Compile Include="MessageSending\MessageBinding.cs" />
+    <Compile Include="MessageSending\HandlerTriggering.cs" />
     <Compile Include="MessageSending\Node.cs" />
     <Compile Include="MessageSending\NodeFactory.cs" />
     <Compile Include="MessageSending\ReceiverNode.cs" />

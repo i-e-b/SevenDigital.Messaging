@@ -1,4 +1,5 @@
-﻿using SevenDigital.Messaging.MessageSending;
+﻿using System.Linq;
+using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.MessageSending.Loopback;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
@@ -17,7 +18,8 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		public MessagingConfiguration WithDefaults()
 		{
-			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
+			if (UsingLoopbackMode()) return this;
+
 			ObjectFactory.Configure(map => {
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
 				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
@@ -27,6 +29,11 @@ namespace SevenDigital.Messaging
 			});
 
 			return this;
+		}
+
+		static bool UsingLoopbackMode()
+		{
+			return ObjectFactory.GetAllInstances<INodeFactory>().Any(n=>n is LoopbackNodeFactory);
 		}
 
 		/// <summary>

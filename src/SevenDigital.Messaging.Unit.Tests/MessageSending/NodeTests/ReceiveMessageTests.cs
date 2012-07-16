@@ -42,7 +42,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 		[Test]
 		public void Should_call_message_binding_factory()
 		{
-			Assert.That(_messageBinding, Is.TypeOf<MessageBinding<IFakeMessage>>());
+			Assert.That(_messageBinding, Is.TypeOf<HandlerTriggering<IFakeMessage>>());
 		}
 
 	}
