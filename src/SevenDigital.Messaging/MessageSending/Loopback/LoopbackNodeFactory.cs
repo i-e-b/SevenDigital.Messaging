@@ -49,26 +49,42 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			listenerBindings[msg].Add(handler);
 		}
 
-		public void Send<T>(T message)
+		public void Send<T>(T message) where T : IMessage
 		{
+
+			ObjectFactory
+				.GetAllInstances<IEventHook>()
+				.ForEach(hook => hook.MessageSent(message));
+
 			FireCooperativeListeners(message);
 		}
 
-		void FireCooperativeListeners<T>(T message)
+		void FireCooperativeListeners<T>(T message) where T : IMessage
 		{
-			var msg = typeof (T);
+			var msg = typeof(T);
 			var matches = listenerBindings.Keys.Where(k => k.IsAssignableFrom(msg));
 			foreach (var key in matches)
 			{
 				var handlers = listenerBindings[key].Select(ObjectFactory.GetInstance);
 				foreach (var handler in handlers)
 				{
-					handler.GetType().InvokeMember("Handle", BindingFlags.InvokeMethod, null, handler, new object[] {message});
+					try
+					{
+						handler.GetType().InvokeMember("Handle", BindingFlags.InvokeMethod, null, handler, new object[] { message });
+
+						ObjectFactory
+							.GetAllInstances<IEventHook>()
+							.ForEach(hook => hook.MessageReceived(message));
+					}
+					catch (Exception ex)
+					{
+						ObjectFactory
+						.GetAllInstances<IEventHook>()
+						.ForEach(hook => hook.HandlerFailed(message, handler.GetType(), ex));
+					}
 				}
 			}
 		}
 	}
-
-
 	
 }

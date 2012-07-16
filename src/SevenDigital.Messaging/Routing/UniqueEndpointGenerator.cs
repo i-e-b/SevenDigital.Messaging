@@ -8,9 +8,16 @@ namespace SevenDigital.Messaging.Routing
 {
 	public class UniqueEndpointGenerator : IUniqueEndpointGenerator
 	{
+		readonly string strongName;
+
+		public UniqueEndpointGenerator()
+		{
+			strongName = GetStrongName();
+		}
+
 		public Endpoint Generate()
 		{
-			return new Endpoint(GetStrongName());
+			return new Endpoint(strongName);
 		}
 
 		static string GetStrongName()

@@ -48,7 +48,7 @@ namespace SevenDigital.Messaging.MessageSending
 		public IMessageBinding<T> Handle<T>() where T : class, IMessage
 		{
 			var serviceBus = node.EnsureConnection();
-			return new MessageBinding<T>(serviceBus);
+			return new HandlerTriggering<T>(serviceBus);
 		}
 	}
 }
