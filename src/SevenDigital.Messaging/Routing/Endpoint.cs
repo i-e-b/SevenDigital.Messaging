@@ -33,5 +33,10 @@ namespace SevenDigital.Messaging.Routing
 		{
 			_name = name;
 		}
+
+		public static implicit operator Endpoint(string value)
+		{
+			return new Endpoint(value);
+		} 
 	}
 }

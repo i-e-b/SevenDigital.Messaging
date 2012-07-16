@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 		Mock<IServiceBusFactory> _serviceBusFactory;
 		ReceiverNode _receiverNode;
 		Mock<IServiceBus> _serviceBus;
-		MessageBinding<IFakeMessage> _messageBinding;
+		IMessageBinding<IFakeMessage> _messageBinding;
 
 		[SetUp]
 		public void SetUp()

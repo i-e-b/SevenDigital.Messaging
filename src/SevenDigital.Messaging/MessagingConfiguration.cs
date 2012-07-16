@@ -1,4 +1,5 @@
 ﻿using SevenDigital.Messaging.MessageSending;
+using SevenDigital.Messaging.MessageSending.Loopback;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -16,6 +17,7 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		public MessagingConfiguration WithDefaults()
 		{
+			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
 			ObjectFactory.Configure(map => {
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
 				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
@@ -53,6 +55,17 @@ namespace SevenDigital.Messaging
 		public void ClearEventHooks()
 		{
 			ObjectFactory.EjectAllInstancesOf<IEventHook>();
+		}
+		
+		/// <summary>
+		/// Configure SevenDigital.Messaging with loopback communications for testing.
+		/// After calling this method, you can use the INodeFactory as a collaborator.
+		/// Messages will trigger instantly. DO NOT use for production!
+		/// </summary>
+		public void WithLoopback()
+		{
+			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
+			ObjectFactory.Configure(map => map.For<INodeFactory>().Singleton().Use<LoopbackNodeFactory>());
 		}
 	}
 }

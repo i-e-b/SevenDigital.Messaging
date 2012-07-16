@@ -4,7 +4,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
 {
-	public class MessageBinding<TMessage> where TMessage : class, IMessage
+	public class MessageBinding<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
 	{
 		readonly IServiceBus serviceBus;
 
