@@ -36,8 +36,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		HoldingEventHook event_hook;
+	    private ISenderNode senderNode;
+	    private ISenderNode _senderNode;
 
-		[TestFixtureSetUp]
+	    [TestFixtureSetUp]
 		public void SetUp()
 		{
 			new MessagingConfiguration().WithDefaults();
@@ -48,6 +50,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(event_hook));
 
 			node_factory = ObjectFactory.GetInstance<INodeFactory>();
+	        _senderNode = senderNode = ObjectFactory.GetInstance<ISenderNode>();
 		}
 		
 		[Test]
@@ -58,7 +61,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var message = new GreenMessage();
 
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-				var senderNode = node_factory.Sender();
+				
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);

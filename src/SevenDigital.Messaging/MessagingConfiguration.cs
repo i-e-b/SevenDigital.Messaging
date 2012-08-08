@@ -26,6 +26,7 @@ namespace SevenDigital.Messaging
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IServiceBusFactory>().Use<ServiceBusFactory>();
+                map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
 
 			return this;
@@ -72,7 +73,14 @@ namespace SevenDigital.Messaging
 		public void WithLoopback()
 		{
 			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
-			ObjectFactory.Configure(map => map.For<INodeFactory>().Singleton().Use<LoopbackNodeFactory>());
+
+		    var factory = new LoopbackNodeFactory();
+
+			ObjectFactory.Configure(map =>
+			{
+                map.For<INodeFactory>().Singleton().Use(factory);
+                map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackNodeFactory>().Is(factory);
+	        });
 		}
 	}
 }

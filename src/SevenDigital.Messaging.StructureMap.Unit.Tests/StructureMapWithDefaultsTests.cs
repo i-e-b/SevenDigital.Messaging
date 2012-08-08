@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
@@ -7,20 +6,27 @@ using StructureMap;
 namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 {
 	[TestFixture]
-	public class StructureMapperTests
+	public class StructureMapWithDefaultsTests
 	{
 		const string HostName = "my.unique.host";
 
-		[SetUp]
+		[TestFixtureSetUp]
 		public void Setup()
 		{
 			new MessagingConfiguration().WithDefaults().WithMessagingServer(HostName);
 		}
 
+        [TestFixtureTearDown]
+        public void TearDown()
+        {
+            ObjectFactory.Container.Dispose();
+        }
+
 		[Test]
 		public void Should_get_messaging_host_implementation ()
 		{
 			Assert.That(ObjectFactory.GetInstance<IMessagingHost>(), Is.Not.Null);
+			Assert.That(ObjectFactory.GetInstance<IMessagingHost>(), Is.InstanceOf<Host>());
 		}
 
 		[Test]
@@ -69,14 +75,15 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		{
 			var factory = ObjectFactory.GetInstance<INodeFactory>();
 			Assert.That(factory, Is.Not.Null);
+            Assert.That(factory, Is.InstanceOf<NodeFactory>());
 		}
 
-	}
-
-	public class DummyEventHook:IEventHook
-	{
-		public void MessageSent(IMessage msg){}
-		public void MessageReceived(IMessage msg){}
-		public void HandlerFailed(IMessage message, Type handler, Exception ex){}
+        [Test]
+        public void Should_get_sender_node_implementation()
+        {
+            var senderNode = ObjectFactory.GetInstance<ISenderNode>();
+            Assert.That(senderNode, Is.InstanceOf<SenderNode>());
+            Assert.That(senderNode, Is.Not.Null);
+        }
 	}
 }

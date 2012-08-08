@@ -17,8 +17,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		Mock<IEventHook> mock_event_hook;
+	    private ISenderNode senderNode;
 
-		[TestFixtureSetUp]
+	    [TestFixtureSetUp]
 		public void SetUp()
 		{
 			new MessagingConfiguration().WithDefaults();
@@ -29,13 +30,14 @@ namespace SevenDigital.Messaging.Integration.Tests
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));
 
 			node_factory = ObjectFactory.GetInstance<INodeFactory>();
+            senderNode = ObjectFactory.GetInstance<ISenderNode>();
 		}
-
+        
 		[Test]
 		public void Sender_should_trigger_event_hook_with_message_when_sending()
 		{
 			var message = new GreenMessage();
-			var senderNode = node_factory.Sender();
+			
 			senderNode.SendMessage(message);
 
 			mock_event_hook.Verify(h => h.MessageSent(message));
@@ -49,7 +51,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var message = new GreenMessage();
 
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-				var senderNode = node_factory.Sender();
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -67,7 +68,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 				receiverNode.Handle<IColourMessage>().With<AnotherColourMessageHandler>();
-				var senderNode = node_factory.Sender();
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);

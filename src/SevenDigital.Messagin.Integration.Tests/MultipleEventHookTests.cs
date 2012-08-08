@@ -12,8 +12,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 	public class MultipleEventHookTests
 	{
 		INodeFactory node_factory;
+	    private ISenderNode senderNode;
 
-		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
+	    protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 
@@ -25,6 +26,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			ObjectFactory.Configure(map=> map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
 
 			node_factory = ObjectFactory.GetInstance<INodeFactory>();
+            senderNode = ObjectFactory.GetInstance<ISenderNode>();
 		}
 
 		[Test]
@@ -39,7 +41,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var message = new GreenMessage();
 
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-				var senderNode = node_factory.Sender();
+				
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -62,7 +64,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var message = new GreenMessage();
 
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-				var senderNode = node_factory.Sender();
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);

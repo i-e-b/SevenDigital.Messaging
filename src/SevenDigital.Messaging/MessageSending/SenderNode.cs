@@ -7,10 +7,11 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		readonly Node node;
 
-		public SenderNode(IMessagingHost host, IRoutingEndpoint endpoint, IServiceBusFactory serviceBusFactory)
-		{
-			node = new Node(host, endpoint, serviceBusFactory);
-		}
+        public SenderNode(IMessagingHost host, ISenderEndpointGenerator endpointGenerator, IServiceBusFactory serviceBusFactory)
+        {
+            var endpoint = endpointGenerator.Generate();
+            node = new Node(host, endpoint, serviceBusFactory);
+        }
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
@@ -20,8 +21,8 @@ namespace SevenDigital.Messaging.MessageSending
 				.GetAllInstances<IEventHook>()
 				.ForEach(hook => hook.MessageSent(message));
 		}
-
-		public bool Equals(SenderNode other)
+        
+	    public bool Equals(SenderNode other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;

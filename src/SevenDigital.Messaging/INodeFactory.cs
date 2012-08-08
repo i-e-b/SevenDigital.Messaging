@@ -16,10 +16,5 @@ namespace SevenDigital.Messaging
 		/// All listeners mapped this way will receive all messages.
 		/// </summary>
 		IReceiverNode Listen();
-
-		/// <summary>
-		/// Get a sender node to push messages to handlers.
-		/// </summary>
-		ISenderNode Sender();
 	}
 }
