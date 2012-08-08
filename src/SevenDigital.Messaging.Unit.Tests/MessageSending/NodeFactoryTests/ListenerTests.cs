@@ -25,7 +25,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 			_uniqueEndpoint = new Endpoint("some wordz");
 			_uniqueEndPointGenerator.Setup(x => x.Generate()).Returns(_uniqueEndpoint);
 
-			_result = _subject.Listener();
+			_result = _subject.Listen();
 		}
 
 		[Test]

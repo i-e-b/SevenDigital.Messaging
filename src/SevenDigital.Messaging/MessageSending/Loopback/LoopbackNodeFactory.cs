@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			capturedEndpoints = new List<string>();
 		}
 
-		public IReceiverNode ListenOn(Endpoint endpoint)
+		public IReceiverNode TakeFrom(Endpoint endpoint)
 		{
 			// In the real version, agents compete for incoming messages.
 			// In this test version, we only really bind the first listener for a given endpoint -- roughly the same effect!
@@ -26,7 +26,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			return new LoopbackReceiver(this);
 		}
 
-		public IReceiverNode Listener()
+		public IReceiverNode Listen()
 		{
 			return new LoopbackReceiver(this);
 		}

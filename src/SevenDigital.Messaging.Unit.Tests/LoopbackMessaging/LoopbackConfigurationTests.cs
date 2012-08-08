@@ -33,7 +33,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		public void Should_be_able_to_send_and_receive_messages_without_waiting ()
 		{
 			var node = ObjectFactory.GetInstance<INodeFactory>();
-			using (var receiver = node.Listener())
+			using (var receiver = node.Listen())
 			{
 				var sender = node.Sender();
 
@@ -48,7 +48,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		public void Should_receive_messages_at_every_applicable_handler ()
 		{
 			var node = ObjectFactory.GetInstance<INodeFactory>();
-			using (var receiver = node.Listener())
+			using (var receiver = node.Listen())
 			{
 				var sender = node.Sender();
 
@@ -70,8 +70,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 			var node = ObjectFactory.GetInstance<INodeFactory>();
 			var sender = node.Sender();
 
-			var receiver1 = node.ListenOn("Compete");
-			var receiver2 = node.ListenOn("Compete");
+			var receiver1 = node.TakeFrom("Compete");
+			var receiver2 = node.TakeFrom("Compete");
 
 			receiver1.Handle<IDummyMessage>().With<DummyHandler>();
 			receiver2.Handle<IDummyMessage>().With<DummyHandler>();
@@ -88,7 +88,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		public void Should_fire_sent_and_received_event_hooks ()
 		{
 			var node = ObjectFactory.GetInstance<INodeFactory>();
-			using (var receiver = node.Listener())
+			using (var receiver = node.Listen())
 			{
 				var sender = node.Sender();
 				receiver.Handle<IDummyMessage>().With<DummyHandler>();
@@ -103,7 +103,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		public void Should_fire_failure_hook_on_failure ()
 		{
 			var node = ObjectFactory.GetInstance<INodeFactory>();
-			using (var receiver = node.Listener())
+			using (var receiver = node.Listen())
 			{
 				var sender = node.Sender();
 				receiver.Handle<IDummyMessage>().With<CrappyHandler>();

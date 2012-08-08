@@ -23,7 +23,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 			
 			var subject = new NodeFactory(_host, uniqueEndPointGenerator.Object, senderEndPointGenerator.Object, new ServiceBusFactory());
 
-			_result = subject.ListenOn(_endpoint);
+			_result = subject.TakeFrom(_endpoint);
 		}
 
 		[Test]
