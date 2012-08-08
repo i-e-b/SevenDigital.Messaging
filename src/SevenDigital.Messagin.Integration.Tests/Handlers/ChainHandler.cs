@@ -4,16 +4,16 @@ namespace SevenDigital.Messaging.Integration.Tests.Handlers
 {
 	public class ChainHandler : IHandle<IColourMessage>
 	{
-		readonly INodeFactory factory;
+        readonly ISenderNode _senderNode;
 
-		public ChainHandler(INodeFactory factory)
+		public ChainHandler(ISenderNode senderNode)
 		{
-			this.factory = factory;
+			this._senderNode = senderNode;
 		}
 
 		public void Handle(IColourMessage message)
 		{
-			factory.Sender().SendMessage(new JokerMessage());
+			_senderNode.SendMessage(new JokerMessage());
 		}
 	}
 }

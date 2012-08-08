@@ -3,7 +3,7 @@
 	public class LoopbackSender : ISenderNode
 	{
 		readonly LoopbackNodeFactory loopbackNodeFactory;
-
+        
 		public LoopbackSender(LoopbackNodeFactory loopbackNodeFactory)
 		{
 			this.loopbackNodeFactory = loopbackNodeFactory;

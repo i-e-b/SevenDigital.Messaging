@@ -20,8 +20,9 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 			_serviceBus = new Mock<IServiceBus>();
 			_serviceBusFactory = new Mock<IServiceBusFactory>();
 			_serviceBusFactory.Setup(f => f.Create(It.IsAny<Uri>())).Returns(_serviceBus.Object);
-
-			_subject = new SenderNode(new Host("host"), new Endpoint("endpoint"), _serviceBusFactory.Object);
+		    var endpointGenerator = new Mock<ISenderEndpointGenerator>();
+		    endpointGenerator.Setup(g => g.Generate()).Returns(new Endpoint("endpoint"));
+		    _subject = new SenderNode(new Host("host"), endpointGenerator.Object, _serviceBusFactory.Object);
 		}
 
 		[Test]

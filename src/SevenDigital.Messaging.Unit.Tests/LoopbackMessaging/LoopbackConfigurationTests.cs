@@ -9,17 +9,22 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 	public class LoopbackConfigurationTests
 	{
 		Mock<IEventHook> mock_event_hook;
+	    private ISenderNode _senderNode;
+	    private INodeFactory _nodeFactory;
 
-		[SetUp]
+	    [SetUp]
 		public void When_configuring_with_loopback_even_if_default_configuration_used ()
 		{
 			new MessagingConfiguration().WithLoopback();
-			new MessagingConfiguration().WithDefaults();
+		    new MessagingConfiguration().WithDefaults();
 			
 			mock_event_hook = new Mock<IEventHook>();
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));
 
 			ResetHandlers();
+
+            _nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
+            _senderNode = ObjectFactory.GetInstance<ISenderNode>();
 		}
 
 		static void ResetHandlers()
@@ -32,31 +37,25 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_be_able_to_send_and_receive_messages_without_waiting ()
 		{
-			var node = ObjectFactory.GetInstance<INodeFactory>();
-			using (var receiver = node.Listen())
+		    using (var receiver = _nodeFactory.Listen())
 			{
-				var sender = node.Sender();
-
 				receiver.Handle<IDummyMessage>().With<DummyHandler>();
-				sender.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
+				_senderNode.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
 
 				Assert.That(DummyHandler.CallCount, Is.EqualTo(1));
 			}
 		}
-		
-		[Test]
+
+	    [Test]
 		public void Should_receive_messages_at_every_applicable_handler ()
 		{
-			var node = ObjectFactory.GetInstance<INodeFactory>();
-			using (var receiver = node.Listen())
+			using (var receiver = _nodeFactory.Listen())
 			{
-				var sender = node.Sender();
-
 				receiver.Handle<IDummyMessage>().With<DummyHandler>();
 				receiver.Handle<IDummyMessage>().With<OtherHandler>();
 				receiver.Handle<IDifferentMessage>().With<DifferentHandler>();
 
-				sender.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
+				_senderNode.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
 
 				Assert.That(DummyHandler.CallCount, Is.EqualTo(1));
 				Assert.That(OtherHandler.CallCount, Is.EqualTo(1));
@@ -67,16 +66,13 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_receive_competing_messages_at_only_one_handler ()
 		{
-			var node = ObjectFactory.GetInstance<INodeFactory>();
-			var sender = node.Sender();
-
-			var receiver1 = node.TakeFrom("Compete");
-			var receiver2 = node.TakeFrom("Compete");
+			var receiver1 = _nodeFactory.TakeFrom("Compete");
+			var receiver2 = _nodeFactory.TakeFrom("Compete");
 
 			receiver1.Handle<IDummyMessage>().With<DummyHandler>();
 			receiver2.Handle<IDummyMessage>().With<DummyHandler>();
 
-			sender.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
+			_senderNode.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
 
 			receiver1.Dispose();
 			receiver2.Dispose();
@@ -87,12 +83,10 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_fire_sent_and_received_event_hooks ()
 		{
-			var node = ObjectFactory.GetInstance<INodeFactory>();
-			using (var receiver = node.Listen())
+			using (var receiver = _nodeFactory.Listen())
 			{
-				var sender = node.Sender();
 				receiver.Handle<IDummyMessage>().With<DummyHandler>();
-				sender.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
+				_senderNode.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
 			}
 
 			mock_event_hook.Verify(h=>h.MessageSent(It.IsAny<DummyMessage>()));
@@ -102,12 +96,10 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_fire_failure_hook_on_failure ()
 		{
-			var node = ObjectFactory.GetInstance<INodeFactory>();
-			using (var receiver = node.Listen())
+			using (var receiver = _nodeFactory.Listen())
 			{
-				var sender = node.Sender();
 				receiver.Handle<IDummyMessage>().With<CrappyHandler>();
-				sender.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
+				_senderNode.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
 			}
 
 			mock_event_hook.Verify(h=>h.MessageSent(It.IsAny<DummyMessage>()));

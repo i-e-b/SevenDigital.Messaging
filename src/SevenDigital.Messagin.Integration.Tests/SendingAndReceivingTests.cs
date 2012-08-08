@@ -13,8 +13,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 	public class SendingAndReceivingTests
 	{
 		INodeFactory _nodeFactory;
+	    private ISenderNode _senderNode;
 
-		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
+	    protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		[TestFixtureSetUp]
@@ -24,6 +25,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			ObjectFactory.Configure(map=> map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use<ConsoleEventHook>());
 			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
+            _senderNode = ObjectFactory.GetInstance<ISenderNode>();
 		}
 
 		[Test]
@@ -33,8 +35,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-				var senderNode = _nodeFactory.Sender();
-					senderNode.SendMessage(new RedMessage());
+				
+					_senderNode.SendMessage(new RedMessage());
 
 					var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 					Assert.That(colourSignal, Is.True);
@@ -48,8 +50,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-				var senderNode = _nodeFactory.Sender();
-				senderNode.SendMessage(new RedMessage());
+				_senderNode.SendMessage(new RedMessage());
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
 				Assert.That(colourSignal, Is.True);
@@ -64,9 +65,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-				var senderNode = _nodeFactory.Sender();
-				
-				senderNode.SendMessage(new JokerMessage());
+				_senderNode.SendMessage(new JokerMessage());
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
 				Assert.That(colourSignal, Is.False);
@@ -81,9 +80,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-				var senderNode = _nodeFactory.Sender();
-				
-				senderNode.SendMessage(new JokerMessage());
+				_senderNode.SendMessage(new JokerMessage());
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
 				Assert.That(colourSignal, Is.False);
@@ -100,9 +97,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				namedReceiverNode1.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
 				namedReceiverNode2.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
-				var senderNode = _nodeFactory.Sender();
-				
-				senderNode.SendMessage(new BatmanMessage());
+				_senderNode.SendMessage(new BatmanMessage());
 				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 				var villanSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
@@ -120,9 +115,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				receiverNode.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
 				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
-				var senderNode = _nodeFactory.Sender();
-				
-				senderNode.SendMessage(new JokerMessage());
+				_senderNode.SendMessage(new JokerMessage());
 				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
@@ -140,9 +133,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				receiverNode.Handle<IColourMessage>().With<ChainHandler>();
 				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
-				var senderNode = _nodeFactory.Sender();
-				
-				senderNode.SendMessage(new GreenMessage());
+				_senderNode.SendMessage(new GreenMessage());
 				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
 				Assert.That(villainSignal, Is.True);

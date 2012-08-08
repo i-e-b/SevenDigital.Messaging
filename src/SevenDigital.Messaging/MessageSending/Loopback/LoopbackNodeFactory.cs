@@ -31,11 +31,6 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			return new LoopbackReceiver(this);
 		}
 
-		public ISenderNode Sender()
-		{
-			return new LoopbackSender(this);
-		}
-
 		public void Bind<TMessage, THandler>()
 		{
 			var msg = typeof(TMessage);

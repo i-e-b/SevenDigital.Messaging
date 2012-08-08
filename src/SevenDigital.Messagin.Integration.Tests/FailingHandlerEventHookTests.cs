@@ -65,7 +65,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			receiverNode.Handle<IColourMessage>().With<FailingColourHandler>();
 
 			var message = new GreenMessage();
-			var senderNode = node_factory.Sender();
+			var senderNode = ObjectFactory.GetInstance<ISenderNode>();
 
 			senderNode.SendMessage(message);
 
