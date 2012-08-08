@@ -44,7 +44,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_trigger_event_store_hook_with_message_when_receiving_a_message ()
 		{
-			using (var receiverNode = node_factory.Listener())
+			using (var receiverNode = node_factory.Listen())
 			{
 				var message = new GreenMessage();
 
@@ -61,7 +61,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Every_handler_should_trigger_event_store_hook ()
 		{
-			using (var receiverNode = node_factory.Listener())
+			using (var receiverNode = node_factory.Listen())
 			{
 				var message = new GreenMessage();
 

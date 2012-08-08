@@ -19,12 +19,12 @@ namespace SevenDigital.Messaging.MessageSending
 			_singletonSenderNode = new SenderNode(_host, _senderEndpointGenerator.Generate(), _serviceBusFactory);
 		}
 
-		public IReceiverNode ListenOn(Endpoint endpoint)
+		public IReceiverNode TakeFrom(Endpoint endpoint)
 		{
 			return new ReceiverNode(_host, endpoint, _serviceBusFactory);
 		}
 
-		public IReceiverNode Listener()
+		public IReceiverNode Listen()
 		{
 			return new ReceiverNode(_host, _uniqueEndPointGenerator.Generate(), _serviceBusFactory);
 		}

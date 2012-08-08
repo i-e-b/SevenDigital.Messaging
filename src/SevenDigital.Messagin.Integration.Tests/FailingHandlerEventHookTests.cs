@@ -35,7 +35,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_trigger_failure_hook_when_handler_throws_exception ()
 		{
-			using (var receiverNode = node_factory.Listener())
+			using (var receiverNode = node_factory.Listen())
 			{
 				var message = TriggerFailingHandler(receiverNode);
 
@@ -51,7 +51,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_not_trigger_received_hook_when_handler_throws_exception ()
 		{
-			using (var receiverNode = node_factory.Listener())
+			using (var receiverNode = node_factory.Listen())
 			{
 				TriggerFailingHandler(receiverNode);
 

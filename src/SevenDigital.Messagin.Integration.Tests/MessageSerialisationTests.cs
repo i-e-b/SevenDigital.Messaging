@@ -53,7 +53,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Sent_and_received_messages_should_be_equal ()
 		{
-			using (var receiverNode = node_factory.Listener())
+			using (var receiverNode = node_factory.Listen())
 			{
 				var message = new GreenMessage();
 

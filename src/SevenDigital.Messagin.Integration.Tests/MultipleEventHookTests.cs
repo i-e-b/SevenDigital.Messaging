@@ -34,7 +34,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				.AddEventHook<WaitingHookOne>()
 				.AddEventHook<WaitingHookTwo>();
 
-			using (var receiverNode = node_factory.Listener())
+			using (var receiverNode = node_factory.Listen())
 			{
 				var message = new GreenMessage();
 
@@ -57,7 +57,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			new MessagingConfiguration().ClearEventHooks();
 
-			using (var receiverNode = node_factory.Listener())
+			using (var receiverNode = node_factory.Listen())
 			{
 				var message = new GreenMessage();
 

@@ -29,7 +29,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
 		{
-			using (var receiverNode = _nodeFactory.Listener())
+			using (var receiverNode = _nodeFactory.Listen())
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
@@ -44,7 +44,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_react_when_a_registered_message_type_is_received_for_named_endpoint()
 		{
-			using (var receiverNode = _nodeFactory.ListenOn(new Endpoint("registered-message-endpoint")))
+			using (var receiverNode = _nodeFactory.TakeFrom(new Endpoint("registered-message-endpoint")))
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
@@ -60,7 +60,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_unnamed_endpoint()
 		{
-			using (var receiverNode = _nodeFactory.Listener())
+			using (var receiverNode = _nodeFactory.Listen())
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
@@ -77,7 +77,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_named_endpoint()
 		{
-			using (var receiverNode = _nodeFactory.ListenOn(new Endpoint("unregistered-message-endpoint")))
+			using (var receiverNode = _nodeFactory.TakeFrom(new Endpoint("unregistered-message-endpoint")))
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
@@ -94,8 +94,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Only_one_handler_should_fire_when_competing_for_an_endpoint()
 		{
-			using (var namedReceiverNode1 = _nodeFactory.ListenOn(new Endpoint("shared-endpoint")))
-			using (var namedReceiverNode2 = _nodeFactory.ListenOn(new Endpoint("shared-endpoint")))
+			using (var namedReceiverNode1 = _nodeFactory.TakeFrom(new Endpoint("shared-endpoint")))
+			using (var namedReceiverNode2 = _nodeFactory.TakeFrom(new Endpoint("shared-endpoint")))
 			{
 				namedReceiverNode1.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
 				namedReceiverNode2.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
@@ -115,7 +115,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_use_all_registered_handlers_when_a_message_is_received()
 		{
-			using (var receiverNode = _nodeFactory.Listener())
+			using (var receiverNode = _nodeFactory.Listen())
 			{
 				receiverNode.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
 				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
@@ -135,7 +135,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_which_sends_a_new_message_should_get_that_message_handled ()
 		{
-			using (var receiverNode = _nodeFactory.Listener())
+			using (var receiverNode = _nodeFactory.Listen())
 			{
 				receiverNode.Handle<IColourMessage>().With<ChainHandler>();
 				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
