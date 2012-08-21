@@ -23,14 +23,14 @@ namespace SevenDigital.Messaging.MessageSending
 				{
 					Get<IHandle<TMessage>>(typeof(THandler)).Handle(msg);
 
-					var hooks = GetAll<IEventHook>(typeof(IEventHook));
+					var hooks = GetAll(typeof(IEventHook));
 					foreach (IEventHook hook in hooks) {
 						hook.MessageReceived(msg);
 					}
 				}
 				catch (Exception ex)
 				{
-					var hooks = GetAll<IEventHook>(typeof(IEventHook));
+					var hooks = GetAll(typeof(IEventHook));
 					foreach (IEventHook hook in hooks) {
 						hook.HandlerFailed(msg, typeof(THandler), ex);
 					}
@@ -42,7 +42,7 @@ namespace SevenDigital.Messaging.MessageSending
 			return (T)ObjectFactory.GetInstance(src);
 		}
 		
-		private static IEnumerable<object> GetAll<T>(Type src) {
+		private static IEnumerable<object> GetAll(Type src) {
 			return ObjectFactory.GetAllInstances(src).Cast<object>().ToList();
 		}
 	}
