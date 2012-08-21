@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging", "src\SevenDigit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Unit.Tests", "src\SevenDigital.Messaging.Unit.Tests\Messaging.Unit.Tests.csproj", "{1578F154-1C86-4A00-881C-CB7517C594AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Integration.Tests", "src\SevenDigital.Messagin.Integration.Tests\Messaging.Integration.Tests.csproj", "{305495D2-0885-4EDC-9156-D47C049AE936}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Integration.Tests", "src\SevenDigital.Messaging.Integration.Tests\Messaging.Integration.Tests.csproj", "{305495D2-0885-4EDC-9156-D47C049AE936}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Types", "src\SevenDigital.Messaging.Types\Messaging.Types.csproj", "{D24B3022-DF19-4E06-9588-54A16A195B84}"
 EndProject
