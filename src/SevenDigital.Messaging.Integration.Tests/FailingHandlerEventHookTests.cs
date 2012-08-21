@@ -17,12 +17,16 @@ namespace SevenDigital.Messaging.Integration.Tests
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		Mock<IEventHook> mock_event_hook;
-
+		
 		[TestFixtureSetUp]
-		public void SetUp()
+		public void StartMessaging()
 		{
 			Helper.SetupTestMessaging();
+		}
 
+		[SetUp]
+		public void SetUp()
+		{
 			mock_event_hook = new Mock<IEventHook>();
 
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));

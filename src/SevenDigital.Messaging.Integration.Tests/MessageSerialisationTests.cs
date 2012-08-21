@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
@@ -7,25 +6,6 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	class HoldingEventHook : IEventHook
-	{
-		public IMessage sent, received;
-		public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
-
-		public void MessageSent(IMessage msg)
-		{
-			sent = msg;
-		}
-
-		public void MessageReceived(IMessage msg)
-		{
-			received = msg;
-			AutoResetEvent.Set();
-		}
-
-		public void HandlerFailed(IMessage message, Type handler, Exception ex){}
-	}
-
 	[TestFixture]
 	public class MessageSerialisationTests
 	{
@@ -36,12 +16,16 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 		HoldingEventHook event_hook;
 	    private ISenderNode senderNode;
-
+		
 		[TestFixtureSetUp]
-		public void SetUp()
+		public void StartMessaging()
 		{
 			Helper.SetupTestMessaging();
+		}
 
+		[SetUp]
+		public void SetUp()
+		{
 			event_hook = new HoldingEventHook();
 
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(event_hook));

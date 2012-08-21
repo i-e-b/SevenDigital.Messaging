@@ -16,12 +16,16 @@ namespace SevenDigital.Messaging.Integration.Tests
 	    protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
-
+		
 		[TestFixtureSetUp]
-		public void SetUp()
+		public void StartMessaging()
 		{
 			Helper.SetupTestMessaging();
-			
+		}
+
+		[SetUp]
+		public void SetUp()
+		{
 			node_factory = ObjectFactory.GetInstance<INodeFactory>();
             senderNode = ObjectFactory.GetInstance<ISenderNode>();
 		}
