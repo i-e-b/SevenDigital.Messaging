@@ -24,7 +24,6 @@ NDependOut
 mono-release-*
 test
 test*ml
-build
 *.ncrunchproject
 *.ncrunchsolution.user
 *ncrunch*
