@@ -18,11 +18,15 @@ namespace SevenDigital.Messaging.Integration.Tests
 		Mock<IEventHook> mock_event_hook;
 	    private ISenderNode senderNode;
 
-	    [TestFixtureSetUp]
-		public void SetUp()
+		[TestFixtureSetUp]
+		public void StartMessaging()
 		{
 			Helper.SetupTestMessaging();
+		}
 
+		[SetUp]
+		public void SetUp()
+		{
 			mock_event_hook = new Mock<IEventHook>();
 
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));
@@ -42,7 +46,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 		
 		[Test]
-		public void Should_trigger_event_store_hook_with_message_when_receiving_a_message ()
+		public void Should_trigger_event_hook_with_message_when_receiving_a_message ()
 		{
 			using (var receiverNode = node_factory.Listen())
 			{
@@ -53,12 +57,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im=> im.CorrelationId == message.CorrelationId)));
+				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im => im.CorrelationId == message.CorrelationId)));
 			}
 		}
 
 		[Test]
-		public void Every_handler_should_trigger_event_store_hook ()
+		public void Every_handler_should_trigger_event_hook ()
 		{
 			using (var receiverNode = node_factory.Listen())
 			{

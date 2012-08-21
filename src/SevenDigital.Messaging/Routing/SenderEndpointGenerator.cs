@@ -4,7 +4,7 @@ namespace SevenDigital.Messaging.Routing
 {
 	public class SenderEndpointGenerator:ISenderEndpointGenerator
 	{
-		string strongName;
+		readonly string strongName;
 
 		public SenderEndpointGenerator()
 		{
