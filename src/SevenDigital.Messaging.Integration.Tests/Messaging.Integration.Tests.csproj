@@ -94,7 +94,7 @@
       <Project>{D24B3022-DF19-4E06-9588-54A16A195B84}</Project>
       <Name>Messaging.Types</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SevenDigital.Messaging\Messaging.csproj">
+    <ProjectReference Include="..\SevenDigital.Messaging.Base\Messaging.Base.csproj">
       <Project>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</Project>
       <Name>Messaging</Name>
     </ProjectReference>
