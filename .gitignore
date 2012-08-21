@@ -29,3 +29,5 @@ build
 *.ncrunchsolution.user
 *ncrunch*
 *.sln.DotSettings.user
+binaries/
+merged/
