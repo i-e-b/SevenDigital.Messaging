@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging.Routing
 					+ Naming.GetMacAddress())
 				);
 			strongName =  
-				Environment.MachineName 
+				Naming.MachineName()
 				+ "_" 
 				+ Naming.GoodAssemblyName() 
 				+ "_" 
