@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		INodeFactory node_factory;
 	    private ISenderNode senderNode;
 
-	    protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(60); } }
+	    protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		
