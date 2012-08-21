@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.Unit.Tests.Routing
@@ -9,8 +10,12 @@ namespace SevenDigital.Messaging.Unit.Tests.Routing
 		[Test]
 		public void Sender_endpoint_name_should_always_be_Sender ()
 		{
-			var x= new SenderEndpointGenerator();
-			Assert.That(x.Generate().ToString(), Is.EqualTo("Sender"));
+			var endpoint= new SenderEndpointGenerator().Generate();
+
+			Console.WriteLine(endpoint);
+
+			Assert.That(endpoint.ToString(), Contains.Substring("Sender"));
+			Assert.That(endpoint.ToString(), Contains.Substring(Environment.MachineName));
 		}
 	}
 }
