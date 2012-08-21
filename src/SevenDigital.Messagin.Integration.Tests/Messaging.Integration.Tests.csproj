@@ -58,6 +58,7 @@
       <HintPath>..\..\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -68,6 +69,7 @@
   <ItemGroup>
     <Compile Include="FailingHandlerEventHookTests.cs" />
     <Compile Include="Handlers\FailingColourHandler.cs" />
+    <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Messages\GreenWhiteMessage.cs" />
     <Compile Include="Messages\ITwoColoursMessage.cs" />
     <Compile Include="MultipleEventHookTests.cs" />
@@ -99,7 +101,10 @@
       <Name>Messaging</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="App.config.buildagent" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

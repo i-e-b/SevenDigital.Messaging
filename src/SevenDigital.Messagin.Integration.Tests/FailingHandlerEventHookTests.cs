@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[TestFixtureSetUp]
 		public void SetUp()
 		{
-			new MessagingConfiguration().WithDefaults().PurgeAllMessages();
+			Helper.SetupTestMessaging();
 
 			mock_event_hook = new Mock<IEventHook>();
 
