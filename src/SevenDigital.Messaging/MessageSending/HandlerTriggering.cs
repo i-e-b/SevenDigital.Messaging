@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MassTransit;
 using StructureMap;
 
@@ -23,14 +24,14 @@ namespace SevenDigital.Messaging.MessageSending
 					Get<IHandle<TMessage>>(typeof(THandler)).Handle(msg);
 
 					var hooks = GetAll<IEventHook>(typeof(IEventHook));
-					foreach (var hook in hooks) {
+					foreach (IEventHook hook in hooks) {
 						hook.MessageReceived(msg);
 					}
 				}
 				catch (Exception ex)
 				{
 					var hooks = GetAll<IEventHook>(typeof(IEventHook));
-					foreach (var hook in hooks) {
+					foreach (IEventHook hook in hooks) {
 						hook.HandlerFailed(msg, typeof(THandler), ex);
 					}
 				}
@@ -41,8 +42,8 @@ namespace SevenDigital.Messaging.MessageSending
 			return (T)ObjectFactory.GetInstance(src);
 		}
 		
-		private static IEnumerable<T> GetAll<T>(Type src) {
-			return (IEnumerable<T>)ObjectFactory.GetAllInstances(src);
+		private static IEnumerable<object> GetAll<T>(Type src) {
+			return ObjectFactory.GetAllInstances(src).Cast<object>().ToList();
 		}
 	}
 }
