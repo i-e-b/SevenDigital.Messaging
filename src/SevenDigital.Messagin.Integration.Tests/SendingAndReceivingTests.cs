@@ -20,7 +20,8 @@ namespace SevenDigital.Messaging.Integration.Tests
         [TestFixtureSetUp]
         public void SetUp()
         {
-            new MessagingConfiguration().WithDefaults().PurgeAllMessages();
+			Helper.SetupTestMessaging();
+
             ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
             _nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();

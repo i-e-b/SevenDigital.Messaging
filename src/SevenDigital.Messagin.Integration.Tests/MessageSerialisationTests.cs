@@ -40,7 +40,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[TestFixtureSetUp]
 		public void SetUp()
 		{
-			new MessagingConfiguration().WithDefaults().PurgeAllMessages();
+			Helper.SetupTestMessaging();
 
 			event_hook = new HoldingEventHook();
 

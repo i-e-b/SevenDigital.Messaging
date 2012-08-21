@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
 using StructureMap;
@@ -22,7 +18,8 @@ namespace SevenDigital.Messaging.Integration.Tests
         [TestFixtureSetUp]
         public void SetUp()
         {
-            new MessagingConfiguration().WithDefaults().PurgeAllMessages();
+			Helper.SetupTestMessaging();
+			new MessagingConfiguration().PurgeAllMessages();
 
             _nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();
