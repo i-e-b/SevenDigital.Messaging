@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MassTransit;
 using StructureMap;
 
@@ -19,19 +20,29 @@ namespace SevenDigital.Messaging.MessageSending
 			{
 				try
 				{
-					ObjectFactory.GetInstance<THandler>().Handle(msg);
+					Get<IHandle<TMessage>>(typeof(THandler)).Handle(msg);
 
-					ObjectFactory
-						.GetAllInstances<IEventHook>()
-						.ForEach(hook => hook.MessageReceived(msg));
+					var hooks = GetAll<IEventHook>(typeof(IEventHook));
+					foreach (var hook in hooks) {
+						hook.MessageReceived(msg);
+					}
 				}
 				catch (Exception ex)
 				{
-					ObjectFactory
-					.GetAllInstances<IEventHook>()
-					.ForEach(hook => hook.HandlerFailed(msg, typeof(THandler), ex));
+					var hooks = GetAll<IEventHook>(typeof(IEventHook));
+					foreach (var hook in hooks) {
+						hook.HandlerFailed(msg, typeof(THandler), ex);
+					}
 				}
 			});
+		}
+
+		private static T Get<T>(Type src) {
+			return (T)ObjectFactory.GetInstance(src);
+		}
+		
+		private static IEnumerable<T> GetAll<T>(Type src) {
+			return (IEnumerable<T>)ObjectFactory.GetAllInstances(src);
 		}
 	}
 }
