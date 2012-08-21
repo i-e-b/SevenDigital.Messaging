@@ -14,7 +14,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Routing
 			var uniqueEndpointGenerator = new UniqueEndpointGenerator();
 			var endpoint = uniqueEndpointGenerator.Generate();
 
-			Assert.That(endpoint.ToString(), Contains.Substring(Environment.MachineName));
+			Assert.That(endpoint.ToString(), Contains.Substring(Naming.MachineName()));
 			Assert.That(endpoint.ToString().Length,Is.GreaterThan(Environment.MachineName.Length));
 		}
 	}

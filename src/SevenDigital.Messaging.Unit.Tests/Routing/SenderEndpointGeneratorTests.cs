@@ -15,7 +15,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Routing
 			Console.WriteLine(endpoint);
 
 			Assert.That(endpoint.ToString(), Contains.Substring("Sender"));
-			Assert.That(endpoint.ToString(), Contains.Substring(Environment.MachineName));
+			Assert.That(endpoint.ToString(), Contains.Substring(Naming.MachineName()));
 		}
 	}
 }

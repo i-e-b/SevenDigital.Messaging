@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Routing
 		public SenderEndpointGenerator()
 		{
 			strongName =  
-				Environment.MachineName 
+				Naming.MachineName()
 				+ "_" 
 				+ Naming.GoodAssemblyName()
 				+ "_Sender";

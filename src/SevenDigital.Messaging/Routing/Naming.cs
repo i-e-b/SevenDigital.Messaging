@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Net.NetworkInformation;
 using System.Reflection;
 
@@ -25,6 +26,15 @@ namespace SevenDigital.Messaging.Routing
 				macAddress = tempMac;
 			}
 			return macAddress;
+		}
+
+		public static string MachineName ()
+		{
+			var sb = new StringBuilder ();
+			foreach (char c in Environment.MachineName) {
+				if (char.IsLetterOrDigit(c)) sb.Append(c);
+			}
+			return sb.ToString();
 		}
 	}
 }
