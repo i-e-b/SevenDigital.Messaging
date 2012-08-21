@@ -3,7 +3,6 @@ using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using SevenDigital.Messaging.MessageSending;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
@@ -37,20 +36,18 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 		HoldingEventHook event_hook;
 	    private ISenderNode senderNode;
-	    private ISenderNode _senderNode;
 
-	    [TestFixtureSetUp]
+		[TestFixtureSetUp]
 		public void SetUp()
 		{
-			new MessagingConfiguration().WithDefaults();
+			new MessagingConfiguration().WithDefaults().PurgeAllMessages();
 
 			event_hook = new HoldingEventHook();
 
-			ObjectFactory.Configure(map=> map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(event_hook));
 
 			node_factory = ObjectFactory.GetInstance<INodeFactory>();
-	        _senderNode = senderNode = ObjectFactory.GetInstance<ISenderNode>();
+	        senderNode = ObjectFactory.GetInstance<ISenderNode>();
 		}
 		
 		[Test]

@@ -60,9 +60,10 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Remove all event hooks from the event system
 		/// </summary>
-		public void ClearEventHooks()
+		public MessagingConfiguration ClearEventHooks()
 		{
 			ObjectFactory.EjectAllInstancesOf<IEventHook>();
+			return this;
 		}
 		
 		/// <summary>
@@ -70,7 +71,7 @@ namespace SevenDigital.Messaging
 		/// After calling this method, you can use the INodeFactory as a collaborator.
 		/// Messages will trigger instantly. DO NOT use for production!
 		/// </summary>
-		public void WithLoopback()
+		public MessagingConfiguration WithLoopback()
 		{
 			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
 
@@ -81,6 +82,20 @@ namespace SevenDigital.Messaging
                 map.For<INodeFactory>().Singleton().Use(factory);
                 map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackNodeFactory>().Is(factory);
 	        });
+
+			return this;
+		}
+
+		/// <summary>
+		/// Delete all waiting messages from queues you connect to.
+		/// </summary>
+		public MessagingConfiguration PurgeAllMessages()
+		{
+			ObjectFactory.EjectAllInstancesOf<IServiceBusFactory>();
+
+			ObjectFactory.Configure(map => map.For<IServiceBusFactory>().Use<MessagePurgingServiceBusFactory>());
+			
+			return this;
 		}
 	}
 }

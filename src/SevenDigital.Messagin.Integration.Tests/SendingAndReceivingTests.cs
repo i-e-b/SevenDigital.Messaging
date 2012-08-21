@@ -3,7 +3,6 @@ using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -21,8 +20,7 @@ namespace SevenDigital.Messaging.Integration.Tests
         [TestFixtureSetUp]
         public void SetUp()
         {
-            new MessagingConfiguration().WithDefaults();
-            ObjectFactory.Configure(map => map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
+            new MessagingConfiguration().WithDefaults().PurgeAllMessages();
             ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
             _nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();
@@ -65,7 +63,7 @@ namespace SevenDigital.Messaging.Integration.Tests
             {
                 receiverNode.Handle<ITwoColoursMessage>().With<TwoColourMessageHandler>();
 
-                GreenWhiteMessage message = new GreenWhiteMessage();
+                var message = new GreenWhiteMessage();
                 _senderNode.SendMessage(message);
                 var colourSignal = TwoColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
