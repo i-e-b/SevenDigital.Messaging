@@ -1,10 +1,9 @@
 using System;
 using MassTransit;
-using SevenDigital.Messaging.MessageSending;
 
-namespace SevenDigital.Messaging.Integration.Tests
+namespace SevenDigital.Messaging.MessageSending
 {
-	public class IntegrationTestServiceBusFactory : IServiceBusFactory
+	public class MessagePurgingServiceBusFactory : IServiceBusFactory
 	{
 		public IServiceBus Create(Uri address)
 		{

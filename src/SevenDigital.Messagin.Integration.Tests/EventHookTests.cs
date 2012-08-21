@@ -3,7 +3,6 @@ using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using SevenDigital.Messaging.MessageSending;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
@@ -22,11 +21,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 	    [TestFixtureSetUp]
 		public void SetUp()
 		{
-			new MessagingConfiguration().WithDefaults();
+			new MessagingConfiguration().WithDefaults().PurgeAllMessages();
 
 			mock_event_hook = new Mock<IEventHook>();
 
-			ObjectFactory.Configure(map=> map.For<IServiceBusFactory>().Use<IntegrationTestServiceBusFactory>());
+
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));
 
 			node_factory = ObjectFactory.GetInstance<INodeFactory>();

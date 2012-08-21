@@ -25,13 +25,12 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 		}
 
 		[Test]
-		public void Sender_should_get_a_unique_endpoint()
+		public void Sender_should_get_an_endpoint_from_the_provided_generator()
 		{
             _senderEndPointGenerator.Verify(x => x.Generate());
 		}
 
 		[Test]
-        [Ignore]
 		public void Sender_should_create_sender_node_with_unique_endpoint()
 		{
             Assert.That(_subject, Is.EqualTo(new SenderNode(_host, _senderEndPointGenerator.Object, null)));

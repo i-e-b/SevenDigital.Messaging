@@ -77,7 +77,7 @@
     <Compile Include="Handlers\ColourMessageHandler.cs" />
     <Compile Include="Handlers\SuperHeroMessageHandler.cs" />
     <Compile Include="Handlers\VillainMessageHandler.cs" />
-    <Compile Include="Helpers\IntegrationTestServiceBusFactory.cs" />
+    <Compile Include="PurgingQueues.cs" />
     <Compile Include="SendingAndReceivingTests.cs" />
     <Compile Include="Messages\GreenMessage.cs" />
     <Compile Include="Messages\IColourMessage.cs" />
@@ -99,6 +99,7 @@
       <Name>Messaging</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
