@@ -1,6 +1,9 @@
-cd %~dp0\binaries
+cd %~dp0
+mkdir binaries
+mkdir merged
+cd binaries
 
-copy "..\src\SevenDigital.Messaging\bin\Release\*.dll" "." /Y
+copy "..\src\SevenDigital.Messaging.Base\bin\Release\*.dll" "." /Y
 
 ..\tools\ILMerge.exe /allowDup /targetplatform:v4 /out:..\merged\SevenDigital.Messaging.dll SevenDigital.Messaging.Base.dll Magnum.dll MassTransit.dll MassTransit.Transports.RabbitMq.dll RabbitMQ.Client.dll StructureMap.dll 
 
