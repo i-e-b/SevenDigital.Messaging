@@ -29,4 +29,4 @@ test*ml
 *ncrunch*
 *.sln.DotSettings.user
 binaries/
-merged/
+build/Output
