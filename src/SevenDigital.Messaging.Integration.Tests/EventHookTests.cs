@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
@@ -57,7 +58,26 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
+				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
+			}
+		}
+
+		[Test]
+		public void Should_trigger_event_hook_with_message_when_receiving_a_message_from_a_base_type ()
+		{
+			using (var receiverNode = node_factory.Listen())
+			{
+				var message = new GreenMessage();
+
+				receiverNode.Handle<IMessage>().With<GenericHandler>();
+				senderNode.SendMessage(message);
+
+				GenericHandler.AutoResetEvent.WaitOne(LongInterval);
+				
 				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im => im.CorrelationId == message.CorrelationId)));
+			
+				// Should be able to check for this, but MassTransit loses the type information :-(
+				//mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IColorMessage>(im => im.CorrelationId == message.CorrelationId)));
 			}
 		}
 
@@ -79,5 +99,15 @@ namespace SevenDigital.Messaging.Integration.Tests
 					Times.Exactly(2));
 			}
 		}
+	}
+
+	public class GenericHandler:IHandle<IMessage>
+	{
+        public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
+
+        public void Handle(IMessage message)
+        {
+            AutoResetEvent.Set();
+        }
 	}
 }
