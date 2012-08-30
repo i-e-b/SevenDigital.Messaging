@@ -15,11 +15,11 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			node.EnsureConnection().Publish(message, c => {});
-
 			ObjectFactory
 				.GetAllInstances<IEventHook>()
 				.ForEach(hook => hook.MessageSent(message));
+
+			node.EnsureConnection().Publish(message, c => {});
 		}
         
 	    public bool Equals(SenderNode other)
