@@ -9,6 +9,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{return MassTransit.ServiceBusFactory.New(bus =>
 			{
 				bus.ReceiveFrom(address);
+				bus.UseHealthMonitoring(100);
 				bus.UseRabbitMqRouting();
 			});
 		}
