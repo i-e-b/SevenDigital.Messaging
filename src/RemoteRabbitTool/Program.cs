@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using Messaging.Management;
 
 namespace RemoteRabbitTool
 {
@@ -8,13 +9,16 @@ namespace RemoteRabbitTool
 
 		static void Main()
 		{
-			var proxyService = new ApiProxy(ManagementUri, ApiUsername, ApiPassword);
+			var proxyService = new Api(ManagementUri, ApiUsername, ApiPassword);
 
 			var nodes = proxyService.ListNodes();
 
 			foreach (var node in nodes)
 			{
-				Console.WriteLine("Node '"+node.name+"' is "+ (node.AnyAlarms() ? "BROKENS!" : "Ok"));
+				Console.WriteLine("Node '"+node.name+"' -->");
+				Console.WriteLine((node.AnyAlarms() ? "    ALERT!" : "    Ok"));
+				Console.WriteLine("    Memory "+node.FreeMemPercent()+"% free");
+				Console.WriteLine("    Disk "+node.FreeDisk()+" free");
 			}
 
 			Console.WriteLine("-------------------------------");

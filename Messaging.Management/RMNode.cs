@@ -1,4 +1,4 @@
-﻿namespace RemoteRabbitTool
+﻿namespace Messaging.Management
 {
 	public class RMNode
 	{
@@ -42,5 +42,19 @@
 		{
 			return disk_free_alarm || mem_alarm;
 		}
+
+		public string FreeMemPercent()
+		{
+			var free = mem_limit - mem_used;
+			var pc = 100.0* (free / ((double)mem_limit));
+			return pc.ToString("00.00");
+		}
+
+		public string FreeDisk()
+		{
+			var free = disk_free - disk_free_limit;
+			return Formatting.ReadableFileSize(free);
+		}
+
 	}
 }
