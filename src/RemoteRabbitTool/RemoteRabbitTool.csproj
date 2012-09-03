@@ -36,10 +36,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MassTransit, Version=2.1.410.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="RabbitMQ.Client">
+    <Reference Include="RabbitMQ.Client, Version=2.8.1.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\RabbitMQ.Client.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text">
+    <Reference Include="ServiceStack.Text, Version=3.9.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap">
