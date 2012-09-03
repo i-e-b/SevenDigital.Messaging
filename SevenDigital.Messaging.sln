@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{16A24470
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteRabbitTool", "src\RemoteRabbitTool\RemoteRabbitTool.csproj", "{008831E5-04F3-4863-B410-0AF7EE8CAF9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Management", "Messaging.Management\Messaging.Management.csproj", "{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Management", "src\Messaging.Management\Messaging.Management.csproj", "{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

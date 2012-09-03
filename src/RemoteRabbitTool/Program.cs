@@ -6,7 +6,6 @@ namespace RemoteRabbitTool
 {
 	class Program
 	{
-
 		static void Main()
 		{
 			var proxyService = new Api(ManagementUri, ApiUsername, ApiPassword);
