@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.MessageSending.Loopback;
 using SevenDigital.Messaging.Routing;
@@ -84,6 +86,16 @@ namespace SevenDigital.Messaging
 	        });
 
 			return this;
+		}
+
+		/// <summary>
+		/// Return registered listeners for a message type. Only usable in loopback mode.
+		/// </summary>
+		public List<Type> LoopbackListenersForMessage<T>()
+		{
+			var lb = ObjectFactory.GetInstance<INodeFactory>() as LoopbackNodeFactory;
+			if (lb == null) throw new Exception("Not in loopback mode");
+			return lb.ListenersFor<T>();
 		}
 
 		/// <summary>

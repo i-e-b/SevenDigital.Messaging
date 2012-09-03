@@ -18,6 +18,11 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			capturedEndpoints = new List<string>();
 		}
 
+		public List<Type> ListenersFor<T>()
+		{
+			return listenerBindings[typeof(T)].ToList();
+		}
+
 		public IReceiverNode TakeFrom(Endpoint endpoint)
 		{
 			// In the real version, agents compete for incoming messages.
