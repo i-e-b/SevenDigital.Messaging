@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{16A24470
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteRabbitTool", "src\RemoteRabbitTool\RemoteRabbitTool.csproj", "{008831E5-04F3-4863-B410-0AF7EE8CAF9A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Management", "Messaging.Management\Messaging.Management.csproj", "{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,16 @@ Global
 		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Release|Mixed Platforms.Build.0 = Release|x86
 		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Release|x86.ActiveCfg = Release|x86
 		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Release|x86.Build.0 = Release|x86
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,5 +113,6 @@ Global
 		{1578F154-1C86-4A00-881C-CB7517C594AE} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
 		{008831E5-04F3-4863-B410-0AF7EE8CAF9A} = {16A24470-4B4A-48E7-BACE-0B0F1ECE837A}
+		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04} = {16A24470-4B4A-48E7-BACE-0B0F1ECE837A}
 	EndGlobalSection
 EndGlobal

@@ -2,21 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{008831E5-04F3-4863-B410-0AF7EE8CAF9A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RemoteRabbitTool</RootNamespace>
-    <AssemblyName>RemoteRabbitTool</AssemblyName>
+    <RootNamespace>Messaging.Management</RootNamespace>
+    <AssemblyName>Messaging.Management</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -25,8 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -35,18 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MassTransit, Version=2.1.410.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="RabbitMQ.Client">
-      <HintPath>..\..\lib\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\lib\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Text">
-      <HintPath>..\..\lib\ServiceStack.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="StructureMap">
-      <HintPath>..\..\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
+      <HintPath>..\lib\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -55,25 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ApiProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Messaging.Management\Messaging.Management.csproj">
-      <Project>{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}</Project>
-      <Name>Messaging.Management</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SevenDigital.Messaging.Base\Messaging.Base.csproj">
-      <Project>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</Project>
-      <Name>Messaging.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SevenDigital.Messaging.Types\Messaging.Types.csproj">
-      <Project>{D24B3022-DF19-4E06-9588-54A16A195B84}</Project>
-      <Name>Messaging.Types</Name>
-    </ProjectReference>
+    <Compile Include="RMNode.cs" />
+    <Compile Include="RMQueue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
