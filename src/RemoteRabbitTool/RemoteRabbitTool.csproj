@@ -62,7 +62,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Messaging.Management\Messaging.Management.csproj">
+    <ProjectReference Include="..\Messaging.Management\Messaging.Management.csproj">
       <Project>{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}</Project>
       <Name>Messaging.Management</Name>
     </ProjectReference>
