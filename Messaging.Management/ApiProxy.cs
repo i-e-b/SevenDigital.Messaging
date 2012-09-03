@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using RabbitMQ.Client;
+using ServiceStack.Text;
 
 namespace RemoteRabbitTool
 {
@@ -14,6 +16,19 @@ namespace RemoteRabbitTool
 		{
 			_managementApiHost = managementApiHost;
 			_credentials = credentials;
+		}
+
+		public ApiProxy(string hostUri, string username, string password)
+			: this (new Uri(hostUri), new NetworkCredential(username, password)){}
+
+		public RMQueue[] ListQueues()
+		{
+			return JsonSerializer.DeserializeFromString<RMQueue[]>(Get("/api/queues"));
+		}
+
+		public RMNode[] ListNodes()
+		{
+			return JsonSerializer.DeserializeFromString<RMNode[]>(Get("/api/nodes"));
 		}
 
 		public string Get(string endpoint)
@@ -30,6 +45,19 @@ namespace RemoteRabbitTool
 			}
 
 			return null;
+		}
+
+
+		public void PurgeQueue(RMQueue queue)
+		{
+			var factory = new ConnectionFactory();
+			factory.Protocol = Protocols.FromEnvironment();
+			factory.HostName = _managementApiHost.Host;
+			var conn = factory.CreateConnection();
+			var ch = conn.CreateModel();
+			ch.QueuePurge(queue.name);
+			ch.Close();
+			conn.Close();
 		}
 
 		string ReadAll(Stream stream)

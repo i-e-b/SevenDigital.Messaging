@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.Net;
-using RabbitMQ.Client;
-using ServiceStack.Text;
 
 namespace RemoteRabbitTool
 {
@@ -11,24 +8,30 @@ namespace RemoteRabbitTool
 
 		static void Main()
 		{
-			//Console.WriteLine("Which RabbitMQ instance?");
-			//var target = Console.ReadLine();
+			var proxyService = new ApiProxy(ManagementUri, ApiUsername, ApiPassword);
 
-			
-			var proxyService = new ApiProxy(
-				new Uri(ManagementUri), 
-				new NetworkCredential(ApiUsername, ApiPassword)
-			);
+			var nodes = proxyService.ListNodes();
 
-			var queues = JsonSerializer.DeserializeFromString<RMQueue[]>(proxyService.Get("/api/queues"));
-
-			foreach (var queue in queues)
+			foreach (var node in nodes)
 			{
-				Console.WriteLine(queue.name);
-				PurgeQueue(MessageHost, queue.name);
+				Console.WriteLine("Node '"+node.name+"' is "+ (node.AnyAlarms() ? "BROKENS!" : "Ok"));
 			}
 
+			Console.WriteLine("-------------------------------");
+			Console.WriteLine("         Queue State           ");
+			Console.WriteLine("-------------------------------");
+			foreach (var queue in proxyService.ListQueues())
+			{
+				Console.WriteLine(queue.name);
+				if (queue.messages > 50)
+				{
+					Console.WriteLine("    it's a bit full. I'll purge it now");
+					proxyService.PurgeQueue(queue);
+				}
+			}
+			
 
+			Console.WriteLine("[Enter] to quit");
 			Console.ReadKey();
 		}
 
@@ -47,18 +50,6 @@ namespace RemoteRabbitTool
 		static string ApiPassword
 		{
 			get { return ConfigurationManager.AppSettings["ApiPassword"];}
-		}
-
-		static void PurgeQueue(string host, string queue)
-		{
-			var factory = new ConnectionFactory();
-			factory.Protocol = Protocols.FromEnvironment();
-			factory.HostName = host;
-			var conn = factory.CreateConnection();
-			var ch = conn.CreateModel();
-			ch.QueuePurge(queue);
-			ch.Close();
-			conn.Close();
 		}
 	}
 }
