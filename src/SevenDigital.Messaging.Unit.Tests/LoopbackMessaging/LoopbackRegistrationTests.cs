@@ -10,8 +10,6 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		public void When_configuring_with_loopback_even_if_default_configuration_used ()
 		{
 			new MessagingConfiguration().WithLoopback();
-		    new MessagingConfiguration().WithDefaults();
-			
 
             ObjectFactory.GetInstance<INodeFactory>().Listen().Handle<IMessage>().With<AHandler>();
 		}
