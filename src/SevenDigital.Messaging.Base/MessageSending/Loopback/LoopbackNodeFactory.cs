@@ -80,7 +80,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 					{
 						ObjectFactory
 						.GetAllInstances<IEventHook>()
-						.ForEach(hook => hook.HandlerFailed(message, handler.GetType(), ex));
+						.ForEach(hook => hook.HandlerFailed(message, handler.GetType(), ex.InnerException));
 					}
 				}
 			}

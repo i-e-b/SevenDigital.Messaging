@@ -46,6 +46,20 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 			}
 		}
 
+		[Test]
+		public void Should_provide_thrown_exception_from_failing_handler()
+		{
+			using (var receiver = _nodeFactory.Listen())
+			{
+				receiver.Handle<IDummyMessage>().With<CrappyHandler>();
+				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
+
+				mock_event_hook.Verify(h=>h.HandlerFailed(It.IsAny<IMessage>(),
+					It.Is<Type>(t=>t == typeof(CrappyHandler)),
+					It.Is<ArgumentException>(ex => ex.GetType() == typeof(ArgumentException))));
+			}
+		}
+
 	    [Test]
 		public void Should_receive_messages_at_every_applicable_handler ()
 		{
@@ -111,7 +125,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 	{
 		public void Handle(IDummyMessage message)
 		{
-			throw new Exception("I failed");
+			throw new ArgumentException("I failed");
 		}
 	}
 
