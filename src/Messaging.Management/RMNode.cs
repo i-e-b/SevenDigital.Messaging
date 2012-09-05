@@ -1,6 +1,6 @@
-﻿namespace Messaging.Management
+﻿namespace SevenDigital.Messaging.Management
 {
-	public class RMNode
+	public class RMNode : IRMNode
 	{
 		public string name { get; set; }
 		public string type { get; set; }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Configuration;
-using Messaging.Management;
+using SevenDigital.Messaging.Management;
 
 namespace RemoteRabbitTool
 {
