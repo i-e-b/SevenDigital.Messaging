@@ -4,7 +4,7 @@ using System.Net;
 using RabbitMQ.Client;
 using ServiceStack.Text;
 
-namespace Messaging.Management
+namespace SevenDigital.Messaging.Management
 {
 	public class Api
 	{

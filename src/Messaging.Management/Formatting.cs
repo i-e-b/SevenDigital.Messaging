@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Messaging.Management
+namespace SevenDigital.Messaging.Management
 {
 	public static class Formatting
 	{

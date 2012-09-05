@@ -1,8 +1,8 @@
 using System;
 
-namespace Messaging.Management
+namespace SevenDigital.Messaging.Management
 {
-	public class RMQueue
+	public class RMQueue : IRMQueue
 	{
 		public long memory { get; set; }
 		public DateTime idle_since { get; set; }
