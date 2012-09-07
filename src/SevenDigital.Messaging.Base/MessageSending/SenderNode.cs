@@ -1,3 +1,4 @@
+using System;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -7,22 +8,28 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		readonly Node node;
 
-        public SenderNode(IMessagingHost host, ISenderEndpointGenerator endpointGenerator, IServiceBusFactory serviceBusFactory)
-        {
-            var endpoint = endpointGenerator.Generate();
-            node = new Node(host, endpoint, serviceBusFactory);
-        }
+		public SenderNode(IMessagingHost host, ISenderEndpointGenerator endpointGenerator, IServiceBusFactory serviceBusFactory)
+		{
+			var endpoint = endpointGenerator.Generate();
+			node = new Node(host, endpoint, serviceBusFactory);
+		}
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			ObjectFactory
-				.GetAllInstances<IEventHook>()
-				.ForEach(hook => hook.MessageSent(message));
-
-			node.EnsureConnection().Publish(message, c => {});
+			try
+			{
+				ObjectFactory
+					.GetAllInstances<IEventHook>()
+					.ForEach(hook => hook.MessageSent(message));
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("An event hook failed " + ex.GetType() + "; " + ex.Message);
+			}
+			node.EnsureConnection().Publish(message, c => { });
 		}
-        
-	    public bool Equals(SenderNode other)
+
+		public bool Equals(SenderNode other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
@@ -33,8 +40,8 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != typeof (SenderNode)) return false;
-			return Equals((SenderNode) obj);
+			if (obj.GetType() != typeof(SenderNode)) return false;
+			return Equals((SenderNode)obj);
 		}
 
 		public override int GetHashCode()
