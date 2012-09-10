@@ -18,16 +18,18 @@ namespace SevenDigital.Messaging.Management
 		}
 
 		public Api(string hostUri, string username, string password)
-			: this (new Uri(hostUri), new NetworkCredential(username, password)){}
+			: this(new Uri(hostUri), new NetworkCredential(username, password)) { }
 
 		public RMQueue[] ListQueues()
 		{
-			return JsonSerializer.DeserializeFromStream<RMQueue[]>(Get("/api/queues"));
+			using (var stream = Get("/api/queues"))
+				return JsonSerializer.DeserializeFromStream<RMQueue[]>(stream);
 		}
 
 		public RMNode[] ListNodes()
 		{
-			return JsonSerializer.DeserializeFromStream<RMNode[]>(Get("/api/nodes"));
+			using (var stream = Get("/api/nodes"))
+				return JsonSerializer.DeserializeFromStream<RMNode[]>(stream);
 		}
 
 		public Stream Get(string endpoint)
@@ -44,12 +46,14 @@ namespace SevenDigital.Messaging.Management
 
 			return null;
 		}
-		
+
 		public void PurgeQueue(RMQueue queue)
 		{
-			var factory = new ConnectionFactory {
-				Protocol = Protocols.FromEnvironment(), 
-				HostName = _managementApiHost.Host};
+			var factory = new ConnectionFactory
+			{
+				Protocol = Protocols.FromEnvironment(),
+				HostName = _managementApiHost.Host
+			};
 
 			var conn = factory.CreateConnection();
 			var ch = conn.CreateModel();
