@@ -8,5 +8,7 @@ namespace SevenDigital.Messaging.EventHooks
 		IEnumerable<IMessage> SentMessages { get; }
 		IEnumerable<IMessage> ReceivedMessages { get; }
 		IEnumerable<Exception> HandlerExceptions { get; }
+
+		void Reset();
 	}
 }
