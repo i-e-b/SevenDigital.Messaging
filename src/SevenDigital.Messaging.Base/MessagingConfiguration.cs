@@ -94,6 +94,14 @@ namespace SevenDigital.Messaging
 		}
 
 		/// <summary>
+		/// Return a hook which captures all events in a loopback session
+		/// </summary>
+		public ITestEventHook LoopbackEvents()
+		{
+			return ObjectFactory.GetInstance<ITestEventHook>();
+		}
+
+		/// <summary>
 		/// Return registered listeners for a message type. Only usable in loopback mode.
 		/// </summary>
 		public List<Type> LoopbackListenersForMessage<T>()
