@@ -64,6 +64,25 @@ namespace SevenDigital.Messaging.Integration.Tests.TestingEventHook
 		{
 			Assert.That(subject.HandlerExceptions, Is.EquivalentTo(expected_handler_exceptions));
 		}
+
+		[Test]
+		public void Should_have_no_sent_messages_after_a_reset ()
+		{
+			subject.Reset();
+			Assert.That(subject.SentMessages, Is.Empty);
+		}
+		[Test]
+		public void Should_have_no_received_messages_after_a_reset ()
+		{
+			subject.Reset();
+			Assert.That(subject.ReceivedMessages, Is.Empty);
+		}
+		[Test]
+		public void Should_have_no_handler_exceptions_after_a_reset ()
+		{
+			subject.Reset();
+			Assert.That(subject.HandlerExceptions, Is.Empty);
+		}
 	}
 
 	public class FailingHandler:IHandle<ILevelThree>
