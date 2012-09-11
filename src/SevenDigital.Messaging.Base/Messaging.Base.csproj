@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
+    <Compile Include="EventHooks\ITestEventHook.cs" />
+    <Compile Include="EventHooks\TestEventHook.cs" />
     <Compile Include="MessageSending\IMessageBinding.cs" />
     <Compile Include="MessageSending\MessagePurgingServiceBusFactory.cs" />
     <Compile Include="MessageSending\Loopback\DummyBinder.cs" />
