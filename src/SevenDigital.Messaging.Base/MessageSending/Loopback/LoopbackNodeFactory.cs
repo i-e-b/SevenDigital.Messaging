@@ -61,7 +61,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 
 		void FireCooperativeListeners<T>(T message) where T : IMessage
 		{
-			var msg = typeof(T);
+			var msg = message.GetType();
 			var matches = listenerBindings.Keys.Where(k => k.IsAssignableFrom(msg));
 			foreach (var key in matches)
 			{

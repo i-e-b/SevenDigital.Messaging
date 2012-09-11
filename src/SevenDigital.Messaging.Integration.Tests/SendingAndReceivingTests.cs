@@ -112,8 +112,8 @@ namespace SevenDigital.Messaging.Integration.Tests
                 namedReceiverNode2.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
                 _senderNode.SendMessage(new BatmanMessage());
-                var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
-                var villanSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+                var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+                var villanSignal = VillainMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
                 Assert.That(superheroSignal || villanSignal, Is.True);
                 Assert.That(superheroSignal && villanSignal, Is.False);

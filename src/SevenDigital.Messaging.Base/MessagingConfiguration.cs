@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.MessageSending.Loopback;
 using SevenDigital.Messaging.Routing;
@@ -83,7 +84,11 @@ namespace SevenDigital.Messaging
 			{
                 map.For<INodeFactory>().Singleton().Use(factory);
                 map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackNodeFactory>().Is(factory);
+				map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
 	        });
+
+			ObjectFactory.Configure(map =>
+				map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));
 
 			return this;
 		}
