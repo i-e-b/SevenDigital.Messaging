@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SevenDigital.Messaging.Routing
+﻿namespace SevenDigital.Messaging.Routing
 {
 	public class SenderEndpointGenerator:ISenderEndpointGenerator
 	{
