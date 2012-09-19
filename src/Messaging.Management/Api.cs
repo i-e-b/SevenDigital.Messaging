@@ -61,5 +61,20 @@ namespace SevenDigital.Messaging.Management
 			ch.Close();
 			conn.Close();
 		}
+
+		public void DeleteQueue(string queueName)
+		{
+			var factory = new ConnectionFactory
+			{
+				Protocol = Protocols.FromEnvironment(),
+				HostName = _managementApiHost.Host
+			};
+
+			var conn = factory.CreateConnection();
+			var ch = conn.CreateModel();
+			ch.QueueDelete(queueName);
+			ch.Close();
+			conn.Close();
+		}
 	}
 }
