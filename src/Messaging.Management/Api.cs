@@ -73,7 +73,6 @@ namespace SevenDigital.Messaging.Management
 			var conn = factory.CreateConnection();
 			var ch = conn.CreateModel();
 			ch.QueueDelete(queueName);
-			try { ch.QueueDelete(queueName + "_Error"); }catch { } // for MassTransit error queues
 			ch.ExchangeDelete(queueName);
 			ch.Close();
 			conn.Close();
