@@ -31,6 +31,14 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			return new LoopbackReceiver(this);
 		}
 
+		/// <summary>
+		/// Returns all endpoint names that have been passed using "TakeFrom" rather than "Listen"
+		/// </summary>
+		public IEnumerable<string> CompetitiveEndpoints()
+		{
+			return capturedEndpoints;
+		}
+
 		public IReceiverNode Listen()
 		{
 			return new LoopbackReceiver(this);
@@ -78,9 +86,10 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 					}
 					catch (Exception ex)
 					{
+						object handler1 = handler;
 						ObjectFactory
 						.GetAllInstances<IEventHook>()
-						.ForEach(hook => hook.HandlerFailed(message, handler.GetType(), ex.InnerException));
+						.ForEach(hook => hook.HandlerFailed(message, handler1.GetType(), ex.InnerException));
 					}
 				}
 			}
