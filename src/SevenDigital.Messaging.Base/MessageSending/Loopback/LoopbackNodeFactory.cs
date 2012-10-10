@@ -28,6 +28,8 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			// In the real version, agents compete for incoming messages.
 			// In this test version, we only really bind the first listener for a given endpoint -- roughly the same effect!
 			if (capturedEndpoints.Contains(endpoint.ToString())) return new DummyReceiver(); 
+
+			capturedEndpoints.Add(endpoint.ToString());
 			return new LoopbackReceiver(this);
 		}
 
