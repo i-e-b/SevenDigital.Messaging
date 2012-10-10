@@ -1,4 +1,6 @@
-namespace SevenDigital.Messaging.Routing
+using SevenDigital.Messaging.Routing;
+
+namespace SevenDigital.Messaging
 {
 	public class Endpoint : IRoutingEndpoint
 	{

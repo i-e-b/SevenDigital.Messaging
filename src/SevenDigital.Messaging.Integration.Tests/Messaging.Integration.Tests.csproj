@@ -51,6 +51,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FailingEventHookTests.cs" />
     <Compile Include="FailingHandlerEventHookTests.cs" />
     <Compile Include="Handlers\FailingColourHandler.cs" />
     <Compile Include="Helpers\Helper.cs" />
