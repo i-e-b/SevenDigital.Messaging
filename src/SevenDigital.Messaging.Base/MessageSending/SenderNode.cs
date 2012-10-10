@@ -16,15 +16,18 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			try
+			var hooks = ObjectFactory.GetAllInstances<IEventHook>();
+
+			foreach (var hook in hooks)
 			{
-				ObjectFactory
-					.GetAllInstances<IEventHook>()
-					.ForEach(hook => hook.MessageSent(message));
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("An event hook failed " + ex.GetType() + "; " + ex.Message);
+				try
+				{
+					hook.MessageSent(message);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("An event hook failed during send: " + ex.GetType() + "; " + ex.Message);
+				}
 			}
 			node.EnsureConnection().Publish(message, c => { });
 		}

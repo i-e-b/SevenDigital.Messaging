@@ -54,7 +54,7 @@
     <Compile Include="MessageSending\Loopback\LoopbackNodeFactory.cs" />
     <Compile Include="MessageSending\EnumerableExtensions.cs" />
     <Compile Include="MessagingConfiguration.cs" />
-    <Compile Include="Routing\Endpoint.cs" />
+    <Compile Include="Endpoint.cs" />
     <Compile Include="Routing\Host.cs" />
     <Compile Include="Routing\IEndpointGenerator.cs" />
     <Compile Include="Routing\IMessagingHost.cs" />
