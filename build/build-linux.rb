@@ -46,7 +46,7 @@ namespace :build do
 			server = "#{args.server}" != "" ? "#{args.server}" : "."
 			temp_log = "temp_log.txt"   
 			report = File.open("#{report_directory}/sql-report.txt", 'a')
-			sorted_files = Dir.glob(File.join("#{args.solution_directory}/#{database_scripts_directory}/**", "*.sql")).sort_by {|f| File.basename f}
+			sorted_files = getSqlFiles(args, database_scripts_directory)
 			sorted_files.each do |script|
 				if ((script.include? ".env.") && !(script.include? ".#{args.environment}.")) then
 					puts "Skipping #{script} "
@@ -59,6 +59,14 @@ namespace :build do
 			File.delete "#{temp_log}" if File.exists? "#{temp_log}"		
 		end
   	end
+ 
+	def getSqlFiles (args, database_scripts_directory)
+		scriptsPath = "#{args.solution_directory}/#{database_scripts_directory}"
+		if(File.directory?("#{scriptsPath}/SqlServer"))
+			scriptsPath = "#{scriptsPath}/SqlServer"
+		end
+		Dir.glob(File.join("#{scriptsPath}/**", "*.sql")).sort_by {|f| File.basename f}
+	end
  
 	desc 'Run nunit unit tests'
   	task :test, [:solution_directory, :solution_file, :compilation_configuration] do |task, args|
