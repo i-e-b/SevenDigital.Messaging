@@ -8,6 +8,7 @@ namespace SevenDigital.Messaging.Management
 {
 	public class Api
 	{
+		readonly string virtualHost;
 		private readonly Uri _managementApiHost;
 		private readonly NetworkCredential _credentials;
 
@@ -17,8 +18,11 @@ namespace SevenDigital.Messaging.Management
 			_credentials = credentials;
 		}
 
-		public Api(string hostUri, string username, string password)
-			: this(new Uri(hostUri), new NetworkCredential(username, password)) { }
+		public Api(string hostUri, string username, string password, string virtualHost = "/")
+			: this(new Uri(hostUri), new NetworkCredential(username, password))
+		{
+			this.virtualHost = virtualHost;
+		}
 
 		public RMQueue[] ListQueues()
 		{
@@ -52,7 +56,8 @@ namespace SevenDigital.Messaging.Management
 			var factory = new ConnectionFactory
 			{
 				Protocol = Protocols.FromEnvironment(),
-				HostName = _managementApiHost.Host
+				HostName = _managementApiHost.Host,
+				VirtualHost = virtualHost
 			};
 
 			var conn = factory.CreateConnection();
@@ -67,7 +72,8 @@ namespace SevenDigital.Messaging.Management
 			var factory = new ConnectionFactory
 			{
 				Protocol = Protocols.FromEnvironment(),
-				HostName = _managementApiHost.Host
+				HostName = _managementApiHost.Host,
+				VirtualHost = virtualHost
 			};
 
 			var conn = factory.CreateConnection();
