@@ -1,9 +1,9 @@
 using System;// ReSharper disable InconsistentNaming
+using System.Linq;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
@@ -26,7 +26,22 @@ namespace SevenDigital.Messaging.Integration.Tests
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();
         }
 
-        [Test]
+		[TestFixtureTearDown]
+		public void Teardown()
+		{
+			var api = Helper.GetManagementApi();
+			api.DeleteQueue("registered-message-endpoint");
+			api.DeleteQueue("unregistered-message-endpoint");
+			api.DeleteQueue("shared-endpoint");
+
+			var queues = api.ListQueues().Where(q=>q.name.Contains("_SevenDigital.Messaging.Base_"));
+			foreach (var rmQueue in queues)
+			{
+				api.DeleteQueue(rmQueue.name);
+			}
+		}
+
+	    [Test]
         public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
         {
             using (var receiverNode = _nodeFactory.Listen())
