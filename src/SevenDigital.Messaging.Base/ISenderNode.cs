@@ -1,5 +1,3 @@
-using SevenDigital.Messaging.MessageSending.Loopback;
-
 namespace SevenDigital.Messaging
 {
 	public interface ISenderNode
