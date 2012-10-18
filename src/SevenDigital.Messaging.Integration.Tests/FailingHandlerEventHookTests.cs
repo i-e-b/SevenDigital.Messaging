@@ -71,7 +71,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 			senderNode.SendMessage(message);
 
-			FailingColourHandler.AutoResetEvent.WaitOne(LongInterval);
+			Assert.That(FailingColourHandler.AutoResetEvent.WaitOne(LongInterval));
 			Thread.Sleep(100);
 			return message;
 		}

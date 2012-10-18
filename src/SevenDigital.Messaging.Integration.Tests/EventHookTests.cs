@@ -56,7 +56,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 				senderNode.SendMessage(message);
 
-				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				Assert.That(ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval));
 
 				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
 			}
@@ -75,9 +75,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 				GenericHandler.AutoResetEvent.WaitOne(LongInterval);
 				
 				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im => im.CorrelationId == message.CorrelationId)));
-			
-				// Should be able to check for this, but MassTransit loses the type information :-(
-				//mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IColorMessage>(im => im.CorrelationId == message.CorrelationId)));
 			}
 		}
 
