@@ -82,7 +82,7 @@ namespace SevenDigital.Messaging.Integration.Tests
                 _senderNode.SendMessage(message);
                 var colourSignal = TwoColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-                Assert.That(colourSignal, Is.True);
+                Assert.That(colourSignal, Is.True, "Did not get message!");
                 Assert.That(TwoColourMessageHandler.ReceivedMessage.CorrelationId, Is.EqualTo(message.CorrelationId));
             }
         }
