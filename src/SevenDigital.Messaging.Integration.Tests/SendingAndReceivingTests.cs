@@ -29,11 +29,16 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[TestFixtureTearDown]
 		public void Teardown()
 		{
+			Console.WriteLine("Cleaning queues");
 			var api = Helper.GetManagementApi();
-			api.DeleteQueue("registered-message-endpoint");
-			api.DeleteQueue("unregistered-message-endpoint");
-			api.DeleteQueue("shared-endpoint");
-
+			try
+			{
+				api.DeleteQueue("registered-message-endpoint");
+				api.DeleteQueue("unregistered-message-endpoint");
+				api.DeleteQueue("shared-endpoint");
+			} catch
+			{
+			}
 			var queues = api.ListQueues().Where(q=>q.name.Contains("_SevenDigital.Messaging.Base_"));
 			foreach (var rmQueue in queues)
 			{
@@ -74,7 +79,7 @@ namespace SevenDigital.Messaging.Integration.Tests
         [Test]
         public void Handler_should_get_message_with_proper_correlation_id()
         {
-            using (var receiverNode = _nodeFactory.TakeFrom(new Endpoint("registered-message-endpoint")))
+            using (var receiverNode = _nodeFactory.Listen())
             {
                 receiverNode.Handle<ITwoColoursMessage>().With<TwoColourMessageHandler>();
 

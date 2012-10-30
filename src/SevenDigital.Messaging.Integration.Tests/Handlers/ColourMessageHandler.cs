@@ -28,7 +28,12 @@ namespace SevenDigital.Messaging.Integration.Tests.Handlers
         public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
         public static ITwoColoursMessage ReceivedMessage { get; private set; }
 
-        public void Handle(ITwoColoursMessage message)
+		public static void Prepare()
+		{
+			AutoResetEvent = new AutoResetEvent(false);
+		}
+
+	    public void Handle(ITwoColoursMessage message)
         {
             ReceivedMessage = message;
             AutoResetEvent.Set();
