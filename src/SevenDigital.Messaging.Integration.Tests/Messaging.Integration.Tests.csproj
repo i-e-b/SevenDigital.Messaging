@@ -100,10 +100,6 @@
       <Project>{D24B3022-DF19-4E06-9588-54A16A195B84}</Project>
       <Name>Messaging.Types</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SevenDigital.Messaging.Unit.Tests\Messaging.Unit.Tests.csproj">
-      <Project>{1578F154-1C86-4A00-881C-CB7517C594AE}</Project>
-      <Name>Messaging.Unit.Tests</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
