@@ -29,21 +29,31 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[TestFixtureTearDown]
 		public void Teardown()
 		{
+			// ReSharper disable EmptyGeneralCatchClause
 			Console.WriteLine("Cleaning queues");
-			var api = Helper.GetManagementApi();
 			try
 			{
+				var api = Helper.GetManagementApi();
 				api.DeleteQueue("registered-message-endpoint");
 				api.DeleteQueue("unregistered-message-endpoint");
 				api.DeleteQueue("shared-endpoint");
-			} catch
+			}
+			catch
 			{
 			}
-			var queues = api.ListQueues().Where(q=>q.name.Contains("_SevenDigital.Messaging.Base_"));
-			foreach (var rmQueue in queues)
+			try
 			{
-				api.DeleteQueue(rmQueue.name);
+				var api = Helper.GetManagementApi();
+				var queues = api.ListQueues().Where(q => q.name.Contains("_SevenDigital.Messaging.Base_"));
+				foreach (var rmQueue in queues)
+				{
+					api.DeleteQueue(rmQueue.name);
+				}
 			}
+			catch
+			{
+			}
+// ReSharper restore EmptyGeneralCatchClause
 		}
 
 	    [Test]
@@ -81,11 +91,13 @@ namespace SevenDigital.Messaging.Integration.Tests
         {
             using (var receiverNode = _nodeFactory.Listen())
             {
+                var message = new GreenWhiteMessage();
+				TwoColourMessageHandler.Prepare();
                 receiverNode.Handle<ITwoColoursMessage>().With<TwoColourMessageHandler>();
 
-                var message = new GreenWhiteMessage();
+
                 _senderNode.SendMessage(message);
-                var colourSignal = TwoColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+                var colourSignal = TwoColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
                 Assert.That(colourSignal, Is.True, "Did not get message!");
                 Assert.That(TwoColourMessageHandler.ReceivedMessage.CorrelationId, Is.EqualTo(message.CorrelationId));
