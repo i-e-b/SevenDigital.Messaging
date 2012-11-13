@@ -6,33 +6,33 @@ using ServiceStack.Text;
 
 namespace SevenDigital.Messaging.Management
 {
-	public class Api
+	public class RabbitMqApi
 	{
 		readonly string virtualHost;
 		private readonly Uri _managementApiHost;
 		private readonly NetworkCredential _credentials;
 
-		public Api(Uri managementApiHost, NetworkCredential credentials)
+		public RabbitMqApi(Uri managementApiHost, NetworkCredential credentials)
 		{
 			_managementApiHost = managementApiHost;
 			_credentials = credentials;
 		}
 
-		public Api(string hostUri, string username, string password, string virtualHost = "/")
+		public RabbitMqApi(string hostUri, string username, string password, string virtualHost = "/")
 			: this(new Uri(hostUri), new NetworkCredential(username, password))
 		{
-			this.virtualHost = virtualHost;
+			this.virtualHost = virtualHost.StartsWith("/") ? (virtualHost) : ("/" + virtualHost);
 		}
 
 		public RMQueue[] ListQueues()
 		{
-			using (var stream = Get("/api/queues"))
+			using (var stream = Get("/api"+virtualHost+"queues"))
 				return JsonSerializer.DeserializeFromStream<RMQueue[]>(stream);
 		}
 
 		public RMNode[] ListNodes()
 		{
-			using (var stream = Get("/api/nodes"))
+			using (var stream = Get("/api"+virtualHost+"nodes"))
 				return JsonSerializer.DeserializeFromStream<RMNode[]>(stream);
 		}
 

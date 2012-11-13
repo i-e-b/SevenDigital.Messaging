@@ -11,11 +11,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 			new MessagingConfiguration().WithDefaults().WithMessagingServer(server).PurgeAllMessages();
 		}
 
-		public static Api GetManagementApi()
+		public static RabbitMqApi GetManagementApi()
 		{
 			var parts= ConfigurationManager.AppSettings["rabbitServer"].Split('/');
 			
-			return new Api("http://"+parts[0]+":55672", "guest", "guest", parts[1]);
+			return new RabbitMqApi("http://"+parts[0]+":55672", "guest", "guest", parts[1]);
 		}
 	}
 }
