@@ -8,7 +8,7 @@ namespace RemoteRabbitTool
 	{
 		static void Main()
 		{
-			var proxyService = new Api(ManagementUri, ApiUsername, ApiPassword);
+			var proxyService = new RabbitMqApi(ManagementUri, ApiUsername, ApiPassword);
 
 			var nodes = proxyService.ListNodes();
 
