@@ -46,6 +46,7 @@
     <Compile Include="RabbitMqApi.cs" />
     <Compile Include="Formatting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RMExchange.cs" />
     <Compile Include="RMNode.cs" />
     <Compile Include="RMQueue.cs" />
   </ItemGroup>

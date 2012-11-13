@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using RabbitMQ.Client;
 using ServiceStack.Text;
@@ -28,14 +30,20 @@ namespace SevenDigital.Messaging.Management
 
 		public RMQueue[] ListQueues()
 		{
-			using (var stream = Get("/api"+slashHost+"queues"))
+			using (var stream = Get("/api/queues"+slashHost))
 				return JsonSerializer.DeserializeFromStream<RMQueue[]>(stream);
 		}
 
 		public RMNode[] ListNodes()
 		{
-			using (var stream = Get("/api"+slashHost+"nodes"))
+			using (var stream = Get("/api/nodes"))
 				return JsonSerializer.DeserializeFromStream<RMNode[]>(stream);
+		}
+
+		public RMExchange[] ListExchanges()
+		{
+			using (var stream = Get("/api/exchanges"+slashHost))
+				return JsonSerializer.DeserializeFromStream<RMExchange[]>(stream);
 		}
 
 		public Stream Get(string endpoint)
@@ -81,7 +89,24 @@ namespace SevenDigital.Messaging.Management
 			var conn = factory.CreateConnection();
 			var ch = conn.CreateModel();
 			ch.QueueDelete(queueName);
-			ch.ExchangeDelete(queueName);
+
+			if (ListExchanges().Any(e => e.name == queueName)) ch.ExchangeDelete(queueName);
+			ch.Close();
+			conn.Close();
+		}
+
+		public void AddQueue(string queueName)
+		{
+			var factory = new ConnectionFactory
+			{
+				Protocol = Protocols.FromEnvironment(),
+				HostName = _managementApiHost.Host,
+				VirtualHost = virtualHost
+			};
+			
+			var conn = factory.CreateConnection();
+			var ch = conn.CreateModel();
+			ch.QueueDeclare(queueName, true, false, false, new Dictionary<string,string>());
 			ch.Close();
 			conn.Close();
 		}
