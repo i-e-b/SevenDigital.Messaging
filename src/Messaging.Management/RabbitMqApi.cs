@@ -9,8 +9,9 @@ namespace SevenDigital.Messaging.Management
 	public class RabbitMqApi
 	{
 		readonly string virtualHost;
-		private readonly Uri _managementApiHost;
-		private readonly NetworkCredential _credentials;
+		readonly Uri _managementApiHost;
+		readonly NetworkCredential _credentials;
+		readonly string slashHost;
 
 		public RabbitMqApi(Uri managementApiHost, NetworkCredential credentials)
 		{
@@ -21,18 +22,19 @@ namespace SevenDigital.Messaging.Management
 		public RabbitMqApi(string hostUri, string username, string password, string virtualHost = "/")
 			: this(new Uri(hostUri), new NetworkCredential(username, password))
 		{
-			this.virtualHost = virtualHost.StartsWith("/") ? (virtualHost) : ("/" + virtualHost);
+			this.virtualHost = virtualHost;
+			slashHost = (virtualHost.StartsWith("/")) ? (virtualHost) : ("/" + virtualHost);
 		}
 
 		public RMQueue[] ListQueues()
 		{
-			using (var stream = Get("/api"+virtualHost+"queues"))
+			using (var stream = Get("/api"+slashHost+"queues"))
 				return JsonSerializer.DeserializeFromStream<RMQueue[]>(stream);
 		}
 
 		public RMNode[] ListNodes()
 		{
-			using (var stream = Get("/api"+virtualHost+"nodes"))
+			using (var stream = Get("/api"+slashHost+"nodes"))
 				return JsonSerializer.DeserializeFromStream<RMNode[]>(stream);
 		}
 
