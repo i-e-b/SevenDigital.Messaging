@@ -56,6 +56,7 @@
     <Compile Include="Handlers\FailingColourHandler.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Helpers\HoldingEventHook.cs" />
+    <Compile Include="Helpers\StringHelpers.cs" />
     <Compile Include="Messages\GreenWhiteMessage.cs" />
     <Compile Include="Messages\ITwoColoursMessage.cs" />
     <Compile Include="MultipleEventHookTests.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Handlers\VillainMessageHandler.cs" />
     <Compile Include="PurgingQueues.cs" />
     <Compile Include="QueueDestructionSurvivalTests.cs" />
+    <Compile Include="RabbitMqRoundTripTests.cs" />
     <Compile Include="SendingAndReceivingTests.cs" />
     <Compile Include="Messages\GreenMessage.cs" />
     <Compile Include="Messages\IColourMessage.cs" />
