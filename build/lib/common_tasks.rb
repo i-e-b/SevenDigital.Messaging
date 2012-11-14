@@ -1,4 +1,10 @@
 
+OUTPUT_DIRECTORY = "build/Output"
+REPORT_DIRECTORY = "#{OUTPUT_DIRECTORY}/Reports"
+DATABASE_SCRIPTS_DIRECTORY = "DatabaseScripts"
+CURRENT_DATABASE_SCRIPTS_DIRECTORY = "#{DATABASE_SCRIPTS_DIRECTORY}/Current"
+PACKAGE_DIRECTORY = "#{OUTPUT_DIRECTORY}"
+PACAKGE_DATABASE_DATABASE_SCRIPTS_DIRECTORY = "#{PACKAGE_DIRECTORY}/DatabaseScripts"
 
 namespace :build do	
 	def log message
@@ -31,6 +37,17 @@ namespace :build do
 		end
 		tc_build_number
 	end
+
+	desc 'Clear the output directory'
+	task :clear do
+		if (File.exists?(REPORT_DIRECTORY) and File.directory?(REPORT_DIRECTORY))
+			FileUtils.rm_r REPORT_DIRECTORY
+		end
+		verbose (false) do
+				mkdir_p [REPORT_DIRECTORY]		 
+		end
+	end
+	
 
 	desc 'Patch AssemblyInfo files with the version nummber before compile'
 	task :patch_assemblyinfo do

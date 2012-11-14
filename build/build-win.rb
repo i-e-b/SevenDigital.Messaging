@@ -3,13 +3,10 @@ Dir["#{File.expand_path(File.dirname(__FILE__))}/lib/*.rb"].each {|file| require
 
 
 tools_directory = "Build/Tools"
-database_scripts_directory = "DatabaseScripts"
-current_database_scripts_directory = "#{database_scripts_directory}/Current"
 
-output_directory = "Build/Output"
-package_directory = "#{output_directory}"
-package_database_scripts_directory = "#{package_directory}/DatabaseScripts"
-report_directory = "#{output_directory}/Reports"
+
+
+
 $dot_net_path ||= "#{ENV["SystemRoot"]}/Microsoft.NET/Framework/v4.0.30319/"
 
 
@@ -21,15 +18,7 @@ namespace :build do
 	desc 'Run build with no tests'
 	task :no_test_build, [:solution_directory, :solution_file, :package_type, :database_build, :environment, :compilation_configuration, :compilation_verbosity] =>[:clear, :compile, :recreate_database]
 
-	desc 'Clear the output directory'
-	task :clear do
-		if (File.exists?(report_directory) and File.directory?(report_directory))
-			FileUtils.rm_r report_directory
-		end
-		verbose (false) do
-				mkdir_p [report_directory]		 
-		end
-	end
+
 	
 	desc 'Compile the solution'
 	task :compile, :solution_directory, :solution_file, :environment, :compilation_configuration do |task, args|
@@ -43,11 +32,13 @@ namespace :build do
   
 	desc 'Recreate the database'
 	task :recreate_database, :server do |task, args|
+
 		verbose(false) do
 			server = "#{args.server}" != "" ? "#{args.server}" : ".\\SQLEXPRESS"
 			temp_log = "temp_log.txt"   
-			report = File.open("#{report_directory}/sql-report.txt", 'a')
-			sorted_files = getSqlFiles(args, database_scripts_directory)
+			report = File.open("#{REPORT_DIRECTORY}/sql-report.txt", 'a')
+			puts getSqlFiles(args, DATABASE_SCRIPTS_DIRECTORY)
+			sorted_files = getSqlFiles(args, DATABASE_SCRIPTS_DIRECTORY)
 			sorted_files.each do |script|
 				if ((script.include? ".env.") && !(script.include? ".#{args.environment}.")) then
 					puts "Skipping #{script} "
@@ -65,6 +56,7 @@ namespace :build do
   	end
 	
 	def getSqlFiles (args, database_scripts_directory)
+
 		scriptsPath = "#{args.solution_directory}/#{database_scripts_directory}"
 		if(File.directory?("#{scriptsPath}/SqlServer"))
 			scriptsPath = "#{scriptsPath}/SqlServer"
@@ -84,8 +76,8 @@ namespace :build do
       	}
 		if specs.length > 0
 			specs.each_with_index{ |spec, i|
-				sh "#{tools_directory}/NUnit/nunit-console.exe #{spec} /nologo /xml=#{report_directory}/test-report-#{i}.xml"
-				puts "##teamcity[importData type='nunit' path='#{report_directory}/test-report-#{i}.xml']"
+				sh "#{tools_directory}/NUnit/nunit-console.exe #{spec} /nologo /xml=#{REPORT_DIRECTORY}/test-report-#{i}.xml"
+				puts "##teamcity[importData type='nunit' path='#{REPORT_DIRECTORY}/test-report-#{i}.xml']"
 			}
 		else
 			warn "No test assemblies found.  I find your lack of tests disturbing..."
