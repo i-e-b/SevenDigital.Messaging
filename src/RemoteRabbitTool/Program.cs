@@ -8,7 +8,7 @@ namespace RemoteRabbitTool
 	{
 		static void Main()
 		{
-			var proxyService = new RabbitMqApi(ManagementUri, ApiUsername, ApiPassword);
+			var proxyService = RabbitMqApi.WithConfigSettings();
 
 			var nodes = proxyService.ListNodes();
 
@@ -36,23 +36,6 @@ namespace RemoteRabbitTool
 
 			Console.WriteLine("[Enter] to quit");
 			Console.ReadKey();
-		}
-
-		static string ApiUsername
-		{
-			get { return ConfigurationManager.AppSettings["ApiUsername"];}
-		}
-		static string MessageHost
-		{
-			get { return ConfigurationManager.AppSettings["MessageHost"]; }
-		}
-		static string ManagementUri
-		{
-			get { return "http://"+MessageHost+":55672"; }
-		}
-		static string ApiPassword
-		{
-			get { return ConfigurationManager.AppSettings["ApiPassword"];}
 		}
 	}
 }
