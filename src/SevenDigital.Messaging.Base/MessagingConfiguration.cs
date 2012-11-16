@@ -65,7 +65,14 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		public MessagingConfiguration ClearEventHooks()
 		{
+			var loopback = UsingLoopbackMode();
 			ObjectFactory.EjectAllInstancesOf<IEventHook>();
+
+			if (loopback)
+			{
+				ObjectFactory.Configure(map =>
+					map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));
+			}
 			return this;
 		}
 		

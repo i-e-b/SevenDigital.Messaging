@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="LoopbackMessaging\LoopbackConfigurationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
+    <Compile Include="LoopbackMessaging\LoopbackStabilityTests.cs" />
     <Compile Include="Routing\SenderEndpointGeneratorTests.cs" />
     <Compile Include="Routing\UniqueEndpointGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
