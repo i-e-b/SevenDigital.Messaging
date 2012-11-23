@@ -1,14 +1,9 @@
 
 Dir["#{File.expand_path(File.dirname(__FILE__))}/lib/*.rb"].each {|file| require file }
 
-
 tools_directory = "Build/Tools"
 
-
-
-
 $dot_net_path ||= "#{ENV["SystemRoot"]}/Microsoft.NET/Framework/v4.0.30319/"
-
 
 namespace :build do	
 	
@@ -37,7 +32,6 @@ namespace :build do
 			server = "#{args.server}" != "" ? "#{args.server}" : ".\\SQLEXPRESS"
 			temp_log = "temp_log.txt"   
 			report = File.open("#{REPORT_DIRECTORY}/sql-report.txt", 'a')
-			puts getSqlFiles(args, DATABASE_SCRIPTS_DIRECTORY)
 			sorted_files = getSqlFiles(args, DATABASE_SCRIPTS_DIRECTORY)
 			sorted_files.each do |script|
 				if ((script.include? ".env.") && !(script.include? ".#{args.environment}.")) then
@@ -51,7 +45,7 @@ namespace :build do
 				end
 			end
 			report.close
-			File.delete "#{temp_log}" if File.exists? "#{temp_log}"		
+			File.delete "#{temp_log}" if File.exists? "#{temp_log}"
 		end
   	end
 	
