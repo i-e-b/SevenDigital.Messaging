@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -29,7 +30,20 @@ namespace SevenDigital.Messaging.MessageSending
 					Console.WriteLine("An event hook failed during send: " + ex.GetType() + "; " + ex.Message);
 				}
 			}
-			node.EnsureConnection().Publish(message, c => { });
+
+			for (int i = 0; i < 10; i++)
+			{
+				try
+				{
+					node.EnsureConnection().Publish(message, c => { });
+				}
+				catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException)
+				{
+					Thread.Sleep(1600*i);
+					continue;
+				}
+				break;
+			}
 		}
 
 		public bool Equals(SenderNode other)
