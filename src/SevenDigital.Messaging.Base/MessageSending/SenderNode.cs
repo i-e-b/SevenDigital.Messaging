@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using MassTransit;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -33,15 +34,18 @@ namespace SevenDigital.Messaging.MessageSending
 
 			for (int i = 0; i < 10; i++)
 			{
+				IServiceBus connection;
 				try
 				{
-					node.EnsureConnection().Publish(message, c => { });
+					connection = node.EnsureConnection();
 				}
 				catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException)
 				{
+					Console.WriteLine("Broker unreachable -- can't connect to message queue");
 					Thread.Sleep(1600*i);
 					continue;
 				}
+				connection.Publish(message, c => { });
 				break;
 			}
 		}
