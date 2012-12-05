@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MassTransit;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
