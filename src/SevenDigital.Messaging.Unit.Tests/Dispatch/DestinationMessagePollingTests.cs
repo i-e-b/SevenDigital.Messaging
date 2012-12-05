@@ -50,6 +50,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 				.Returns<IMessage>(null);
 			subject.Start();
 			Thread.Sleep(100);
+			subject.Stop();
 			sleeper.Verify(m=>m.Sleep());
 		}
 
@@ -83,8 +84,24 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			pool.Setup(m=>m.IsThreadAvailable()).Returns(false);
 			subject.Start();
+			Thread.Sleep(750);
+			subject.Stop();
 			messagingBase.Verify(m=>m.GetMessage<IMessage>(destinationName), Times.Never());
 			sleeper.Verify(m=>m.Sleep());
+		}
+
+		[Test]
+		public void should_continue_to_poll_until_stopped ()
+		{
+			int count = 0;
+			messagingBase.Setup(m=>m.GetMessage<IMessage>(destinationName)).Callback(() => {
+				count++;
+			});
+
+			subject.Start();
+			Thread.Sleep(750);
+			Assert.That(count, Is.GreaterThan(1));
+
 		}
 	}
 }
