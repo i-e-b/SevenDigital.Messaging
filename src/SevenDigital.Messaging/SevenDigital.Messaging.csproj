@@ -53,7 +53,6 @@
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
     <Compile Include="EventHooks\ITestEventHook.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="MessageSending\IMessageBinding.cs" />
     <Compile Include="MessageSending\IServiceBus.cs" />
     <Compile Include="MessageSending\IServiceBusFactory.cs" />
