@@ -1,5 +1,4 @@
 using System;
-using MassTransit;
 using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.MessageSending;
@@ -41,12 +40,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 			_subject.SendMessage(msg);
 
 			// This form of publish is an instance method and can be mocked. The others are extensions and can't be mocked
-			_serviceBus.Verify(b=>b.Publish(msg, AnyContextCallback()));
-		}
-
-		static Action<IPublishContext<DummyMessage>> AnyContextCallback()
-		{
-			return It.IsAny<Action<IPublishContext<DummyMessage>>>();
+			_serviceBus.Verify(b=>b.Publish(msg));
 		}
 
 		[Test]

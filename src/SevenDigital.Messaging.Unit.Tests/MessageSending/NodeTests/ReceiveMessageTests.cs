@@ -1,5 +1,4 @@
 ﻿using System;
-using MassTransit;
 using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.MessageSending;

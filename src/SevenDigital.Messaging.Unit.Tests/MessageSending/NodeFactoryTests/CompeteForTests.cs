@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 			_host = new Host("myMachine");
 			_endpoint = new Endpoint("doStuff");
 			
-			var subject = new NodeFactory(_host, uniqueEndPointGenerator.Object, senderEndPointGenerator.Object, new ServiceBusFactory());
+			var subject = new NodeFactory(_host, uniqueEndPointGenerator.Object, senderEndPointGenerator.Object, new DummyStub__ServiceBusFactory());
 
 			_result = subject.TakeFrom(_endpoint);
 		}

@@ -44,7 +44,7 @@ namespace SevenDigital.Messaging.MessageSending
 					Thread.Sleep(1600*i);
 					continue;
 				}
-				connection.Publish(message, c => { });
+				connection.Publish(message);
 				break;
 			}
 		}

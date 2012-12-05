@@ -51,7 +51,7 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[Test]
 		public void Should_have_service_bus_factory_instance ()
 		{
-			Assert.That(ObjectFactory.GetInstance<IServiceBusFactory>(), Is.InstanceOf<ServiceBusFactory>());
+			Assert.That(ObjectFactory.GetInstance<IServiceBusFactory>(), Is.InstanceOf<DummyStub__ServiceBusFactory>());
 		}
 
 		[Test]

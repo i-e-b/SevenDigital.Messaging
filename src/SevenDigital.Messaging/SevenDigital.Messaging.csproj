@@ -48,10 +48,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DummyStub__MessagePurgingServiceBusFactory.cs" />
+    <Compile Include="DummyStub__ServiceBusFactory.cs" />
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
     <Compile Include="EventHooks\ITestEventHook.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />
     <Compile Include="MessageSending\IMessageBinding.cs" />
+    <Compile Include="MessageSending\IServiceBus.cs" />
+    <Compile Include="MessageSending\IServiceBusFactory.cs" />
     <Compile Include="MessageSending\Loopback\DummyBinder.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackBinding.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackNodeFactory.cs" />

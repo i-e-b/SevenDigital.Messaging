@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 			_uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
 			_senderEndPointGenerator = new Mock<ISenderEndpointGenerator>();
 			_host = new Host("myMachine");
-			_subject = new NodeFactory(_host, _uniqueEndPointGenerator.Object, _senderEndPointGenerator.Object, new ServiceBusFactory());
+			_subject = new NodeFactory(_host, _uniqueEndPointGenerator.Object, _senderEndPointGenerator.Object, new DummyStub__ServiceBusFactory());
 			_uniqueEndpoint = new Endpoint("some wordz");
 			_uniqueEndPointGenerator.Setup(x => x.Generate()).Returns(_uniqueEndpoint);
 
