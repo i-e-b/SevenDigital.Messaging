@@ -6,7 +6,7 @@ cd binaries
 copy "..\src\SevenDigital.Messaging.Base\bin\Release\*.dll" "." /Y
 copy "..\src\Messaging.Management\bin\Release\SevenDigital.Messaging.Management.dll" "."
 
-..\tools\ILMerge.exe /allowDup /targetplatform:"v4,c:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /out:..\merged\SevenDigital.Messaging.dll SevenDigital.Messaging.dll Magnum.dll MassTransit.dll MassTransit.Transports.RabbitMq.dll RabbitMQ.Client.dll StructureMap.dll 
+..\tools\ILMerge.exe /allowDup /targetplatform:"v4,c:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /out:..\merged\SevenDigital.Messaging.dll SevenDigital.Messaging.dll RabbitMQ.Client.dll StructureMap.dll SevenDigital.Messaging.Base.dll SignalHandling.dll
 
 COPY SevenDigital.Messaging.Types.dll ..\merged\
 COPY SevenDigital.Messaging.Management.dll ..\merged\
