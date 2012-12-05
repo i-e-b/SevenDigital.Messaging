@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Base", "src\SevenDigital.Messaging.Base\Messaging.Base.csproj", "{703B2D01-1D82-4249-979E-2A9EE5BE27AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenDigital.Messaging", "src\SevenDigital.Messaging\SevenDigital.Messaging.csproj", "{703B2D01-1D82-4249-979E-2A9EE5BE27AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Unit.Tests", "src\SevenDigital.Messaging.Unit.Tests\Messaging.Unit.Tests.csproj", "{1578F154-1C86-4A00-881C-CB7517C594AE}"
 EndProject
@@ -17,12 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Info", "Info", "{5B19FBF1-A
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{16A24470-4B4A-48E7-BACE-0B0F1ECE837A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteRabbitTool", "src\RemoteRabbitTool\RemoteRabbitTool.csproj", "{008831E5-04F3-4863-B410-0AF7EE8CAF9A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Management", "src\Messaging.Management\Messaging.Management.csproj", "{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,26 +78,6 @@ Global
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Release|x86.ActiveCfg = Release|Any CPU
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Debug|x86.ActiveCfg = Debug|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Debug|x86.Build.0 = Debug|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Release|Any CPU.ActiveCfg = Release|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Release|Mixed Platforms.Build.0 = Release|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Release|x86.ActiveCfg = Release|x86
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A}.Release|x86.Build.0 = Release|x86
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,7 +86,5 @@ Global
 		{305495D2-0885-4EDC-9156-D47C049AE936} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
 		{1578F154-1C86-4A00-881C-CB7517C594AE} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
-		{008831E5-04F3-4863-B410-0AF7EE8CAF9A} = {16A24470-4B4A-48E7-BACE-0B0F1ECE837A}
-		{E23BC031-F7AA-46BF-9262-3E47E1CF3D04} = {16A24470-4B4A-48E7-BACE-0B0F1ECE837A}
 	EndGlobalSection
 EndGlobal
