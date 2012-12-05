@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
@@ -9,7 +8,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture, Ignore("A bug in MassTransit is preventing this test from passing")]
+	[TestFixture, Ignore("Messaging base not hooked in")]
 	public class QueueDestructionSurvivalTests
 	{
         INodeFactory nodeFactory;
@@ -35,7 +34,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			Helper.RemoveAllRoutingFromThisSession();
 		}
 
-		[Test, Ignore("A bug in MassTransit is preventing this test from passing")]
+		[Test]
 		public void Listener_endpoint_should_survive_queue_being_deleted()
 		{
 			using (var receiverNode = nodeFactory.TakeFrom(new Endpoint(TestQueue)))

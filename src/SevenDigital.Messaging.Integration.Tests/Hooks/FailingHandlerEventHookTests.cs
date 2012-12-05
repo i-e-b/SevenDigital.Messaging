@@ -8,7 +8,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture]
+	[TestFixture, Ignore("Messaging base not hooked in")]
 	public class FailingHandlerEventHookTests
 	{
 		INodeFactory node_factory;

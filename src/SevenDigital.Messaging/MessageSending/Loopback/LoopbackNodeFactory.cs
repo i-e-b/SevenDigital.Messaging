@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending.Loopback
 {
-	public class LoopbackNodeFactory:INodeFactory
+	public class LoopbackNodeFactory : INodeFactory
 	{
 		readonly Dictionary<Type, List<Type>> listenerBindings;
 		readonly List<string> capturedEndpoints;
@@ -27,7 +26,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 		{
 			// In the real version, agents compete for incoming messages.
 			// In this test version, we only really bind the first listener for a given endpoint -- roughly the same effect!
-			if (capturedEndpoints.Contains(endpoint.ToString())) return new DummyReceiver(); 
+			if (capturedEndpoints.Contains(endpoint.ToString())) return new DummyReceiver();
 
 			capturedEndpoints.Add(endpoint.ToString());
 			return new LoopbackReceiver(this);
@@ -50,10 +49,10 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 		{
 			var msg = typeof(TMessage);
 			var handler = typeof(THandler);
-			
+
 			if (!listenerBindings.ContainsKey(msg))
 				listenerBindings.Add(msg, new List<Type>());
-			
+
 			if (listenerBindings[msg].Contains(handler)) return;
 
 			listenerBindings[msg].Add(handler);
@@ -61,10 +60,11 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 
 		public void Send<T>(T message) where T : IMessage
 		{
-
-			ObjectFactory
-				.GetAllInstances<IEventHook>()
-				.ForEach(hook => hook.MessageSent(message));
+			var hooks = ObjectFactory.GetAllInstances<IEventHook>();
+			foreach (var hook in hooks)
+			{
+				hook.MessageSent(message);
+			}
 
 			FireCooperativeListeners(message);
 		}
@@ -82,20 +82,27 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 					{
 						handler.GetType().InvokeMember("Handle", BindingFlags.InvokeMethod, null, handler, new object[] { message });
 
-						ObjectFactory
-							.GetAllInstances<IEventHook>()
-							.ForEach(hook => hook.MessageReceived(message));
+
+						var hooks = ObjectFactory.GetAllInstances<IEventHook>();
+						foreach (var hook in hooks)
+						{
+							hook.MessageReceived(message);
+						}
 					}
 					catch (Exception ex)
 					{
 						object handler1 = handler;
-						ObjectFactory
-						.GetAllInstances<IEventHook>()
-						.ForEach(hook => hook.HandlerFailed(message, handler1.GetType(), ex.InnerException));
+
+
+						var hooks = ObjectFactory.GetAllInstances<IEventHook>();
+						foreach (var hook in hooks)
+						{
+							hook.HandlerFailed(message, handler1.GetType(), ex.InnerException);
+						}
 					}
 				}
 			}
 		}
 	}
-	
+
 }

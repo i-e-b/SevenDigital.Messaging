@@ -59,7 +59,6 @@
     <Compile Include="MessageSending\Loopback\DummyBinder.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackBinding.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackNodeFactory.cs" />
-    <Compile Include="MessageSending\EnumerableExtensions.cs" />
     <Compile Include="MessagingConfiguration.cs" />
     <Compile Include="Endpoint.cs" />
     <Compile Include="Routing\Host.cs" />
