@@ -1,6 +1,6 @@
 using System;
 
-namespace SevenDigital.Messaging.MessageSending
+namespace SevenDigital.Messaging.Dispatch
 {
 	public interface IServiceBusFactory
 	{

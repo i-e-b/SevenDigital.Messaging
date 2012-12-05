@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.MessageSending.Loopback;

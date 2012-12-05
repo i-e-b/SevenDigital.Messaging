@@ -1,4 +1,5 @@
 using System;
+using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.MessageSending
