@@ -11,7 +11,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public static void SetupTestMessaging()
 		{
 			var server = ConfigurationManager.AppSettings["rabbitServer"];
-			new MessagingConfiguration().WithDefaults().WithMessagingServer(server).PurgeAllMessages();
+			new MessagingConfiguration().WithDefaults().WithMessagingServer(server);
 		}
 
 		public static IRabbitMqQuery GetManagementApi()

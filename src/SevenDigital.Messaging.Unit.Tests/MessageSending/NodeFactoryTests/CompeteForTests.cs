@@ -12,17 +12,19 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 		Host _host;
 		Endpoint _endpoint;
 		IReceiverNode _result;
+		Mock<IMessageDispatch> messageDispatch;
 
 		[SetUp]
 		public void SetUp()
 		{
 			var uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
 			var senderEndPointGenerator = new Mock<ISenderEndpointGenerator>();
+			messageDispatch = new Mock<IMessageDispatch>();
 			
 			_host = new Host("myMachine");
 			_endpoint = new Endpoint("doStuff");
 			
-			var subject = new NodeFactory(_host, uniqueEndPointGenerator.Object, senderEndPointGenerator.Object, new DummyStub__ServiceBusFactory());
+			var subject = new NodeFactory(_host, uniqueEndPointGenerator.Object, senderEndPointGenerator.Object, messageDispatch.Object);
 
 			_result = subject.TakeFrom(_endpoint);
 		}

@@ -8,14 +8,13 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		readonly IMessagingHost _host;
 		readonly IRoutingEndpoint _endpoint;
-		readonly IServiceBusFactory _serviceBusFactory;
-		IServiceBus _serviceBus;
+		readonly IMessageDispatch messageDispatch;
 
-		public Node(IMessagingHost host, IRoutingEndpoint endpoint, IServiceBusFactory serviceBusFactory)
+		public Node(IMessagingHost host, IRoutingEndpoint endpoint, IMessageDispatch messageDispatch)
 		{
 			_host = host;
 			_endpoint = endpoint;
-			_serviceBusFactory = serviceBusFactory;
+			this.messageDispatch = messageDispatch;
 		}
 
 		public Uri Address
@@ -23,14 +22,9 @@ namespace SevenDigital.Messaging.MessageSending
 			get { return new Uri( "rabbitmq://" + _host + "/" + _endpoint); }
 		}
 
-		public IServiceBus EnsureConnection()
-		{
-			return _serviceBus ?? (_serviceBus = _serviceBusFactory.Create(Address));
-		}
-
 		public void Dispose()
 		{
-			if (_serviceBus != null) _serviceBus.Dispose();
+			if (messageDispatch != null) messageDispatch.Dispose();
 		}
 
 		#region Equality members

@@ -7,16 +7,16 @@ namespace SevenDigital.Messaging.MessageSending
 {
 	public class HandlerTriggering<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
 	{
-		readonly IServiceBus serviceBus;
+		readonly IMessageDispatch messageDispatch;
 
-		public HandlerTriggering(IServiceBus serviceBus)
+		public HandlerTriggering(IMessageDispatch messageDispatch)
 		{
-			this.serviceBus = serviceBus;
+			this.messageDispatch = messageDispatch;
 		}
 
 		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			serviceBus.SubscribeHandler<TMessage>(msg =>
+			messageDispatch.SubscribeHandler<TMessage>(msg =>
 			{
 
 				var hooks = ObjectFactory.GetAllInstances<IEventHook>();

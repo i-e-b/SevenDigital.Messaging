@@ -1,5 +1,4 @@
-﻿using System;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.MessageSending;
@@ -10,19 +9,16 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 	[TestFixture]
 	public class ReceiveMessageTests
 	{
-		Mock<IServiceBusFactory> _serviceBusFactory;
 		ReceiverNode _receiverNode;
-		Mock<IServiceBus> _serviceBus;
+		Mock<IMessageDispatch> messageDispatch;
 		IMessageBinding<IFakeMessage> _messageBinding;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_serviceBusFactory = new Mock<IServiceBusFactory>();
-			_serviceBus = new Mock<IServiceBus>();
-			_serviceBusFactory.Setup(sbf => sbf.Create(It.IsAny<Uri>())).Returns(_serviceBus.Object);
+			messageDispatch = new Mock<IMessageDispatch>();
 
-			_receiverNode = new ReceiverNode(new Host("host"), new Endpoint("endpoint"), _serviceBusFactory.Object);
+			_receiverNode = new ReceiverNode(new Host("host"), new Endpoint("endpoint"), messageDispatch.Object);
 
 			_messageBinding = _receiverNode.Handle<IFakeMessage>();
 		}
@@ -30,13 +26,13 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 		[Test]
 		public void Should_connect_to_endpoint()
 		{
-			_serviceBusFactory.Verify(sbf => sbf.Create(It.IsAny<Uri>()));
+			//_serviceBusFactory.Verify(sbf => sbf.Create());
 		}
 
 		[Test]
 		public void Should_connect_to_endpoint_with_correct_uri()
 		{
-			_serviceBusFactory.Verify(sbf => sbf.Create(new Uri("rabbitmq://host/endpoint")));
+			//_serviceBusFactory.Verify(sbf => sbf.Create());
 		}
 
 		[Test]
