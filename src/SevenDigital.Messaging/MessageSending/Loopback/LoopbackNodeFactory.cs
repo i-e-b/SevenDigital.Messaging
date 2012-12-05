@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending.Loopback
