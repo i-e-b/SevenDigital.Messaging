@@ -34,6 +34,7 @@ namespace SevenDigital.Messaging
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IThreadPoolWrapper>().Use<ThreadPoolWrapper>();
+				map.For<ISleepWrapper>().Use<SleepWrapper>();
 
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
 				map.For<IMessageDispatch>().Singleton().Use<MessageDispatch>();

@@ -25,6 +25,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
         }
 
 		[Test]
+		public void Should_have_sleep_wrapper ()
+		{
+			Assert.That(ObjectFactory.GetInstance<ISleepWrapper>(), Is.InstanceOf<SleepWrapper>());
+		}
+
+		[Test]
 		public void Should_have_thread_pool_wrapper ()
 		{
 			Assert.That(ObjectFactory.GetInstance<IThreadPoolWrapper>(), Is.InstanceOf<ThreadPoolWrapper>());

@@ -9,10 +9,19 @@ namespace SevenDigital.Messaging.Dispatch
 		{
 			ThreadPool.QueueUserWorkItem(new WaitCallback(action));
 		}
+
+		public bool IsThreadAvailable()
+		{
+			int workers, completion;
+			ThreadPool.GetAvailableThreads(out workers, out completion);
+
+			return (workers > 0);
+		}
 	}
 
 	public interface IThreadPoolWrapper
 	{
 		void Do(Action<object> action);
+		bool IsThreadAvailable();
 	}
 }
