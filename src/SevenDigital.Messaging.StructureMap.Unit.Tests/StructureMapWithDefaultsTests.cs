@@ -25,6 +25,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
         }
 
 		[Test]
+		public void Should_have_thread_pool_wrapper ()
+		{
+			Assert.That(ObjectFactory.GetInstance<IThreadPoolWrapper>(), Is.InstanceOf<ThreadPoolWrapper>());
+		}
+
+		[Test]
 		public void Should_configure_messaging_base ()
 		{
 			Assert.That(ObjectFactory.GetInstance<IMessagingBase>(), Is.Not.Null);
