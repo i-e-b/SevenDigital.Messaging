@@ -50,9 +50,18 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
-		public void Should_have_service_bus_factory_instance ()
+		public void Should_have_message_dispatch_instance ()
 		{
-			Assert.That(ObjectFactory.GetInstance<IServiceBusFactory>(), Is.InstanceOf<DummyStub__ServiceBusFactory>());
+			Assert.That(ObjectFactory.GetInstance<IMessageDispatch>(), Is.InstanceOf<MessageDispatch>());
+		}
+
+		[Test]
+		public void Message_dispatch_should_be_singleton ()
+		{
+			var instance_1 = ObjectFactory.GetInstance<IMessageDispatch>();
+			var instance_2 = ObjectFactory.GetInstance<IMessageDispatch>();
+
+			Assert.That(instance_1, Is.SameAs(instance_2));
 		}
 
 		[Test]

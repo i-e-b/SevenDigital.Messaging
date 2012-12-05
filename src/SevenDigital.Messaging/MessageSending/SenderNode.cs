@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
@@ -8,12 +7,14 @@ namespace SevenDigital.Messaging.MessageSending
 {
 	public class SenderNode : ISenderNode
 	{
+		readonly IMessageDispatch messageDispatch;
 		readonly Node node;
 
-		public SenderNode(IMessagingHost host, ISenderEndpointGenerator endpointGenerator, IServiceBusFactory serviceBusFactory)
+		public SenderNode(IMessagingHost host, ISenderEndpointGenerator endpointGenerator, IMessageDispatch messageDispatch)
 		{
+			this.messageDispatch = messageDispatch;
 			var endpoint = endpointGenerator.Generate();
-			node = new Node(host, endpoint, serviceBusFactory);
+			node = new Node(host, endpoint, messageDispatch);
 		}
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
@@ -34,19 +35,11 @@ namespace SevenDigital.Messaging.MessageSending
 
 			for (int i = 0; i < 10; i++)
 			{
-				IServiceBus connection;
 				try
 				{
-					connection = node.EnsureConnection();
-				}
-				catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException)
-				{
-					Console.WriteLine("Broker unreachable -- can't connect to message queue");
-					Thread.Sleep(1600*i);
-					continue;
-				}
-				connection.Publish(message);
-				break;
+					messageDispatch.Publish(message);
+					break;
+				} catch { continue; }
 			}
 		}
 

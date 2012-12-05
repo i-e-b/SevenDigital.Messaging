@@ -25,11 +25,12 @@ namespace SevenDigital.Messaging
 			if (UsingLoopbackMode()) return this;
 
 			ObjectFactory.Configure(map => {
-				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
 				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
-				map.For<IServiceBusFactory>().Use<DummyStub__ServiceBusFactory>();
+
+				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
+				map.For<IMessageDispatch>().Singleton().Use<MessageDispatch>();
                 map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
 
@@ -119,16 +120,5 @@ namespace SevenDigital.Messaging
 			return lb.ListenersFor<T>();
 		}
 
-		/// <summary>
-		/// Delete all waiting messages from queues you connect to.
-		/// </summary>
-		public MessagingConfiguration PurgeAllMessages()
-		{
-			ObjectFactory.EjectAllInstancesOf<IServiceBusFactory>();
-
-			ObjectFactory.Configure(map => map.For<IServiceBusFactory>().Use<DummyStub__MessagePurgingServiceBusFactory>());
-			
-			return this;
-		}
 	}
 }
