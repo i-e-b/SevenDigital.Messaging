@@ -38,6 +38,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="SevenDigital.Messaging.Base">
+      <HintPath>..\..\lib\SevenDigital.Messaging.Base.dll</HintPath>
+    </Reference>
     <Reference Include="StructureMap">
       <HintPath>..\..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
     </Reference>
@@ -50,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dispatch\PublishMessageTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackConfigurationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackStabilityTests.cs" />

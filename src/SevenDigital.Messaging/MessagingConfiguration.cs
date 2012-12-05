@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.MessageSending;
@@ -24,8 +26,11 @@ namespace SevenDigital.Messaging
 		{
 			if (UsingLoopbackMode()) return this;
 
+			new  MessagingBaseConfiguration().WithDefaults();
+
 			ObjectFactory.Configure(map => {
 				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
+				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 
@@ -49,7 +54,11 @@ namespace SevenDigital.Messaging
 		/// <param name="host">IP or hostname of a server running RabbitMQ service</param>
 		public MessagingConfiguration WithMessagingServer(string host)
 		{
-			ObjectFactory.Configure(map => map.For<IMessagingHost>().Use(()=> new Host(host)));
+			ObjectFactory.Configure(map =>
+			{
+				map.For<IMessagingHost>().Use(() => new Host(host));
+				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection(host));
+			});
 			return this;
 		}
 
