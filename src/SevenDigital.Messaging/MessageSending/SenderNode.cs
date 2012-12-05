@@ -49,6 +49,8 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 		}
 
+		#region Equality members
+
 		public bool Equals(SenderNode other)
 		{
 			if (ReferenceEquals(null, other)) return false;
@@ -68,5 +70,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			return (node != null ? node.GetHashCode() : 0);
 		}
+
+		#endregion
 	}
 }

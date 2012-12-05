@@ -6,16 +6,23 @@ namespace SevenDigital.Messaging.Routing
 	{
 		readonly string _machineName;
 
-		public bool Equals(Host other)
+		public Host(string machineName)
 		{
-			if (ReferenceEquals(null, other)) return false;
-			if (ReferenceEquals(this, other)) return true;
-			return Equals(other._machineName, _machineName);
+			_machineName = machineName;
 		}
 
 		public override string ToString()
 		{
 			return _machineName;
+		}
+
+		#region Equality members
+
+		public bool Equals(Host other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Equals(other._machineName, _machineName);
 		}
 
 		public override bool Equals(object obj)
@@ -31,9 +38,6 @@ namespace SevenDigital.Messaging.Routing
 			return (_machineName != null ? _machineName.GetHashCode() : 0);
 		}
 
-		public Host(string machineName)
-		{
-			_machineName = machineName;
-		}
+		#endregion
 	}
 }
