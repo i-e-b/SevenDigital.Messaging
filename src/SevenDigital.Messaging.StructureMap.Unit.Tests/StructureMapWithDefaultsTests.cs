@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
@@ -22,6 +23,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
         {
             ObjectFactory.Container.Dispose();
         }
+
+		[Test]
+		public void Should_configure_messaging_base ()
+		{
+			Assert.That(ObjectFactory.GetInstance<IMessagingBase>(), Is.Not.Null);
+		}
 
 		[Test]
 		public void Should_get_messaging_host_implementation ()
