@@ -26,7 +26,8 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			destinationName = "a-destination";
 			pool.Setup(m=>m.IsThreadAvailable()).Returns(true);
 
-			subject = new DestinationPoller(destinationName, messagingBase.Object, sleeper.Object, dispatcher.Object, pool.Object);
+			subject = new DestinationPoller(messagingBase.Object, sleeper.Object, dispatcher.Object, pool.Object);
+			subject.AddDestinationToWatch(destinationName);
 		}
 
 		[TearDown]
