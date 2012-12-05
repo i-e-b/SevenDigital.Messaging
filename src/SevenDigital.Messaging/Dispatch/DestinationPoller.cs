@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 
@@ -12,6 +13,7 @@ namespace SevenDigital.Messaging.Dispatch
 		readonly IDispatcher dispatcher;
 		readonly IThreadPoolWrapper pool;
 		readonly Thread pollingThread;
+		volatile bool running;
 
 		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IDispatcher dispatcher, IThreadPoolWrapper pool)
 		{
@@ -26,34 +28,43 @@ namespace SevenDigital.Messaging.Dispatch
 
 		public void AddDestinationToWatch(string destination)
 		{
-			destinations.Add(destination);
+			lock (destinations)
+			{
+				destinations.Add(destination);
+			}
 		}
 
 		public void PollingMethod()
 		{
-			var messageCount = 0;
 			object message = null;
 
-			foreach (var destination in destinations)
+			while (running)
 			{
-				if (pool.IsThreadAvailable()) message = messagingBase.GetMessage<IMessage>(destination);
-				if (message == null) continue;
+				var messageCount = 0;
+				var currentDestinations = destinations.ToArray();
+				foreach (var destination in currentDestinations)
+				{
+					if (pool.IsThreadAvailable()) message = messagingBase.GetMessage<IMessage>(destination);
+					if (message == null) continue;
 
-				dispatcher.TryDispatch(message);
-				messageCount++;
+					dispatcher.TryDispatch(message);
+					messageCount++;
+				}
+
+				if (messageCount < 1) sleeper.Sleep();
 			}
-
-			if (messageCount < 1) sleeper.Sleep();
 		}
 
 		public void Start()
 		{
+			running = true;
 			pollingThread.Start();
 		}
 
 		public void Stop()
 		{
-
+			running = false;
+			pollingThread.Join();
 		}
 	}
 }
