@@ -39,8 +39,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\RabbitMQ.Client.dll</HintPath>
     </Reference>
+    <Reference Include="SevenDigital.Messaging.Base">
+      <HintPath>..\..\lib\SevenDigital.Messaging.Base.dll</HintPath>
+    </Reference>
     <Reference Include="StructureMap">
-      <HintPath>..\..\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
+      <HintPath>..\..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -74,7 +77,6 @@
     <Compile Include="_Helpers\Handlers\VillainMessageHandler.cs" />
     <Compile Include="Api\PurgingQueues.cs" />
     <Compile Include="Api\QueueDestructionSurvivalTests.cs" />
-    <Compile Include="Api\RabbitMqRoundTripTests.cs" />
     <Compile Include="MessageSending\SendingAndReceivingTests.cs" />
     <Compile Include="_Helpers\Messages\GreenMessage.cs" />
     <Compile Include="_Helpers\Messages\IColourMessage.cs" />
@@ -94,6 +96,7 @@
     <None Include="App.config.buildagent">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SevenDigital.Messaging\SevenDigital.Messaging.csproj">

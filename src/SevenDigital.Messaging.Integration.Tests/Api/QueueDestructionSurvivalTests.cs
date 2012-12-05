@@ -29,19 +29,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 		}
 
-		[TestFixtureTearDown]
+		[TearDown]
 		public void TearDown()
 		{
-			var api = Helper.GetManagementApi();
-			var queues = api.ListQueues();
-
-			if (queues.Any(q=>q.name == TestQueue)) api.DeleteQueue(TestQueue);
-			
-			var testQueues = queues.Where(q=>q.name.Contains("_SevenDigital.Messaging.Base_"));
-			foreach (var rmQueue in testQueues)
-			{
-				api.DeleteQueue(rmQueue.name);
-			}
+			Helper.RemoveAllRoutingFromThisSession();
 		}
 
 		[Test, Ignore("A bug in MassTransit is preventing this test from passing")]
@@ -51,7 +42,7 @@ namespace SevenDigital.Messaging.Integration.Tests
             {
                 receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-				Helper.GetManagementApi().DeleteQueue(TestQueue);
+				Helper.DeleteQueue(TestQueue);
 
 				Thread.Sleep(LongInterval);
 

@@ -26,34 +26,11 @@ namespace SevenDigital.Messaging.Integration.Tests
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();
         }
 
-		[TestFixtureTearDown]
+		[TearDown]
 		public void Teardown()
 		{
-			// ReSharper disable EmptyGeneralCatchClause
 			Console.WriteLine("Cleaning queues");
-			try
-			{
-				var api = Helper.GetManagementApi();
-				api.DeleteQueue("registered-message-endpoint");
-				api.DeleteQueue("unregistered-message-endpoint");
-				api.DeleteQueue("shared-endpoint");
-			}
-			catch
-			{
-			}
-			try
-			{
-				var api = Helper.GetManagementApi();
-				var queues = api.ListQueues().Where(q => q.name.Contains("_SevenDigital.Messaging.Base_"));
-				foreach (var rmQueue in queues)
-				{
-					api.DeleteQueue(rmQueue.name);
-				}
-			}
-			catch
-			{
-			}
-// ReSharper restore EmptyGeneralCatchClause
+			Helper.RemoveAllRoutingFromThisSession();
 		}
 
 	    [Test]

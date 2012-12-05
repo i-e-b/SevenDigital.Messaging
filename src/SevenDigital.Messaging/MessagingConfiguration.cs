@@ -28,7 +28,7 @@ namespace SevenDigital.Messaging
 				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
-				map.For<IServiceBusFactory>().Use<ServiceBusFactory>();
+				map.For<IServiceBusFactory>().Use<DummyStub__ServiceBusFactory>();
                 map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
 
@@ -125,7 +125,7 @@ namespace SevenDigital.Messaging
 		{
 			ObjectFactory.EjectAllInstancesOf<IServiceBusFactory>();
 
-			ObjectFactory.Configure(map => map.For<IServiceBusFactory>().Use<MessagePurgingServiceBusFactory>());
+			ObjectFactory.Configure(map => map.For<IServiceBusFactory>().Use<DummyStub__MessagePurgingServiceBusFactory>());
 			
 			return this;
 		}

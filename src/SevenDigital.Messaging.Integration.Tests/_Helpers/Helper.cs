@@ -1,5 +1,8 @@
 using System.Configuration;
-using SevenDigital.Messaging.Management;
+using SevenDigital.Messaging.Base.RabbitMq;
+using SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement;
+using SevenDigital.Messaging.Base.Routing;
+using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
@@ -11,11 +14,21 @@ namespace SevenDigital.Messaging.Integration.Tests
 			new MessagingConfiguration().WithDefaults().WithMessagingServer(server).PurgeAllMessages();
 		}
 
-		public static RabbitMqApi GetManagementApi()
+		public static IRabbitMqQuery GetManagementApi()
 		{
 			var parts= ConfigurationManager.AppSettings["rabbitServer"].Split('/');
 			
-			return new RabbitMqApi("http://"+parts[0]+":55672", "guest", "guest", parts[1]);
+			return new RabbitMqQuery("http://"+parts[0]+":55672", "guest", "guest", parts[1]);
+		}
+
+		public static void RemoveAllRoutingFromThisSession()
+		{
+			((RabbitRouter)ObjectFactory.GetInstance<IMessageRouter>()).RemoveRouting();
+		}
+
+		public static void DeleteQueue(string queueName)
+		{
+			ObjectFactory.GetInstance<IRabbitMqConnection>().WithChannel(channel=>channel.QueueDelete(queueName));
 		}
 	}
 }

@@ -20,19 +20,11 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			sender = ObjectFactory.GetInstance<ISenderNode>();
         }
 
-		[TestFixtureTearDown]
+		[TearDown]
 		public void Teardown()
 		{
 			Console.WriteLine("Cleaning queues");
-			try
-			{
-				var api = Helper.GetManagementApi();
-				api.DeleteQueue("ping-pong-endpoint");
-			}
-			catch
-			{
-				Console.WriteLine("Failed to remove queues");
-			}
+			Helper.RemoveAllRoutingFromThisSession();
 		}
 
 		[Test]
