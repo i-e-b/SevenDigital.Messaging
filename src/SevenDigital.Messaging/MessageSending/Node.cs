@@ -27,6 +27,13 @@ namespace SevenDigital.Messaging.MessageSending
 			return _serviceBus ?? (_serviceBus = _serviceBusFactory.Create(Address));
 		}
 
+		public void Dispose()
+		{
+			if (_serviceBus != null) _serviceBus.Dispose();
+		}
+
+		#region Equality members
+
 		public bool Equals(Node other)
 		{
 			if (ReferenceEquals(null, other)) return false;
@@ -50,9 +57,6 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 		}
 
-		public void Dispose()
-		{
-			if (_serviceBus != null) _serviceBus.Dispose();
-		}
+		#endregion
 	}
 }
