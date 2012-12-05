@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SevenDigital.Messaging.Dispatch;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending

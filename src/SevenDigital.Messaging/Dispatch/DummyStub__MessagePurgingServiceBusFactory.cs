@@ -1,7 +1,6 @@
 using System;
-using SevenDigital.Messaging.MessageSending;
 
-namespace SevenDigital.Messaging
+namespace SevenDigital.Messaging.Dispatch
 {
 	public class DummyStub__MessagePurgingServiceBusFactory : IServiceBusFactory
 	{

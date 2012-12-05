@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
