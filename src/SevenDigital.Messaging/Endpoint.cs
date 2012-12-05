@@ -6,6 +6,23 @@ namespace SevenDigital.Messaging
 	{
 		readonly string _name;
 
+		public Endpoint(string name)
+		{
+			_name = name;
+		}
+
+		public override string ToString()
+		{
+			return _name;
+		}
+
+		public static implicit operator Endpoint(string value)
+		{
+			return new Endpoint(value);
+		}
+
+		#region Equality members
+
 		public bool Equals(Endpoint other)
 		{
 			if (ReferenceEquals(null, other)) return false;
@@ -26,19 +43,6 @@ namespace SevenDigital.Messaging
 			return (_name != null ? _name.GetHashCode() : 0);
 		}
 
-		public override string ToString()
-		{
-			return _name;
-		}
-
-		public Endpoint(string name)
-		{
-			_name = name;
-		}
-
-		public static implicit operator Endpoint(string value)
-		{
-			return new Endpoint(value);
-		} 
+		#endregion
 	}
 }

@@ -17,6 +17,19 @@ namespace SevenDigital.Messaging.MessageSending
 			node = new Node(host, endpoint, this.serviceBusFactory);
 		}
 
+		public IMessageBinding<T> Handle<T>() where T : class, IMessage
+		{
+			var serviceBus = node.EnsureConnection();
+			return new HandlerTriggering<T>(serviceBus);
+		}
+
+		public void Dispose()
+		{
+			node.Dispose();
+		}
+
+		#region Equality members
+
 		public bool Equals(ReceiverNode other)
 		{
 			if (ReferenceEquals(null, other)) return false;
@@ -28,27 +41,18 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != typeof (ReceiverNode)) return false;
-			return Equals((ReceiverNode) obj);
+			if (obj.GetType() != typeof(ReceiverNode)) return false;
+			return Equals((ReceiverNode)obj);
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				return ((host != null ? host.GetHashCode() : 0)*397) ^ (endpoint != null ? endpoint.GetHashCode() : 0);
+				return ((host != null ? host.GetHashCode() : 0) * 397) ^ (endpoint != null ? endpoint.GetHashCode() : 0);
 			}
 		}
 
-		public void Dispose()
-		{
-			node.Dispose();
-		}
-
-		public IMessageBinding<T> Handle<T>() where T : class, IMessage
-		{
-			var serviceBus = node.EnsureConnection();
-			return new HandlerTriggering<T>(serviceBus);
-		}
+		#endregion
 	}
 }
