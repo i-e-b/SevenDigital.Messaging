@@ -5,7 +5,7 @@ using StructureMap;
 namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 {
 	[TestFixture]
-	public class StructureMapWithLookbackTests
+	public class StructureMapWithLoopbackTests
 	{
 		const string HostName = "my.unique.host";
 

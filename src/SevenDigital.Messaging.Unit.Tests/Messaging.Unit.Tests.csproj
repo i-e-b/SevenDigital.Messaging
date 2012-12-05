@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dispatch\DestinationMessagePollingTests.cs" />
     <Compile Include="Dispatch\PublishMessageTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackConfigurationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
