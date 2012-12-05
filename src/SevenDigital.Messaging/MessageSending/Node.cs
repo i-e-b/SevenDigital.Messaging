@@ -1,5 +1,4 @@
 using System;
-using MassTransit;
 using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.MessageSending
@@ -9,7 +8,6 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessagingHost _host;
 		readonly IRoutingEndpoint _endpoint;
 		readonly IServiceBusFactory _serviceBusFactory;
-		IServiceBus _serviceBus;
 
 		public Node(IMessagingHost host, IRoutingEndpoint endpoint, IServiceBusFactory serviceBusFactory)
 		{
