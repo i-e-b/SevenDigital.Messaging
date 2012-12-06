@@ -55,13 +55,17 @@ namespace SevenDigital.Messaging
 		/// Configure target messaging host. This should be the IP or hostname of a server 
 		/// running RabbitMQ service.
 		/// </summary>
-		/// <param name="host">IP or hostname of a server running RabbitMQ service</param>
-		public MessagingConfiguration WithMessagingServer(string host)
+		/// <param name="hostPath">IP or hostname of a server running RabbitMQ service</param>
+		public MessagingConfiguration WithMessagingServer(string hostPath)
 		{
+			var parts = hostPath.Split('/');
+			var host = parts[0];
+			var vhost = (parts.Length > 1) ? (parts[1]) : ("/");
+
 			ObjectFactory.Configure(map =>
 			{
 				map.For<IMessagingHost>().Use(() => new Host(host));
-				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection(host));
+				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection(host, vhost));
 			});
 			return this;
 		}
