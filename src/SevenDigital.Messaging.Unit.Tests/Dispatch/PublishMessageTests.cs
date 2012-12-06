@@ -15,7 +15,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		public void A_message_dispatch ()
 		{
 			msg = new Mock<IMessagingBase>();
-			subject = new MessageDispatch(msg.Object);
+			subject = new MessageDispatch(msg.Object, null, null);
 		}
 
 		[Test]

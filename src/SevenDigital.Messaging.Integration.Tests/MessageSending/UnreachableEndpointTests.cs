@@ -26,7 +26,8 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			try
 			{
 				sender.SendMessage(new GreenMessage());
-			} catch
+			}
+			catch
 			{
 				Console.WriteLine("Final fail");
 			}
@@ -38,7 +39,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 
 	public class FakeMessageDispatch:IMessageDispatch
 	{
-		public void SubscribeHandler<T>(Action<T> action)
+		public void SubscribeHandler<T>(Action<T> action, string destinationName)
 		{
 		}
 

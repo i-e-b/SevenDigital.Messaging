@@ -6,10 +6,14 @@ namespace SevenDigital.Messaging.Dispatch
 	public class MessageDispatch:IMessageDispatch
 	{
 		readonly IMessagingBase messagingBase;
+		readonly IDestinationPoller destinationPoller;
+		readonly IMessageDispatcher messageDispatcher;
 
-		public MessageDispatch(IMessagingBase messagingBase)
+		public MessageDispatch(IMessagingBase messagingBase, IDestinationPoller destinationPoller, IMessageDispatcher messageDispatcher)
 		{
 			this.messagingBase = messagingBase;
+			this.destinationPoller = destinationPoller;
+			this.messageDispatcher = messageDispatcher;
 		}
 
 		public void Publish<T>(T message)
@@ -21,8 +25,11 @@ namespace SevenDigital.Messaging.Dispatch
 		{
 		}
 
-		public void SubscribeHandler<T>(Action<T> action)
+		public void SubscribeHandler<T>(Action<T> action, string destinationName)
 		{
+			messageDispatcher.AddHandler(action);
+			destinationPoller.AddDestinationToWatch(destinationName);
+			destinationPoller.Start();
 		}
 	}
 }

@@ -20,7 +20,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public IMessageBinding<T> Handle<T>() where T : class, IMessage
 		{
-			return new HandlerTriggering<T>(messageDispatch);
+			return new HandlerTriggering<T>(messageDispatch, endpoint);
 		}
 
 		public void Dispose()

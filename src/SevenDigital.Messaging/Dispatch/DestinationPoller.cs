@@ -10,12 +10,12 @@ namespace SevenDigital.Messaging.Dispatch
 		readonly ISet<string> destinations;
 		readonly IMessagingBase messagingBase;
 		readonly ISleepWrapper sleeper;
-		readonly IMessageToHandlerDispatcher dispatcher;
+		readonly IMessageDispatcher dispatcher;
 		readonly IThreadPoolWrapper pool;
 		Thread pollingThread;
 		volatile bool running;
 
-		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageToHandlerDispatcher dispatcher, IThreadPoolWrapper pool)
+		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageDispatcher dispatcher, IThreadPoolWrapper pool)
 		{
 			this.messagingBase = messagingBase;
 			this.sleeper = sleeper;
@@ -36,14 +36,13 @@ namespace SevenDigital.Messaging.Dispatch
 
 		public void PollingMethod()
 		{
-			object message = null;
-
 			while (running)
 			{
 				var messageCount = 0;
 				var currentDestinations = destinations.ToArray();
 				foreach (var destination in currentDestinations)
 				{
+					object message = null;
 					if (pool.IsThreadAvailable()) message = messagingBase.GetMessage<IMessage>(destination);
 					if (message == null) continue;
 
