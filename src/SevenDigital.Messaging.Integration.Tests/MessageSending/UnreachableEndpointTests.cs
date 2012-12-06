@@ -15,7 +15,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			new MessagingConfiguration().WithDefaults().WithMessagingServer("example.com");
 		}
 
-		[Test]
+		[Test, Explicit]
 		public void Sending_message_should_try_for_at_least_60_seconds ()
 		{
 			var sender = ObjectFactory.GetInstance<ISenderNode>();

@@ -38,8 +38,9 @@ namespace SevenDigital.Messaging
 				map.For<IDispatchInterface>().Use<DispatchInterface>();
 				map.For<INode>().Use<Node>();
 
+				map.For<IMessageDispatcher>().Singleton().Use<MessageDispatcher>(); // this might have to change?
+
 				map.For<IDestinationPoller>().Singleton().Use<DestinationPoller>();
-				map.For<IMessageDispatcher>().Singleton().Use<MessageDispatcher>();
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
                 map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});

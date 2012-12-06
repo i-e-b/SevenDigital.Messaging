@@ -41,7 +41,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 			ColourMessageHandler.AutoResetEvent.Reset();
 			using (var receiverNode = _nodeFactory.Listen())
             {
-				ObjectFactory.GetInstance<IMessageRouter>().Purge(receiverNode.DestinationName);
                 receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
                 var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
