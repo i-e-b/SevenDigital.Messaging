@@ -10,12 +10,12 @@ namespace SevenDigital.Messaging.Dispatch
 		readonly ISet<string> destinations;
 		readonly IMessagingBase messagingBase;
 		readonly ISleepWrapper sleeper;
-		readonly IDispatcher dispatcher;
+		readonly IMessageToHandlerDispatcher dispatcher;
 		readonly IThreadPoolWrapper pool;
 		Thread pollingThread;
 		volatile bool running;
 
-		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IDispatcher dispatcher, IThreadPoolWrapper pool)
+		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageToHandlerDispatcher dispatcher, IThreadPoolWrapper pool)
 		{
 			this.messagingBase = messagingBase;
 			this.sleeper = sleeper;

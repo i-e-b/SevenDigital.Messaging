@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		IDestinationPoller subject;
 		Mock<IMessagingBase> messagingBase;
 		Mock<ISleepWrapper> sleeper;
-		Mock<IDispatcher> dispatcher;
+		Mock<IMessageToHandlerDispatcher> dispatcher;
 		Mock<IThreadPoolWrapper> pool;
 		string destinationName;
 
@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			messagingBase = new Mock<IMessagingBase>();
 			sleeper = new Mock<ISleepWrapper>();
-			dispatcher = new Mock<IDispatcher>();
+			dispatcher = new Mock<IMessageToHandlerDispatcher>();
 			pool = new Mock<IThreadPoolWrapper>();
 			destinationName = "a-destination";
 			pool.Setup(m=>m.IsThreadAvailable()).Returns(true);

@@ -37,6 +37,26 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
+		public void Should_have_destination_poller_as_singleton ()
+		{
+			var instance1 = ObjectFactory.GetInstance<IDestinationPoller>();
+			var instance2 = ObjectFactory.GetInstance<IDestinationPoller>();
+
+			Assert.That(instance1, Is.InstanceOf<DestinationPoller>());
+			Assert.That(instance1, Is.SameAs(instance2));
+		}
+
+		[Test]
+		public void Should_have_handler_dispatcher_as_singleton ()
+		{
+			var instance1 = ObjectFactory.GetInstance<IMessageToHandlerDispatcher>();
+			var instance2 = ObjectFactory.GetInstance<IMessageToHandlerDispatcher>();
+
+			Assert.That(instance1, Is.InstanceOf<MessageToHandlerDispatcher>());
+			Assert.That(instance1, Is.SameAs(instance2));
+		}
+
+		[Test]
 		public void Should_configure_messaging_base ()
 		{
 			Assert.That(ObjectFactory.GetInstance<IMessagingBase>(), Is.Not.Null);
