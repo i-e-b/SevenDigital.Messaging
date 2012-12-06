@@ -30,6 +30,8 @@
 		{
 			return new LoopbackBinder<T>(loopbackNodeFactory);
 		}
+
+		public string DestinationName { get { return ""; }}
 	}
 
 	public class LoopbackBinder<T>:IMessageBinding<T> where T : class, IMessage

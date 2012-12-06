@@ -8,6 +8,8 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 		{
 			return new DummyBinding<T>();
 		}
+
+		public string DestinationName { get; private set; }
 	}
 	
 	public class DummyBinding<T> : IMessageBinding<T> where T : class, IMessage

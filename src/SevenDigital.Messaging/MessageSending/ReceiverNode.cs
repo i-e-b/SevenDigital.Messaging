@@ -23,6 +23,8 @@ namespace SevenDigital.Messaging.MessageSending
 			return new HandlerTriggering<T>(dispatchInterface, endpoint);
 		}
 
+		public string DestinationName { get { return endpoint.ToString(); } }
+
 		public void Dispose()
 		{
 			node.Dispose();
