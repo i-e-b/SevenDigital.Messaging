@@ -21,11 +21,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 			return new RabbitMqQuery("http://"+parts[0]+":55672", "guest", "guest", parts[1]);
 		}
 
-		public static void RemoveAllRoutingFromThisSession()
-		{
-			((RabbitRouter)ObjectFactory.GetInstance<IMessageRouter>()).RemoveRouting();
-		}
-
 		public static void DeleteQueue(string queueName)
 		{
 			ObjectFactory.GetInstance<IRabbitMqConnection>().WithChannel(channel=>channel.QueueDelete(queueName));

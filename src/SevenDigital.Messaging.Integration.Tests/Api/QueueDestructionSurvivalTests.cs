@@ -28,13 +28,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 		}
 
-		[TestFixtureTearDown]
-		public void TearDown()
-		{
-			Console.WriteLine("Cleaning queues");
-			Helper.RemoveAllRoutingFromThisSession();
-		}
-
 		[Test]
 		public void Listener_endpoint_should_survive_queue_being_deleted()
 		{

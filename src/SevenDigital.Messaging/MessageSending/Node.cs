@@ -7,6 +7,7 @@ namespace SevenDigital.Messaging.MessageSending
 {
 	public class Node: INode
 	{
+
 		readonly IMessagingBase messagingBase;
 		readonly IMessageDispatcher messageDispatcher;
 		readonly IDestinationPoller destinationPoller;
@@ -39,29 +40,39 @@ namespace SevenDigital.Messaging.MessageSending
 
 		#region Equality members
 
-		public bool Equals(Node other)
+		protected bool Equals(Node other)
 		{
-			if (ReferenceEquals(null, other)) return false;
-			if (ReferenceEquals(this, other)) return true;
-			return Equals(other.endpoint, endpoint);
+			return Equals(messagingBase, other.messagingBase) && Equals(messageDispatcher, other.messageDispatcher) && Equals(destinationPoller, other.destinationPoller);
 		}
 
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != typeof (Node)) return false;
+			if (obj.GetType() != GetType()) return false;
 			return Equals((Node) obj);
 		}
-
+		
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				return (endpoint != null ? endpoint.GetHashCode() : 0);
+				int hashCode = (messagingBase != null ? messagingBase.GetHashCode() : 0);
+				hashCode = (hashCode*397) ^ (messageDispatcher != null ? messageDispatcher.GetHashCode() : 0);
+				hashCode = (hashCode*397) ^ (destinationPoller != null ? destinationPoller.GetHashCode() : 0);
+				return hashCode;
 			}
 		}
 
+		public static bool operator ==(Node left, Node right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Node left, Node right)
+		{
+			return !Equals(left, right);
+		}
 		#endregion
 	}
 }
