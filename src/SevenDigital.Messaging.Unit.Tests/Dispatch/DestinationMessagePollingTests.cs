@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		IDestinationPoller subject;
 		Mock<IMessagingBase> messagingBase;
 		Mock<ISleepWrapper> sleeper;
-		Mock<IMessageToHandlerDispatcher> dispatcher;
+		Mock<IMessageDispatcher> dispatcher;
 		Mock<IThreadPoolWrapper> pool;
 		string destinationName;
 
@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			messagingBase = new Mock<IMessagingBase>();
 			sleeper = new Mock<ISleepWrapper>();
-			dispatcher = new Mock<IMessageToHandlerDispatcher>();
+			dispatcher = new Mock<IMessageDispatcher>();
 			pool = new Mock<IThreadPoolWrapper>();
 			destinationName = "a-destination";
 			pool.Setup(m=>m.IsThreadAvailable()).Returns(true);
@@ -40,7 +40,17 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		public void Should_try_to_get_message_from_destination ()
 		{
 			subject.Start();
+			Thread.Sleep(100);
+			subject.Stop();
 			messagingBase.Verify(m=>m.GetMessage<IMessage>(destinationName));
+		}
+
+		[Test]
+		public void Can_start_poller_twice_without_exceptions ()
+		{
+			subject.Start();
+			subject.Start();
+			Assert.Pass();
 		}
 
 		[Test]

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
@@ -8,10 +9,12 @@ namespace SevenDigital.Messaging.MessageSending
 	public class HandlerTriggering<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
 	{
 		readonly IMessageDispatch messageDispatch;
+		readonly IRoutingEndpoint endpoint;
 
-		public HandlerTriggering(IMessageDispatch messageDispatch)
+		public HandlerTriggering(IMessageDispatch messageDispatch, IRoutingEndpoint endpoint)
 		{
 			this.messageDispatch = messageDispatch;
+			this.endpoint = endpoint;
 		}
 
 		public void With<THandler>() where THandler : IHandle<TMessage>
@@ -33,7 +36,7 @@ namespace SevenDigital.Messaging.MessageSending
 				}
 				FireHandledOkHooks(msg, hooks);
 
-			});
+			}, endpoint.ToString());
 		}
 
 		static void FireHandledOkHooks(TMessage msg, IEnumerable<IEventHook> hooks)

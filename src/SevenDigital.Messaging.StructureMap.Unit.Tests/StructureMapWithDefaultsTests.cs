@@ -49,10 +49,10 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[Test]
 		public void Should_have_handler_dispatcher_as_singleton ()
 		{
-			var instance1 = ObjectFactory.GetInstance<IMessageToHandlerDispatcher>();
-			var instance2 = ObjectFactory.GetInstance<IMessageToHandlerDispatcher>();
+			var instance1 = ObjectFactory.GetInstance<IMessageDispatcher>();
+			var instance2 = ObjectFactory.GetInstance<IMessageDispatcher>();
 
-			Assert.That(instance1, Is.InstanceOf<MessageToHandlerDispatcher>());
+			Assert.That(instance1, Is.InstanceOf<MessageDispatcher>());
 			Assert.That(instance1, Is.SameAs(instance2));
 		}
 
