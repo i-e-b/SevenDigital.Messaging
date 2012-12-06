@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using NUnit.Framework;
+using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
@@ -8,7 +9,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture, Ignore("Need to implement this after messaging is refactored")]
+	[TestFixture]
 	public class QueueDestructionSurvivalTests
 	{
         INodeFactory nodeFactory;
@@ -16,7 +17,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 		const string TestQueue = "survival_test_endpoint";
 
-		static TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
+		static TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
 
 		[SetUp]
 		public void Setup()
@@ -29,15 +30,13 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
-		public void Listener_endpoint_should_survive_queue_being_deleted()
+		public void Listener_endpoint_should_survive_connection_being_lost()
 		{
 			using (var receiverNode = nodeFactory.TakeFrom(new Endpoint(TestQueue)))
             {
                 receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-				Helper.DeleteQueue(TestQueue);
-
-				Thread.Sleep(LongInterval);
+				KillAndRebuildQueue(receiverNode);
 
                 senderNode.SendMessage(new RedMessage());
                 var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -45,6 +44,14 @@ namespace SevenDigital.Messaging.Integration.Tests
                 Assert.That(colourSignal, Is.True);
 
             }
+		}
+
+		static void KillAndRebuildQueue(IReceiverNode receiverNode)
+		{
+			Helper.DeleteQueue(TestQueue);
+			Thread.Sleep(LongInterval);
+			MessagingBase.ResetRouteCache();
+			receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 		}
 	}
 }

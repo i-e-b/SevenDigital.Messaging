@@ -1,7 +1,7 @@
 using System;
 using Moq;
 using NUnit.Framework;
-using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 
@@ -10,13 +10,13 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 	[TestFixture]
 	public class SendMessageTests
 	{
-		Mock<IDispatchInterface> messageDispatch;
+		Mock<IMessagingBase> messageDispatch;
 		SenderNode _subject;
 
 		[SetUp]
 		public void SetUp()
 		{
-			messageDispatch = new Mock<IDispatchInterface>();
+			messageDispatch = new Mock<IMessagingBase>();
 		    var endpointGenerator = new Mock<ISenderEndpointGenerator>();
 		    endpointGenerator.Setup(g => g.Generate()).Returns(new Endpoint("endpoint"));
 		    _subject = new SenderNode(messageDispatch.Object);
@@ -35,8 +35,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 			var msg = new DummyMessage();
 			_subject.SendMessage(msg);
 
-			// This form of publish is an instance method and can be mocked. The others are extensions and can't be mocked
-			messageDispatch.Verify(b=>b.Publish(msg));
+			messageDispatch.Verify(b=>b.SendMessage(msg));
 		}
 
 		[Test]
@@ -45,7 +44,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 			var msg = new Mock<IMessage>().Object;
 			_subject.SendMessage(msg);
 
-			messageDispatch.Verify(m=>m.Publish(msg));
+			messageDispatch.Verify(m=>m.SendMessage(msg));
 		}
 
 		class DummyMessage : IMessage

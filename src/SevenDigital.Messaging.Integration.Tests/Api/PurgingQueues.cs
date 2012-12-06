@@ -1,6 +1,5 @@
 ﻿using System;
 using NUnit.Framework;
-using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
 using StructureMap;
