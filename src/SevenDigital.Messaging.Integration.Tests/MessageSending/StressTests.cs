@@ -20,13 +20,6 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			sender = ObjectFactory.GetInstance<ISenderNode>();
         }
 
-		[TearDown]
-		public void Teardown()
-		{
-			Console.WriteLine("Cleaning queues");
-			Helper.RemoveAllRoutingFromThisSession();
-		}
-
 		[Test]
 		public void should_be_able_to_send_and_receive_1000_messages_per_minute ()
 		{

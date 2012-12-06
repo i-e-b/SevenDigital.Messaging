@@ -138,5 +138,17 @@ namespace SevenDigital.Messaging
 			return lb.ListenersFor<T>();
 		}
 
+
+		/// <summary>
+		/// Sets integration test mode. This mode cannot be in a running process.
+		/// All nodes will purge their queue on creation. All queues and exchanges with ".Integration."
+		/// in their names will be deleted on disposal.
+		/// </summary>
+		public MessagingConfiguration IntegrationTestMode()
+		{
+			ObjectFactory.EjectAllInstancesOf<INode>();
+			ObjectFactory.Configure(map => map.For<INode>().Use<IntegrationTestNode>());
+			return this;
+		}
 	}
 }

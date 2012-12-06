@@ -61,6 +61,7 @@
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
     <Compile Include="EventHooks\ITestEventHook.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />
+    <Compile Include="MessageSending\IntegrationTestNode.cs" />
     <Compile Include="MessageSending\IMessageBinding.cs" />
     <Compile Include="Dispatch\IDispatchInterface.cs" />
     <Compile Include="IReceiverNode.cs" />

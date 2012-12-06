@@ -26,13 +26,6 @@ namespace SevenDigital.Messaging.Integration.Tests
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();
         }
 
-		[TestFixtureTearDown]
-		public void Teardown()
-		{
-			Console.WriteLine("Cleaning queues");
-			Helper.RemoveAllRoutingFromThisSession();
-		}
-
 	    [Test]
         public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
         {

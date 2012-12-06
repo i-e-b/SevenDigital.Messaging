@@ -23,13 +23,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 			Helper.SetupTestMessaging();
 		}
 
-		[TestFixtureTearDown]
-		public void TearDown()
-		{
-			Console.WriteLine("Cleaning queues");
-			Helper.RemoveAllRoutingFromThisSession();
-		}
-
 		[SetUp]
 		public void SetUp()
 		{
