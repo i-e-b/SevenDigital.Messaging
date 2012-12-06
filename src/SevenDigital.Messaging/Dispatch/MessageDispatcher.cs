@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using SevenDigital.Messaging.Base;
 
 namespace SevenDigital.Messaging.Dispatch
@@ -9,6 +10,7 @@ namespace SevenDigital.Messaging.Dispatch
 	{
 		readonly IThreadPoolWrapper threadPoolWrapper;
 		readonly Dictionary<Type, ActionList> handlers;
+		int runningHandlers;
 
 		public MessageDispatcher(IThreadPoolWrapper threadPoolWrapper)
 		{
@@ -30,7 +32,18 @@ namespace SevenDigital.Messaging.Dispatch
 
 			foreach (var action in actions)
 			{
-				threadPoolWrapper.Do(action);
+				var handlerWrapper = action;
+				threadPoolWrapper.Do(() =>
+				{
+					Interlocked.Increment(ref runningHandlers);
+					try
+					{
+						handlerWrapper();
+					} finally
+					{
+						Interlocked.Decrement(ref runningHandlers);
+					}
+				});
 			}
 		}
 
@@ -50,6 +63,8 @@ namespace SevenDigital.Messaging.Dispatch
 				handlers[typeof(T)].Add(handlerAction);
 			}
 		}
+
+		public int HandlersInflight { get { return runningHandlers; } }
 
 		public IEnumerable<Action<T>> HandlersForType<T>()
 		{

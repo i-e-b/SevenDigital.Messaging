@@ -6,5 +6,6 @@ namespace SevenDigital.Messaging.Dispatch
 	{
 		void TryDispatch(object messageObject);
 		void AddHandler<T>(Action<T> handlerAction);
+		int HandlersInflight { get; }
 	}
 }
