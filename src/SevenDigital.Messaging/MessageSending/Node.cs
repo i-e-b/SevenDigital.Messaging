@@ -1,30 +1,40 @@
 using System;
+using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.MessageSending
 {
-	public class Node: IDisposable
+	public class Node: INode
 	{
-		readonly IMessagingHost _host;
-		readonly IRoutingEndpoint _endpoint;
-		readonly IDispatchInterface dispatchInterface;
+		readonly IMessagingBase messagingBase;
+		readonly IMessageDispatcher messageDispatcher;
+		readonly IDestinationPoller destinationPoller;
+		string endpoint;
 
-		public Node(IMessagingHost host, IRoutingEndpoint endpoint, IDispatchInterface dispatchInterface)
+		public Node(IMessagingBase messagingBase, IMessageDispatcher messageDispatcher, IDestinationPoller destinationPoller)
 		{
-			_host = host;
-			_endpoint = endpoint;
-			this.dispatchInterface = dispatchInterface;
-		}
-
-		public Uri Address
-		{
-			get { return new Uri( "rabbitmq://" + _host + "/" + _endpoint); }
+			this.messagingBase = messagingBase;
+			this.messageDispatcher = messageDispatcher;
+			this.destinationPoller = destinationPoller;
 		}
 
 		public void Dispose()
 		{
-			if (dispatchInterface != null) dispatchInterface.Dispose();
+			destinationPoller.Stop();
+		}
+
+		public void SetEndpoint(IRoutingEndpoint targetEndpoint)
+		{
+			endpoint = targetEndpoint.ToString();
+		}
+
+		public void SubscribeHandler<T>(Action<T> action) where T: class
+		{
+			messagingBase.CreateDestination<T>(endpoint);
+			messageDispatcher.AddHandler(action);
+			destinationPoller.SetDestinationToWatch(endpoint);
+			destinationPoller.Start();
 		}
 
 		#region Equality members
@@ -33,7 +43,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return Equals(other._host, _host) && Equals(other._endpoint, _endpoint);
+			return Equals(other.endpoint, endpoint);
 		}
 
 		public override bool Equals(object obj)
@@ -48,7 +58,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			unchecked
 			{
-				return ((_host != null ? _host.GetHashCode() : 0)*397) ^ (_endpoint != null ? _endpoint.GetHashCode() : 0);
+				return (endpoint != null ? endpoint.GetHashCode() : 0);
 			}
 		}
 

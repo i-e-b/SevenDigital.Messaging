@@ -2,7 +2,7 @@ namespace SevenDigital.Messaging.Dispatch
 {
 	public interface IDestinationPoller
 	{
-		void AddDestinationToWatch(string destination);
+		void SetDestinationToWatch(string targetDestination);
 		void Start();
 		void Stop();
 	}

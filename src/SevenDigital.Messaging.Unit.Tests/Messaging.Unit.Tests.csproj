@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dispatch\DestinationMessagePollingTests.cs" />
-    <Compile Include="Dispatch\DispatcherDisposalTest.cs" />
+    <Compile Include="Dispatch\NodeDisposalTest.cs" />
     <Compile Include="Dispatch\MessageDispatcherTests.cs" />
     <Compile Include="Dispatch\PublishMessageTests.cs" />
     <Compile Include="Dispatch\SubscribeHandlerTests.cs" />
@@ -67,8 +67,6 @@
     <Compile Include="MessageSending\NodeFactoryTests\CompeteForTests.cs" />
     <Compile Include="MessageSending\NodeFactoryTests\ListenerTests.cs" />
     <Compile Include="MessageSending\NodeFactoryTests\SenderTests.cs" />
-    <Compile Include="MessageSending\NodeTests\AddressTests.cs" />
-    <Compile Include="MessageSending\NodeTests\ReceiveMessageTests.cs" />
     <Compile Include="MessageSending\NodeTests\SendMessageTests.cs" />
   </ItemGroup>
   <ItemGroup>

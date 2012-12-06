@@ -1,25 +1,21 @@
 using System;
 using System.Collections.Generic;
-using SevenDigital.Messaging.Dispatch;
-using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
 {
 	public class HandlerTriggering<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
 	{
-		readonly IDispatchInterface dispatchInterface;
-		readonly IRoutingEndpoint endpoint;
+		readonly INode listenerNode;
 
-		public HandlerTriggering(IDispatchInterface dispatchInterface, IRoutingEndpoint endpoint)
+		public HandlerTriggering(INode listenerNode)
 		{
-			this.dispatchInterface = dispatchInterface;
-			this.endpoint = endpoint;
+			this.listenerNode = listenerNode;
 		}
 
 		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			dispatchInterface.SubscribeHandler<TMessage>(msg =>
+			listenerNode.SubscribeHandler<TMessage>(msg =>
 			{
 
 				var hooks = ObjectFactory.GetAllInstances<IEventHook>();
@@ -36,7 +32,7 @@ namespace SevenDigital.Messaging.MessageSending
 				}
 				FireHandledOkHooks(msg, hooks);
 
-			}, endpoint.ToString());
+			});
 		}
 
 		static void FireHandledOkHooks(TMessage msg, IEnumerable<IEventHook> hooks)

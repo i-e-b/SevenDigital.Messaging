@@ -24,7 +24,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 			_senderEndpoint = new Endpoint("a.sender.com");
 			_senderEndPointGenerator.Setup(x => x.Generate()).Returns(_senderEndpoint);
             
-			_subject = new SenderNode(_host, _senderEndPointGenerator.Object, messageDispatch.Object);
+			_subject = new SenderNode(_host, messageDispatch.Object);
 		}
 
 		[Test]
@@ -36,7 +36,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 		[Test]
 		public void Sender_should_create_sender_node_with_unique_endpoint()
 		{
-            Assert.That(_subject, Is.EqualTo(new SenderNode(_host, _senderEndPointGenerator.Object, null)));
+            Assert.That(_subject, Is.EqualTo(new SenderNode(_host, null)));
 		}
 	}
 }

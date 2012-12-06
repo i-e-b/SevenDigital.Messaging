@@ -8,13 +8,10 @@ namespace SevenDigital.Messaging.MessageSending
 	public class SenderNode : ISenderNode
 	{
 		readonly IDispatchInterface dispatchInterface;
-		readonly Node node;
 
-		public SenderNode(IMessagingHost host, ISenderEndpointGenerator endpointGenerator, IDispatchInterface dispatchInterface)
+		public SenderNode(IMessagingHost host, IDispatchInterface dispatchInterface)
 		{
 			this.dispatchInterface = dispatchInterface;
-			var endpoint = endpointGenerator.Generate();
-			node = new Node(host, endpoint, dispatchInterface);
 		}
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
@@ -44,29 +41,5 @@ namespace SevenDigital.Messaging.MessageSending
 				}
 			}
 		}
-
-		#region Equality members
-
-		public bool Equals(SenderNode other)
-		{
-			if (ReferenceEquals(null, other)) return false;
-			if (ReferenceEquals(this, other)) return true;
-			return Equals(other.node, node);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != typeof(SenderNode)) return false;
-			return Equals((SenderNode)obj);
-		}
-
-		public override int GetHashCode()
-		{
-			return (node != null ? node.GetHashCode() : 0);
-		}
-
-		#endregion
 	}
 }

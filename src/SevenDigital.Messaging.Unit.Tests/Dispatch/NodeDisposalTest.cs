@@ -1,11 +1,12 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 {
 	[TestFixture]
-	public class DispatcherDisposalTest
+	public class NodeDisposalTest
 	{
 		Mock<IDestinationPoller> poller;
 
@@ -14,7 +15,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			poller = new Mock<IDestinationPoller>();
 
-			using (new DispatchInterface(null, poller.Object, null))
+			using (new Node(null, null, poller.Object))
 			{
 			}
 

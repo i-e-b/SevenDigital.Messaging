@@ -1,6 +1,5 @@
 using Moq;
 using NUnit.Framework;
-using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 
@@ -10,10 +9,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 	public class ListenerTests
 	{
 		INodeFactory _subject;
-		Host _host;
 		Mock<IUniqueEndpointGenerator> _uniqueEndPointGenerator;
-		Mock<ISenderEndpointGenerator> _senderEndPointGenerator;
-		Mock<IDispatchInterface> messageDispatch;
 		IReceiverNode _result;
 		Endpoint _uniqueEndpoint;
 
@@ -21,10 +17,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 		public void SetUp()
 		{
 			_uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
-			_senderEndPointGenerator = new Mock<ISenderEndpointGenerator>();
-			messageDispatch = new Mock<IDispatchInterface>();
-			_host = new Host("myMachine");
-			_subject = new NodeFactory(_host, _uniqueEndPointGenerator.Object, _senderEndPointGenerator.Object, messageDispatch.Object);
+			_subject = new NodeFactory(_uniqueEndPointGenerator.Object);
 			_uniqueEndpoint = new Endpoint("some wordz");
 			_uniqueEndPointGenerator.Setup(x => x.Generate()).Returns(_uniqueEndpoint);
 
@@ -46,7 +39,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 		[Test]
 		public void Listener_should_create_receiver_node_with_unique_endpoint()
 		{
-			Assert.That(_result, Is.EqualTo(new ReceiverNode(_host, _uniqueEndpoint, null)));
+			Assert.That(_result, Is.EqualTo(new ReceiverNode(_uniqueEndpoint)));
 		}
 	}
 }
