@@ -63,6 +63,7 @@
     <Compile Include="EventHooks\TestEventHook.cs" />
     <Compile Include="MessageSending\IMessageBinding.cs" />
     <Compile Include="Dispatch\IDispatchInterface.cs" />
+    <Compile Include="MessageSending\INode.cs" />
     <Compile Include="MessageSending\Loopback\DummyBinder.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackBinding.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackNodeFactory.cs" />

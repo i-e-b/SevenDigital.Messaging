@@ -1,26 +1,23 @@
-using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Routing;
+using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
 {
 	public class ReceiverNode : IReceiverNode
 	{
-		readonly IMessagingHost host;
 		readonly IRoutingEndpoint endpoint;
-		readonly IDispatchInterface dispatchInterface;
-		readonly Node node;
+		readonly INode node;
 
-		public ReceiverNode(IMessagingHost host, IRoutingEndpoint endpoint, IDispatchInterface dispatchInterface)
+		public ReceiverNode(IRoutingEndpoint endpoint)
 		{
-			this.host = host;
 			this.endpoint = endpoint;
-			this.dispatchInterface = dispatchInterface;
-			node = new Node(host, endpoint, this.dispatchInterface);
+			node = ObjectFactory.GetInstance<INode>();
+			node.SetEndpoint(endpoint);
 		}
 
 		public IMessageBinding<T> Handle<T>() where T : class, IMessage
 		{
-			return new HandlerTriggering<T>(dispatchInterface, endpoint);
+			return new HandlerTriggering<T>(node);
 		}
 
 		public string DestinationName { get { return endpoint.ToString(); } }
@@ -31,12 +28,12 @@ namespace SevenDigital.Messaging.MessageSending
 		}
 
 		#region Equality members
-
+		
 		public bool Equals(ReceiverNode other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return Equals(other.host, host) && Equals(other.endpoint, endpoint);
+			return  Equals(other.endpoint, endpoint);
 		}
 
 		public override bool Equals(object obj)
@@ -51,10 +48,10 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			unchecked
 			{
-				return ((host != null ? host.GetHashCode() : 0) * 397) ^ (endpoint != null ? endpoint.GetHashCode() : 0);
+				return (endpoint != null ? endpoint.GetHashCode() : 0);
 			}
 		}
-
+		
 		#endregion
 	}
 }

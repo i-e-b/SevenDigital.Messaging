@@ -21,17 +21,5 @@ namespace SevenDigital.Messaging.Dispatch
 			messagingBase.SendMessage(message);
 		}
 
-		public void Dispose()
-		{
-			destinationPoller.Stop();
-		}
-
-		public void SubscribeHandler<T>(Action<T> action, string destinationName) where T: class
-		{
-			messagingBase.CreateDestination<T>(destinationName);
-			messageDispatcher.AddHandler(action);
-			destinationPoller.AddDestinationToWatch(destinationName);
-			destinationPoller.Start();
-		}
 	}
 }

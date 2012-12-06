@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 
@@ -7,7 +5,7 @@ namespace SevenDigital.Messaging.Dispatch
 {
 	public class DestinationPoller : IDestinationPoller
 	{
-		readonly ISet<string> destinations;
+		string destination;
 		readonly IMessagingBase messagingBase;
 		readonly ISleepWrapper sleeper;
 		readonly IMessageDispatcher dispatcher;
@@ -21,40 +19,30 @@ namespace SevenDigital.Messaging.Dispatch
 			this.sleeper = sleeper;
 			this.dispatcher = dispatcher;
 			this.pool = pool;
-
-			destinations = new HashSet<string>();
 		}
 
-		public void AddDestinationToWatch(string destination)
+		public void SetDestinationToWatch(string targetDestination)
 		{
-			lock (destinations)
-			{
-				destinations.Add(destination);
-			}
+			destination = targetDestination;
 		}
 
 		public void PollingMethod()
 		{
-			int sleep = 0;
+			var sleep = 0;
 			while (running)
 			{
-				var messageCount = 0;
-				var currentDestinations = destinations.ToArray();
-				foreach (var destination in currentDestinations)
+				object message = null;
+				if (pool.IsThreadAvailable()) message = GetMessageRobust();
+				if (message != null)
 				{
-					object message = null;
-					if (pool.IsThreadAvailable()) message = GetMessageRobust(destination);
-					if (message == null) continue;
-
 					dispatcher.TryDispatch(message);
-					messageCount++;
 					sleep = 0;
 				}
-
-				if (messageCount >= 1) continue;
-
-				sleeper.Sleep(sleep);
-				sleep = burstSleep(sleep);
+				else
+				{
+					sleeper.Sleep(sleep);
+					sleep = burstSleep(sleep);
+				}
 			}
 		}
 
@@ -68,7 +56,7 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 		}
 
-		IMessage GetMessageRobust(string destination)
+		IMessage GetMessageRobust()
 		{
 			// Should be able to re-bind queues here?
 			return messagingBase.GetMessage<IMessage>(destination);

@@ -3,13 +3,14 @@ using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 {
 	[TestFixture]
 	public class SubscribeHandlerTests
 	{
-		IDispatchInterface subject;
+		INode subject;
 		Mock<IMessagingBase> messagingBase;
 		Mock<IDestinationPoller> destinationPoller;
 		Mock<IMessageDispatcher> messageDispatcher;
@@ -22,10 +23,11 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			messagingBase = new Mock<IMessagingBase>();
 			destinationPoller = new Mock<IDestinationPoller>();
 			messageDispatcher = new Mock<IMessageDispatcher>();
-			subject = new DispatchInterface(messagingBase.Object, destinationPoller.Object, messageDispatcher.Object);
+			subject = new Node(messagingBase.Object, messageDispatcher.Object, destinationPoller.Object);
+			subject.SetEndpoint(new Endpoint(destinationName));
 
 			myAction = msg => { };
-			subject.SubscribeHandler(myAction, destinationName);
+			subject.SubscribeHandler(myAction);
 		}
 
 		[Test]
@@ -49,7 +51,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void Should_make_sure_destination_poller_is_watching_target_destination ()
 		{
-			destinationPoller.Verify(m=>m.AddDestinationToWatch(destinationName));
+			destinationPoller.Verify(m=>m.SetDestinationToWatch(destinationName));
 		}
 	}
 }
