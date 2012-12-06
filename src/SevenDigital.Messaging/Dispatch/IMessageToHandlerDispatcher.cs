@@ -1,6 +1,6 @@
 namespace SevenDigital.Messaging.Dispatch
 {
-	public interface IDispatcher
+	public interface IMessageToHandlerDispatcher
 	{
 		void TryDispatch(object fakeMsg);
 	}
