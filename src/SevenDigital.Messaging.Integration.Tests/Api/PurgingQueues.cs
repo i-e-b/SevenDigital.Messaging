@@ -1,12 +1,13 @@
 ﻿using System;
 using NUnit.Framework;
+using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture, Ignore("Purging not currently implemented")]
+	[TestFixture]
 	public class PurgingQueues
 	{
         INodeFactory _nodeFactory;
@@ -20,6 +21,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void StartMessaging()
 		{
 			Helper.SetupTestMessaging();
+		}
+		[TestFixtureTearDown]
+		public void Teardown()
+		{
+			Console.WriteLine("Cleaning queues");
+			Helper.RemoveAllRoutingFromThisSession();
 		}
 
         [SetUp]
@@ -37,8 +44,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_not_get_messages_waiting_on_queue_when_starting_a_new_listener()
 		{
+			ColourMessageHandler.AutoResetEvent.Reset();
 			using (var receiverNode = _nodeFactory.Listen())
             {
+				ObjectFactory.GetInstance<IMessageRouter>().Purge(receiverNode.DestinationName);
                 receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
                 var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);

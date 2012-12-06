@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			Helper.RemoveAllRoutingFromThisSession();
 		}
 
-		[Test, Ignore("Messaging base not hooked in")]
+		[Test]
 		public void should_be_able_to_send_and_receive_1000_messages_per_minute ()
 		{
 			using (var listener = nodeFactory.TakeFrom("ping-pong-endpoint"))
@@ -38,7 +38,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 				sender.SendMessage(new PingMessage());
 
 				var result = PongHandler.Trigger.WaitOne(TimeSpan.FromSeconds(60));
-				Assert.True(result);
+				Assert.True(result, "Only got "+(PongHandler.Count * 2)+" in a minute");
 			}
 		}
 	}

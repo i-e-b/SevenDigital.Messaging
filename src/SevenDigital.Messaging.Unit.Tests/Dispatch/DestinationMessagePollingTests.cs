@@ -61,7 +61,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.Start();
 			Thread.Sleep(100);
 			subject.Stop();
-			sleeper.Verify(m=>m.Sleep());
+			sleeper.Verify(m=>m.Sleep(It.IsAny<int>()));
 		}
 
 		[Test]
@@ -73,7 +73,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.Start();
 			Thread.Sleep(100);
 			subject.Stop();
-			sleeper.Verify(m=>m.Sleep(), Times.Never());
+			sleeper.Verify(m=>m.Sleep(It.IsAny<int>()), Times.Never());
 		}
 
 		[Test]
@@ -97,7 +97,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			Thread.Sleep(750);
 			subject.Stop();
 			messagingBase.Verify(m=>m.GetMessage<IMessage>(destinationName), Times.Never());
-			sleeper.Verify(m=>m.Sleep());
+			sleeper.Verify(m=>m.Sleep(It.IsAny<int>()));
 		}
 
 		[Test]

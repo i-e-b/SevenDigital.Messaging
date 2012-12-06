@@ -6,7 +6,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 {
-	[TestFixture, Ignore("Messaging base not hooked in")]
+	[TestFixture]
 	public class UnreachableEndpointTests
 	{
 		[SetUp]
@@ -18,8 +18,6 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		[Test]
 		public void Sending_message_should_try_for_at_least_60_seconds ()
 		{
-			ObjectFactory.Configure(map=>map.For<IDispatchInterface>().Use<FakeDispatchInterface>());
-
 			var sender = ObjectFactory.GetInstance<ISenderNode>();
 			var start = DateTime.Now;
 
@@ -34,21 +32,6 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 
 			var time = DateTime.Now - start;
 			Assert.That(time.TotalSeconds, Is.GreaterThan(60));
-		}
-	}
-
-	public class FakeDispatchInterface:IDispatchInterface
-	{
-		public void SubscribeHandler<T>(Action<T> action, string destinationName)where T: class
-		{
-		}
-
-		public void Publish<T>(T message)
-		{
-		}
-
-		public void Dispose()
-		{
 		}
 	}
 }

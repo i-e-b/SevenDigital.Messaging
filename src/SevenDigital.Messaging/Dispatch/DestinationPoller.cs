@@ -35,6 +35,7 @@ namespace SevenDigital.Messaging.Dispatch
 
 		public void PollingMethod()
 		{
+			int sleep = 0;
 			while (running)
 			{
 				var messageCount = 0;
@@ -47,9 +48,23 @@ namespace SevenDigital.Messaging.Dispatch
 
 					dispatcher.TryDispatch(message);
 					messageCount++;
+					sleep = 0;
 				}
 
-				if (messageCount < 1) sleeper.Sleep();
+				if (messageCount >= 1) continue;
+
+				sleeper.Sleep(sleep);
+				sleep = burstSleep(sleep);
+			}
+		}
+
+		int burstSleep(int sleep)
+		{
+			switch (sleep)
+			{
+				case 0: return 1;
+				case 1: return 50;
+				default: return 250;
 			}
 		}
 

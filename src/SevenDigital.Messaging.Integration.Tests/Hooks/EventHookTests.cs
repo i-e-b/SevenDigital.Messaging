@@ -26,6 +26,13 @@ namespace SevenDigital.Messaging.Integration.Tests
 			Helper.SetupTestMessaging();
 		}
 
+		[TestFixtureTearDown]
+		public void TearDown()
+		{
+			Console.WriteLine("Cleaning queues");
+			Helper.RemoveAllRoutingFromThisSession();
+		}
+
 		[SetUp]
 		public void SetUp()
 		{
@@ -50,18 +57,20 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_trigger_event_hook_with_message_when_receiving_a_message ()
 		{
+			var message = new GreenMessage();
 			using (var receiverNode = node_factory.Listen())
 			{
-				var message = new GreenMessage();
 
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 				senderNode.SendMessage(message);
 
 				Assert.That(ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval));
 
-				ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
-
-				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
+			} 
+			ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
+			lock (mock_event_hook)
+			{
+				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
 			}
 		}
 

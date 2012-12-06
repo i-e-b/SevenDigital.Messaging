@@ -1,5 +1,6 @@
 using System;// ReSharper disable InconsistentNaming
 using NUnit.Framework;
+using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
@@ -85,6 +86,7 @@ namespace SevenDigital.Messaging.Integration.Tests
         {
             using (var receiverNode = _nodeFactory.Listen())
             {
+				ObjectFactory.GetInstance<IMessageRouter>().Purge(receiverNode.DestinationName);
                 receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
                 _senderNode.SendMessage(new JokerMessage());
@@ -98,8 +100,10 @@ namespace SevenDigital.Messaging.Integration.Tests
         [Test]
         public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_named_endpoint()
         {
+			ColourMessageHandler.AutoResetEvent.Reset();
             using (var receiverNode = _nodeFactory.TakeFrom(new Endpoint("unregistered-message-endpoint")))
             {
+				ObjectFactory.GetInstance<IMessageRouter>().Purge(receiverNode.DestinationName);
                 receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
                 _senderNode.SendMessage(new JokerMessage());
@@ -110,7 +114,7 @@ namespace SevenDigital.Messaging.Integration.Tests
             }
         }
 
-        [Test]
+        [Test, Ignore("Message dispatch no longer works like this!")]
         public void Only_one_handler_should_fire_when_competing_for_an_endpoint()
         {
             using (var namedReceiverNode1 = _nodeFactory.TakeFrom(new Endpoint("shared-endpoint")))

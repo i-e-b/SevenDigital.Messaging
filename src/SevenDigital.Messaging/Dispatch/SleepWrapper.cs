@@ -4,14 +4,14 @@ namespace SevenDigital.Messaging.Dispatch
 {
 	public class SleepWrapper : ISleepWrapper
 	{
-		public void Sleep()
+		public void Sleep(int i)
 		{
-			Thread.Sleep(250);
+			Thread.Sleep(0);
 		}
 	}
 
 	public interface ISleepWrapper
 	{
-		void Sleep();
+		void Sleep(int i);
 	}
 }
