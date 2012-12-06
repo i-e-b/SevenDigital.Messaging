@@ -7,13 +7,13 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-    [TestFixture, Ignore("Messaging base not hooked in")]
+    [TestFixture]
     public class SendingAndReceivingTests
     {
         INodeFactory _nodeFactory;
         private ISenderNode _senderNode;
 
-        protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
+        protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(20); } }
         protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
         [SetUp]
@@ -25,7 +25,7 @@ namespace SevenDigital.Messaging.Integration.Tests
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();
         }
 
-		[TearDown]
+		[TestFixtureTearDown]
 		public void Teardown()
 		{
 			Console.WriteLine("Cleaning queues");

@@ -8,8 +8,8 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 	public class MessageDispatcherTests
 	{
 		IMessageDispatcher subject;
-		Action<IMessage> testHandler;
-		Action<IMessage> anotherHandler;
+		Action<ITestMessage> testHandler;
+		Action<ITestMessage> anotherHandler;
 		Action<IDifferentTypeMessage> aDifferentType;
 		IThreadPoolWrapper mockThreadPool;
 
@@ -31,7 +31,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		public void When_adding_handler_should_have_that_handler_registered ()
 		{
 			subject.AddHandler(testHandler);
-			Assert.That(((MessageDispatcher)subject).HandlersForType<IMessage>(), 
+			Assert.That(((MessageDispatcher)subject).HandlersForType<ITestMessage>(), 
 				Is.EquivalentTo( new [] {testHandler} ));
 		}
 
@@ -40,7 +40,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			subject.AddHandler(testHandler);
 			subject.AddHandler(anotherHandler);
-			Assert.That(((MessageDispatcher)subject).HandlersForType<IMessage>(), 
+			Assert.That(((MessageDispatcher)subject).HandlersForType<ITestMessage>(), 
 				Is.EquivalentTo( new [] {testHandler, anotherHandler} ));
 		}
 
@@ -51,7 +51,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.AddHandler(anotherHandler);
 			subject.AddHandler(aDifferentType);
 
-			Assert.That(((MessageDispatcher)subject).HandlersForType<IMessage>(), 
+			Assert.That(((MessageDispatcher)subject).HandlersForType<ITestMessage>(), 
 				Is.EquivalentTo( new [] {testHandler, anotherHandler} ));
 
 			Assert.That(((MessageDispatcher)subject).HandlersForType<IDifferentTypeMessage>(), 
@@ -72,6 +72,22 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			Assert.That(anotherHandlerHits, Is.EqualTo(1));
 			Assert.That(aDifferentHits, Is.EqualTo(0));
 		}
+		
+		[Test]
+		public void When_dispatching_a_super_class_message_should_send_all_matching_handlers_to_thread_pool ()
+		{
+			testHandlerHits = anotherHandlerHits = aDifferentHits = 0;
+			subject.AddHandler(testHandler);
+			subject.AddHandler(anotherHandler);
+			subject.AddHandler(aDifferentType);
+
+			subject.TryDispatch(new SuperMessage());
+
+			Assert.That(testHandlerHits, Is.EqualTo(1));
+			Assert.That(anotherHandlerHits, Is.EqualTo(1));
+			Assert.That(aDifferentHits, Is.EqualTo(0));
+		}
+		
 	}
 
 	public class FakeThreadPool : IThreadPoolWrapper
@@ -87,11 +103,21 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		}
 	}
 
-	public class FakeMessage:IMessage
+	public class FakeMessage:ITestMessage
 	{
 		public Guid CorrelationId { get; set; }
 	}
-
+	public class SuperMessage:ISuperTestMessage
+	{
+		public Guid CorrelationId { get; set; }
+	}
+	
+	interface ITestMessage:IMessage
+	{
+	}
+	interface ISuperTestMessage:ITestMessage
+	{
+	}
 	interface IDifferentTypeMessage:IMessage
 	{
 	}

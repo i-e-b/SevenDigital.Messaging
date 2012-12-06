@@ -56,18 +56,18 @@ namespace SevenDigital.Messaging.Dispatch
 
 		public void Start()
 		{
-			running = true;
-			if (pollingThread.ThreadState == ThreadState.Stopped) pollingThread = new Thread(PollingMethod);
-			if (pollingThread.ThreadState != ThreadState.Running) pollingThread.Start();
+			if (running) return;
+			lock (pollingThread)
+			{
+				running = true;
+				if (pollingThread.ThreadState == ThreadState.Stopped) pollingThread = new Thread(PollingMethod);
+				if (pollingThread.ThreadState != ThreadState.Running) pollingThread.Start();
+			}
 		}
 
 		public void Stop()
 		{
-			if (running)
-			{
-				running = false;
-				pollingThread.Join();
-			}
+			running = false;
 		}
 	}
 }
