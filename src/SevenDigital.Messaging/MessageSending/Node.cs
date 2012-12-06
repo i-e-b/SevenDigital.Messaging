@@ -8,13 +8,13 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		readonly IMessagingHost _host;
 		readonly IRoutingEndpoint _endpoint;
-		readonly IMessageDispatch messageDispatch;
+		readonly IDispatchInterface dispatchInterface;
 
-		public Node(IMessagingHost host, IRoutingEndpoint endpoint, IMessageDispatch messageDispatch)
+		public Node(IMessagingHost host, IRoutingEndpoint endpoint, IDispatchInterface dispatchInterface)
 		{
 			_host = host;
 			_endpoint = endpoint;
-			this.messageDispatch = messageDispatch;
+			this.dispatchInterface = dispatchInterface;
 		}
 
 		public Uri Address
@@ -24,7 +24,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void Dispose()
 		{
-			if (messageDispatch != null) messageDispatch.Dispose();
+			if (dispatchInterface != null) dispatchInterface.Dispose();
 		}
 
 		#region Equality members

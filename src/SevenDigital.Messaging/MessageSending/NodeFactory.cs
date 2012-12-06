@@ -7,23 +7,23 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		private readonly IMessagingHost _host;
 		private readonly IEndpointGenerator _uniqueEndPointGenerator;
-	    private readonly IMessageDispatch messageDispatch;
+	    private readonly IDispatchInterface dispatchInterface;
 
-	    public NodeFactory(IMessagingHost host, IUniqueEndpointGenerator uniqueEndPointGenerator, ISenderEndpointGenerator senderEndpoint, IMessageDispatch messageDispatch)
+	    public NodeFactory(IMessagingHost host, IUniqueEndpointGenerator uniqueEndPointGenerator, ISenderEndpointGenerator senderEndpoint, IDispatchInterface dispatchInterface)
 		{
 			_host = host;
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
-	        this.messageDispatch = messageDispatch;
+	        this.dispatchInterface = dispatchInterface;
 		}
 
 		public IReceiverNode TakeFrom(Endpoint endpoint)
 		{
-			return new ReceiverNode(_host, endpoint, messageDispatch);
+			return new ReceiverNode(_host, endpoint, dispatchInterface);
 		}
 
 		public IReceiverNode Listen()
 		{
-			return new ReceiverNode(_host, _uniqueEndPointGenerator.Generate(), messageDispatch);
+			return new ReceiverNode(_host, _uniqueEndPointGenerator.Generate(), dispatchInterface);
 		}
 	}
 }

@@ -91,14 +91,14 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[Test]
 		public void Should_have_message_dispatch_instance ()
 		{
-			Assert.That(ObjectFactory.GetInstance<IMessageDispatch>(), Is.InstanceOf<MessageDispatch>());
+			Assert.That(ObjectFactory.GetInstance<IDispatchInterface>(), Is.InstanceOf<DispatchInterface>());
 		}
 
 		[Test]
 		public void Message_dispatch_should_be_singleton ()
 		{
-			var instance_1 = ObjectFactory.GetInstance<IMessageDispatch>();
-			var instance_2 = ObjectFactory.GetInstance<IMessageDispatch>();
+			var instance_1 = ObjectFactory.GetInstance<IDispatchInterface>();
+			var instance_2 = ObjectFactory.GetInstance<IDispatchInterface>();
 
 			Assert.That(instance_1, Is.SameAs(instance_2));
 		}

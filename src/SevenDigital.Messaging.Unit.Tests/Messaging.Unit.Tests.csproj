@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dispatch\DestinationMessagePollingTests.cs" />
+    <Compile Include="Dispatch\MessageDispatcherTests.cs" />
     <Compile Include="Dispatch\PublishMessageTests.cs" />
     <Compile Include="Dispatch\SubscribeHandlerTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackConfigurationTests.cs" />

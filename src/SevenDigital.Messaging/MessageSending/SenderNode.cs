@@ -7,14 +7,14 @@ namespace SevenDigital.Messaging.MessageSending
 {
 	public class SenderNode : ISenderNode
 	{
-		readonly IMessageDispatch messageDispatch;
+		readonly IDispatchInterface dispatchInterface;
 		readonly Node node;
 
-		public SenderNode(IMessagingHost host, ISenderEndpointGenerator endpointGenerator, IMessageDispatch messageDispatch)
+		public SenderNode(IMessagingHost host, ISenderEndpointGenerator endpointGenerator, IDispatchInterface dispatchInterface)
 		{
-			this.messageDispatch = messageDispatch;
+			this.dispatchInterface = dispatchInterface;
 			var endpoint = endpointGenerator.Generate();
-			node = new Node(host, endpoint, messageDispatch);
+			node = new Node(host, endpoint, dispatchInterface);
 		}
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
@@ -37,7 +37,7 @@ namespace SevenDigital.Messaging.MessageSending
 			{
 				try
 				{
-					messageDispatch.Publish(message);
+					dispatchInterface.Publish(message);
 					break;
 				} catch { continue; }
 			}

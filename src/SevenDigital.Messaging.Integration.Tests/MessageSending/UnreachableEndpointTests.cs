@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		[Test]
 		public void Sending_message_should_try_for_at_least_60_seconds ()
 		{
-			ObjectFactory.Configure(map=>map.For<IMessageDispatch>().Use<FakeMessageDispatch>());
+			ObjectFactory.Configure(map=>map.For<IDispatchInterface>().Use<FakeDispatchInterface>());
 
 			var sender = ObjectFactory.GetInstance<ISenderNode>();
 			var start = DateTime.Now;
@@ -37,9 +37,9 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		}
 	}
 
-	public class FakeMessageDispatch:IMessageDispatch
+	public class FakeDispatchInterface:IDispatchInterface
 	{
-		public void SubscribeHandler<T>(Action<T> action, string destinationName)
+		public void SubscribeHandler<T>(Action<T> action, string destinationName)where T: class
 		{
 		}
 

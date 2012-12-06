@@ -10,13 +10,13 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 	public class ReceiveMessageTests
 	{
 		ReceiverNode _receiverNode;
-		Mock<IMessageDispatch> messageDispatch;
+		Mock<IDispatchInterface> messageDispatch;
 		IMessageBinding<IFakeMessage> _messageBinding;
 
 		[SetUp]
 		public void SetUp()
 		{
-			messageDispatch = new Mock<IMessageDispatch>();
+			messageDispatch = new Mock<IDispatchInterface>();
 
 			_receiverNode = new ReceiverNode(new Host("host"), new Endpoint("endpoint"), messageDispatch.Object);
 

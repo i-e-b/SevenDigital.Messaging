@@ -5,9 +5,9 @@ namespace SevenDigital.Messaging.Dispatch
 {
 	public class ThreadPoolWrapper : IThreadPoolWrapper
 	{
-		public void Do(Action<object> action)
+		public void Do(Action action) 
 		{
-			ThreadPool.QueueUserWorkItem(new WaitCallback(action));
+			ThreadPool.QueueUserWorkItem(o => action());
 		}
 
 		public bool IsThreadAvailable()
@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Dispatch
 
 	public interface IThreadPoolWrapper
 	{
-		void Do(Action<object> action);
+		void Do(Action action);
 		bool IsThreadAvailable();
 	}
 }
