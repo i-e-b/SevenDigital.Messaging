@@ -1,8 +1,8 @@
 using Moq;
 using NUnit.Framework;
-using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
+using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 {
@@ -11,11 +11,14 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 	{
 		Endpoint _endpoint;
 		IReceiverNode _result;
+		Mock<INode> mockNode;
 
 		[SetUp]
 		public void SetUp()
 		{
 			var uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
+			mockNode = new Mock<INode>();
+			ObjectFactory.Configure(map=>map.For<INode>().Use(mockNode.Object));
 			
 			_endpoint = new Endpoint("doStuff");
 			

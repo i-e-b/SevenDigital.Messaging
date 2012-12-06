@@ -1,6 +1,5 @@
 using System;
 using SevenDigital.Messaging.Dispatch;
-using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
@@ -9,7 +8,7 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		readonly IDispatchInterface dispatchInterface;
 
-		public SenderNode(IMessagingHost host, IDispatchInterface dispatchInterface)
+		public SenderNode(IDispatchInterface dispatchInterface)
 		{
 			this.dispatchInterface = dispatchInterface;
 		}

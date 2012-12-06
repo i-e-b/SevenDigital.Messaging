@@ -57,6 +57,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
+		public void Should_have_node_implementation ()
+		{
+			Assert.That(ObjectFactory.GetInstance<INode>(), Is.InstanceOf<Node>());
+		}
+
+		[Test]
 		public void Should_configure_messaging_base ()
 		{
 			Assert.That(ObjectFactory.GetInstance<IMessagingBase>(), Is.Not.Null);
@@ -95,12 +101,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
-		public void Message_dispatch_should_be_singleton ()
+		public void Message_dispatch_should_NOT_be_singleton ()
 		{
 			var instance_1 = ObjectFactory.GetInstance<IDispatchInterface>();
 			var instance_2 = ObjectFactory.GetInstance<IDispatchInterface>();
 
-			Assert.That(instance_1, Is.SameAs(instance_2));
+			Assert.That(instance_1, Is.Not.SameAs(instance_2));
 		}
 
 		[Test]
