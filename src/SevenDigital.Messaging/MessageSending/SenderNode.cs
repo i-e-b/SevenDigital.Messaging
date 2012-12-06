@@ -39,7 +39,9 @@ namespace SevenDigital.Messaging.MessageSending
 				{
 					dispatchInterface.Publish(message);
 					break;
-				} catch { continue; }
+				} catch (Exception ex) {
+					Console.WriteLine("Could not send message: "+ex.GetType()+": "+ex.Message);
+				}
 			}
 		}
 
