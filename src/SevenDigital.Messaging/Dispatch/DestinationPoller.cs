@@ -23,7 +23,6 @@ namespace SevenDigital.Messaging.Dispatch
 			this.pool = pool;
 
 			destinations = new HashSet<string>();
-			pollingThread = new Thread(PollingMethod);
 		}
 
 		public void AddDestinationToWatch(string destination)
@@ -43,7 +42,7 @@ namespace SevenDigital.Messaging.Dispatch
 				foreach (var destination in currentDestinations)
 				{
 					object message = null;
-					if (pool.IsThreadAvailable()) message = messagingBase.GetMessage<IMessage>(destination);
+					if (pool.IsThreadAvailable()) message = GetMessageRobust(destination);
 					if (message == null) continue;
 
 					dispatcher.TryDispatch(message);
@@ -54,20 +53,29 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 		}
 
+		IMessage GetMessageRobust(string destination)
+		{
+			// Should be able to re-bind queues here?
+			return messagingBase.GetMessage<IMessage>(destination);
+		}
+
 		public void Start()
 		{
 			if (running) return;
-			lock (pollingThread)
+			lock (this)
 			{
 				running = true;
-				if (pollingThread.ThreadState == ThreadState.Stopped) pollingThread = new Thread(PollingMethod);
+				if (pollingThread == null) pollingThread = new Thread(PollingMethod);
 				if (pollingThread.ThreadState != ThreadState.Running) pollingThread.Start();
 			}
 		}
 
 		public void Stop()
 		{
+			var pt = pollingThread;
 			running = false;
+			if (pt != null) pt.Join();
+			pollingThread = null;
 		}
 	}
 }
