@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 	[TestFixture]
 	public class SubscribeHandlerTests
 	{
-		IMessageDispatch subject;
+		IDispatchInterface subject;
 		Mock<IMessagingBase> messagingBase;
 		Mock<IDestinationPoller> destinationPoller;
 		Mock<IMessageDispatcher> messageDispatcher;
@@ -22,7 +22,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			messagingBase = new Mock<IMessagingBase>();
 			destinationPoller = new Mock<IDestinationPoller>();
 			messageDispatcher = new Mock<IMessageDispatcher>();
-			subject = new MessageDispatch(messagingBase.Object, destinationPoller.Object, messageDispatcher.Object);
+			subject = new DispatchInterface(messagingBase.Object, destinationPoller.Object, messageDispatcher.Object);
 
 			myAction = msg => { };
 			subject.SubscribeHandler(myAction, destinationName);

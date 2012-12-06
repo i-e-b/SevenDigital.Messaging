@@ -10,13 +10,13 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 	[TestFixture]
 	public class SendMessageTests
 	{
-		Mock<IMessageDispatch> messageDispatch;
+		Mock<IDispatchInterface> messageDispatch;
 		SenderNode _subject;
 
 		[SetUp]
 		public void SetUp()
 		{
-			messageDispatch = new Mock<IMessageDispatch>();
+			messageDispatch = new Mock<IDispatchInterface>();
 		    var endpointGenerator = new Mock<ISenderEndpointGenerator>();
 		    endpointGenerator.Setup(g => g.Generate()).Returns(new Endpoint("endpoint"));
 		    _subject = new SenderNode(new Host("host"), endpointGenerator.Object, messageDispatch.Object);

@@ -7,20 +7,20 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		readonly IMessagingHost host;
 		readonly IRoutingEndpoint endpoint;
-		readonly IMessageDispatch messageDispatch;
+		readonly IDispatchInterface dispatchInterface;
 		readonly Node node;
 
-		public ReceiverNode(IMessagingHost host, IRoutingEndpoint endpoint, IMessageDispatch messageDispatch)
+		public ReceiverNode(IMessagingHost host, IRoutingEndpoint endpoint, IDispatchInterface dispatchInterface)
 		{
 			this.host = host;
 			this.endpoint = endpoint;
-			this.messageDispatch = messageDispatch;
-			node = new Node(host, endpoint, this.messageDispatch);
+			this.dispatchInterface = dispatchInterface;
+			node = new Node(host, endpoint, this.dispatchInterface);
 		}
 
 		public IMessageBinding<T> Handle<T>() where T : class, IMessage
 		{
-			return new HandlerTriggering<T>(messageDispatch, endpoint);
+			return new HandlerTriggering<T>(dispatchInterface, endpoint);
 		}
 
 		public void Dispose()

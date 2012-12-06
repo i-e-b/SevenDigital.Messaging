@@ -3,13 +3,13 @@ using SevenDigital.Messaging.Base;
 
 namespace SevenDigital.Messaging.Dispatch
 {
-	public class MessageDispatch:IMessageDispatch
+	public class DispatchInterface:IDispatchInterface
 	{
 		readonly IMessagingBase messagingBase;
 		readonly IDestinationPoller destinationPoller;
 		readonly IMessageDispatcher messageDispatcher;
 
-		public MessageDispatch(IMessagingBase messagingBase, IDestinationPoller destinationPoller, IMessageDispatcher messageDispatcher)
+		public DispatchInterface(IMessagingBase messagingBase, IDestinationPoller destinationPoller, IMessageDispatcher messageDispatcher)
 		{
 			this.messagingBase = messagingBase;
 			this.destinationPoller = destinationPoller;
@@ -25,7 +25,7 @@ namespace SevenDigital.Messaging.Dispatch
 		{
 		}
 
-		public void SubscribeHandler<T>(Action<T> action, string destinationName)
+		public void SubscribeHandler<T>(Action<T> action, string destinationName) where T: class
 		{
 			messageDispatcher.AddHandler(action);
 			destinationPoller.AddDestinationToWatch(destinationName);

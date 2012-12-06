@@ -8,14 +8,14 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 	[TestFixture]
 	public class PublishMessageTests
 	{
-		MessageDispatch subject;
+		DispatchInterface subject;
 		Mock<IMessagingBase> msg;
 
 		[SetUp]
 		public void A_message_dispatch ()
 		{
 			msg = new Mock<IMessagingBase>();
-			subject = new MessageDispatch(msg.Object, null, null);
+			subject = new DispatchInterface(msg.Object, null, null);
 		}
 
 		[Test]
