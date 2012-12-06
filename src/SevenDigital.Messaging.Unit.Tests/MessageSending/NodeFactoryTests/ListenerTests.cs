@@ -2,6 +2,7 @@ using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
+using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 {
@@ -12,10 +13,13 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 		Mock<IUniqueEndpointGenerator> _uniqueEndPointGenerator;
 		IReceiverNode _result;
 		Endpoint _uniqueEndpoint;
+		Mock<INode> mockNode;
 
 		[SetUp]
 		public void SetUp()
 		{
+			mockNode = new Mock<INode>();
+			ObjectFactory.Configure(map=>map.For<INode>().Use(mockNode.Object));
 			_uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
 			_subject = new NodeFactory(_uniqueEndPointGenerator.Object);
 			_uniqueEndpoint = new Endpoint("some wordz");

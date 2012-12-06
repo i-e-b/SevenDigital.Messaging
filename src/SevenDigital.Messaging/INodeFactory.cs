@@ -1,4 +1,4 @@
-using SevenDigital.Messaging.Routing;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging
 {

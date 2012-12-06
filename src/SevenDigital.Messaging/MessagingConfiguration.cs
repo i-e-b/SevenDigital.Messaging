@@ -35,11 +35,12 @@ namespace SevenDigital.Messaging
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IThreadPoolWrapper>().Use<ThreadPoolWrapper>();
 				map.For<ISleepWrapper>().Use<SleepWrapper>();
+				map.For<IDispatchInterface>().Use<DispatchInterface>();
+				map.For<INode>().Use<Node>();
 
 				map.For<IDestinationPoller>().Singleton().Use<DestinationPoller>();
 				map.For<IMessageDispatcher>().Singleton().Use<MessageDispatcher>();
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
-				map.For<IDispatchInterface>().Use<DispatchInterface>();
                 map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
 

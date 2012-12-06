@@ -63,10 +63,12 @@
     <Compile Include="EventHooks\TestEventHook.cs" />
     <Compile Include="MessageSending\IMessageBinding.cs" />
     <Compile Include="Dispatch\IDispatchInterface.cs" />
+    <Compile Include="IReceiverNode.cs" />
     <Compile Include="MessageSending\INode.cs" />
     <Compile Include="MessageSending\Loopback\DummyBinder.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackBinding.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackNodeFactory.cs" />
+    <Compile Include="MessageSending\Node.cs" />
     <Compile Include="MessagingConfiguration.cs" />
     <Compile Include="Endpoint.cs" />
     <Compile Include="Routing\Host.cs" />
@@ -77,15 +79,13 @@
     <Compile Include="Routing\SenderEndpointGenerator.cs" />
     <Compile Include="Routing\UniqueEndpointGenerator.cs" />
     <Compile Include="IEventHook.cs" />
-    <Compile Include="IReceiverNode.cs" />
     <Compile Include="ISenderNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IHandle.cs" />
     <Compile Include="INodeFactory.cs" />
     <Compile Include="MessageSending\HandlerTriggering.cs" />
-    <Compile Include="MessageSending\Node.cs" />
-    <Compile Include="MessageSending\NodeFactory.cs" />
     <Compile Include="MessageSending\ReceiverNode.cs" />
+    <Compile Include="MessageSending\NodeFactory.cs" />
     <Compile Include="MessageSending\SenderNode.cs" />
   </ItemGroup>
   <ItemGroup>
