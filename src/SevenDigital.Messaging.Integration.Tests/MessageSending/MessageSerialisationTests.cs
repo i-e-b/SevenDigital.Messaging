@@ -6,7 +6,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture, Ignore("Messaging base not hooked in")]
+	[TestFixture]
 	public class MessageSerialisationTests
 	{
 		INodeFactory node_factory;

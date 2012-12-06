@@ -2,13 +2,14 @@
 using System.Threading;
 using Moq;
 using NUnit.Framework;
+using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture, Ignore("Messaging base not hooked in")]
+	[TestFixture]
 	public class EventHookTests
 	{
 		INodeFactory node_factory;
@@ -57,6 +58,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 				senderNode.SendMessage(message);
 
 				Assert.That(ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval));
+
+				ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
 
 				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
 			}

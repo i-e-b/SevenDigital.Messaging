@@ -8,7 +8,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture, Ignore("Messaging base not hooked in")]
+	[TestFixture, Ignore("Need to implement this after messaging is refactored")]
 	public class QueueDestructionSurvivalTests
 	{
         INodeFactory nodeFactory;

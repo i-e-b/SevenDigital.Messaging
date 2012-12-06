@@ -6,7 +6,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture, Ignore("Messaging base not hooked in")]
+	[TestFixture, Ignore("Purging not currently implemented")]
 	public class PurgingQueues
 	{
         INodeFactory _nodeFactory;

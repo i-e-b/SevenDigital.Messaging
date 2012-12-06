@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using SevenDigital.Messaging.Integration.Tests.Messages;
 
@@ -9,6 +10,7 @@ namespace SevenDigital.Messaging.Integration.Tests.Handlers
 
         public void Handle(IColourMessage message)
         {
+	        Console.WriteLine("Got: "+message.GetType());
             AutoResetEvent.Set();
         }
     }

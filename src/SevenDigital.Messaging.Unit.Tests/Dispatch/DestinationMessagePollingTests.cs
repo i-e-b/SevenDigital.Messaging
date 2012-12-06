@@ -129,7 +129,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.Start();
 			Thread.Sleep(750);
 			subject.Stop();
-			Assert.That(count[0], Is.GreaterThan(1));
+			Assert.That(count[0], Is.GreaterThan(0));
 
 		}
 	}
