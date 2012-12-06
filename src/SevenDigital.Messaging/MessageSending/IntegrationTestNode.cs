@@ -33,6 +33,7 @@ namespace SevenDigital.Messaging
 					name => name.ToLower().Contains(".integration.")
 						|| name == "ping-pong-endpoint" || name == "registered-message-endpoint"
 						|| name == "shared-endpoint" || name == "unregistered-message-endpoint"
+						|| name == "survival_test_endpoint"
 						|| name.EndsWith("SevenDigital.Messaging_Listener")
 					);
 			}

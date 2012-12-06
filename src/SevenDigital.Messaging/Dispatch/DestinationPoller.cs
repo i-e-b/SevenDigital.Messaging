@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 
@@ -58,8 +59,14 @@ namespace SevenDigital.Messaging.Dispatch
 
 		IMessage GetMessageRobust()
 		{
-			// Should be able to re-bind queues here?
-			return messagingBase.GetMessage<IMessage>(destination);
+			try
+			{
+				return messagingBase.GetMessage<IMessage>(destination);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 
 		public void Start()

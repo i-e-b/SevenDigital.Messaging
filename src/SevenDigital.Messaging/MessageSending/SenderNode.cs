@@ -1,16 +1,16 @@
 using System;
-using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.Base;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
 {
 	public class SenderNode : ISenderNode
 	{
-		readonly IDispatchInterface dispatchInterface;
+		readonly IMessagingBase messagingBase;
 
-		public SenderNode(IDispatchInterface dispatchInterface)
+		public SenderNode(IMessagingBase messagingBase)
 		{
-			this.dispatchInterface = dispatchInterface;
+			this.messagingBase = messagingBase;
 		}
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
@@ -33,7 +33,7 @@ namespace SevenDigital.Messaging.MessageSending
 			{
 				try
 				{
-					dispatchInterface.Publish(message);
+					messagingBase.SendMessage(message);
 					break;
 				} catch (Exception ex) {
 					Console.WriteLine("Could not send message: "+ex.GetType()+": "+ex.Message);

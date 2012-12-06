@@ -95,21 +95,6 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
-		public void Should_have_message_dispatch_instance ()
-		{
-			Assert.That(ObjectFactory.GetInstance<IDispatchInterface>(), Is.InstanceOf<DispatchInterface>());
-		}
-
-		[Test]
-		public void Message_dispatch_should_NOT_be_singleton ()
-		{
-			var instance_1 = ObjectFactory.GetInstance<IDispatchInterface>();
-			var instance_2 = ObjectFactory.GetInstance<IDispatchInterface>();
-
-			Assert.That(instance_1, Is.Not.SameAs(instance_2));
-		}
-
-		[Test]
 		public void Should_get_no_event_hook_implementations_by_default ()
 		{
 			Assert.That(ObjectFactory.GetAllInstances<IEventHook>(), Is.Empty);
