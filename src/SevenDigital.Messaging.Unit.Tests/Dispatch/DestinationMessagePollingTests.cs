@@ -103,5 +103,24 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			Assert.That(count, Is.GreaterThan(1));
 
 		}
+
+		[Test]
+		public void Can_restart_after_stopping  ()
+		{
+			int[] count = {0};
+			messagingBase.Setup(m=>m.GetMessage<IMessage>(destinationName)).Callback(() => {
+				count[0]++;
+			});
+
+			subject.Start();
+			while (count[0] < 1) { Thread.Sleep(1); }
+			subject.Stop();
+			count[0] = 0;
+			subject.Start();
+			Thread.Sleep(750);
+			subject.Stop();
+			Assert.That(count[0], Is.GreaterThan(1));
+
+		}
 	}
 }
