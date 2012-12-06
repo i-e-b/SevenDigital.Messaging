@@ -18,11 +18,6 @@ namespace SevenDigital.Messaging
 			baseNode = ObjectFactory.GetInstance<Node>();
 		}
 
-		~IntegrationTestNode()
-		{
-			Dispose();
-		}
-
 		public void Dispose()
 		{
 			lock (this)
@@ -32,8 +27,13 @@ namespace SevenDigital.Messaging
 				baseNode.Dispose();
 				baseNode = null;
 				
+				// allow removal of any integration test routes, plus all the specific tests in the 
+				// messaging framework itself
 				((RabbitRouter)ObjectFactory.GetInstance<IMessageRouter>()).RemoveRouting(
 					name => name.ToLower().Contains(".integration.")
+						|| name == "ping-pong-endpoint" || name == "registered-message-endpoint"
+						|| name == "shared-endpoint" || name == "unregistered-message-endpoint"
+						|| name.EndsWith("SevenDigital.Messaging_Listener")
 					);
 			}
 		}
