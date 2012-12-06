@@ -19,11 +19,24 @@ namespace SevenDigital.Messaging.Dispatch
 		public void TryDispatch(object messageObject)
 		{
 			var type = messageObject.GetType().DirectlyImplementedInterfaces().Single();
-			var actions = handlers[type].GetClosed(messageObject);
+
+			var actions = GetMatchingActions(type).SelectMany(t=>t.GetClosed(messageObject)).ToList();
+
+			if (!actions.Any())
+			{
+				Console.WriteLine("Ignoring message of type "+type);
+				return;
+			}
+
 			foreach (var action in actions)
 			{
 				threadPoolWrapper.Do(action);
 			}
+		}
+
+		IEnumerable<ActionList> GetMatchingActions(Type type)
+		{
+			return from key in handlers.Keys where key.IsAssignableFrom(type) select handlers[key];
 		}
 
 		public void AddHandler<T>(Action<T> handlerAction)
