@@ -51,6 +51,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dispatch\LoopbackDispatchController.cs" />
     <Compile Include="Dispatch\DestinationPoller.cs" />
     <Compile Include="Dispatch\DispatchController.cs" />
     <Compile Include="Dispatch\IDestinationPoller.cs" />

@@ -34,7 +34,7 @@ namespace SevenDigital.Messaging
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IDestinationPoller>().Use<DestinationPoller>();
-				map.For<IMessageDispatcher>().Use<MessageDispatcher>(); // this might have to change?
+				map.For<IMessageDispatcher>().Use<MessageDispatcher>();
 
 
 				map.For<IThreadPoolWrapper>().Use<ThreadPoolWrapper>();
@@ -107,15 +107,17 @@ namespace SevenDigital.Messaging
 		public MessagingConfiguration WithLoopback()
 		{
 			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
+			ObjectFactory.EjectAllInstancesOf<INode>();
 
 		    var factory = new LoopbackNodeFactory();
-
 			ObjectFactory.Configure(map =>
 			{
                 map.For<INodeFactory>().Singleton().Use(factory);
                 map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackNodeFactory>().Is(factory);
 				map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
+				map.For<IDispatchController>().Singleton().Use<LoopbackDispatchController>();
 	        });
+
 
 			ObjectFactory.Configure(map =>
 				map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));

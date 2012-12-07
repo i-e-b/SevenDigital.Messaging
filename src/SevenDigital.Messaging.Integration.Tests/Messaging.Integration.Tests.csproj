@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Hooks\FailingEventHookTests.cs" />
     <Compile Include="Hooks\FailingHandlerEventHookTests.cs" />
+    <Compile Include="Loopback\LoopbackModeTests.cs" />
     <Compile Include="MessageSending\StressTests.cs" />
     <Compile Include="MessageSending\UnreachableEndpointTests.cs" />
     <Compile Include="_Helpers\Handlers\FailingColourHandler.cs" />

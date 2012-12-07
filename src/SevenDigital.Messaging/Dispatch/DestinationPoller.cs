@@ -86,7 +86,6 @@ namespace SevenDigital.Messaging.Dispatch
 			pollingThread = null;
 			running = false;
 			if (pt == null) return;
-
 			pt.IsBackground = true;
 		}
 
