@@ -8,12 +8,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public IMessage sent, received;
 		public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
 
-		public void MessageSent(IMessage msg)
+		public void MessageSent(IMessage msg, string x, string y)
 		{
 			sent = msg;
 		}
 
-		public void MessageReceived(IMessage msg)
+		public void MessageReceived(IMessage msg, string x)
 		{
 			received = msg;
 			AutoResetEvent.Set();

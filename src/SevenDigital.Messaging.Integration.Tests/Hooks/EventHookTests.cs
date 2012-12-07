@@ -45,7 +45,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			
 			senderNode.SendMessage(message);
 
-			mock_event_hook.Verify(h => h.MessageSent(message));
+			mock_event_hook.Verify(h => h.MessageSent(message, It.IsAny<string>(), It.IsAny<string>()));
 		}
 		
 		[Test]
@@ -64,7 +64,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
 			lock (mock_event_hook)
 			{
-				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
+				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId), It.IsAny<string>()));
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				GenericHandler.AutoResetEvent.WaitOne(LongInterval);
 				
-				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im => im.CorrelationId == message.CorrelationId)));
+				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im => im.CorrelationId == message.CorrelationId), It.IsAny<string>()));
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 				AnotherColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im=> im.CorrelationId == message.CorrelationId)),
+				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im=> im.CorrelationId == message.CorrelationId), It.IsAny<string>()),
 					Times.Exactly(2));
 			}
 		}

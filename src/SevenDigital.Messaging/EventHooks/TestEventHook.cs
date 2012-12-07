@@ -9,12 +9,12 @@ namespace SevenDigital.Messaging.EventHooks
 		readonly List<IMessage> receivedMessages = new List<IMessage>();
 		readonly List<Exception> handlerExceptions = new List<Exception>();
 
-		public void MessageSent(IMessage message)
+		public void MessageSent(IMessage message, string serialisedMessage, string contractTypeName)
 		{
 			sentMessages.Add(message);
 		}
 
-		public void MessageReceived(IMessage message)
+		public void MessageReceived(IMessage message, string contractTypeName)
 		{
 			receivedMessages.Add(message);
 		}

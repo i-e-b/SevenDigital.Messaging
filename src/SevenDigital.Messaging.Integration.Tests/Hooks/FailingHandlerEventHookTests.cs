@@ -56,7 +56,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				TriggerFailingHandler(receiverNode);
 
-				mock_event_hook.Verify(h=>h.MessageReceived(It.IsAny<IMessage>()),
+				mock_event_hook.Verify(h=>h.MessageReceived(It.IsAny<IMessage>(), It.IsAny<string>()),
 					Times.Exactly(0));
 			}
 		}
