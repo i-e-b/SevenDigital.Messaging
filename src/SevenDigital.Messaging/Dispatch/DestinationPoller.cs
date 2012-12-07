@@ -83,9 +83,12 @@ namespace SevenDigital.Messaging.Dispatch
 		public void Stop()
 		{
 			var pt = pollingThread;
-			running = false;
-			if (pt != null) pt.Join();
 			pollingThread = null;
+			running = false;
+			if (pt == null) return;
+
+			pt.Join();
+			pt.IsBackground = true;
 		}
 
 		public void AddHandler<T>(Action<T> action)
