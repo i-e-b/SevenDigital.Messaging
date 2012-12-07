@@ -75,7 +75,11 @@ namespace SevenDigital.Messaging.Dispatch
 			lock (this)
 			{
 				running = true;
-				if (pollingThread == null) pollingThread = new Thread(PollingMethod);
+				if (pollingThread == null) pollingThread = new Thread(PollingMethod)
+					{
+						Name = "Polling_" + destination,
+						IsBackground = true
+					};
 				if (pollingThread.ThreadState != ThreadState.Running) pollingThread.Start();
 			}
 		}
@@ -86,7 +90,7 @@ namespace SevenDigital.Messaging.Dispatch
 			pollingThread = null;
 			running = false;
 			if (pt == null) return;
-			pt.IsBackground = true;
+			pt.Join();
 		}
 
 		public void AddHandler<T>(Action<T> action)
