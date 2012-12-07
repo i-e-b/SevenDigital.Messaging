@@ -60,12 +60,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public static AutoResetEvent SentEvent = new AutoResetEvent(false);
 		public static AutoResetEvent ReceivedEvent = new AutoResetEvent(false);
 
-		public void MessageSent(IMessage msg)
+		public void MessageSent(IMessage msg, string x, string y)
 		{
 			SentEvent.Set();
 		}
 
-		public void MessageReceived(IMessage msg)
+		public void MessageReceived(IMessage msg, string x)
 		{
 			ReceivedEvent.Set();
 		}
@@ -75,13 +75,13 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 	public class FailingHook : IEventHook
 	{
-		public void MessageSent(IMessage msg)
+		public void MessageSent(IMessage msg, string x, string y)
 		{
 			Console.WriteLine("Failing on send");
 			throw new Exception("I failed during sending");
 		}
 
-		public void MessageReceived(IMessage msg)
+		public void MessageReceived(IMessage msg, string x)
 		{
 			Console.WriteLine("Failing on receive");
 			throw new Exception("I failed during receive");

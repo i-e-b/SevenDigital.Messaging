@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using SevenDigital.Messaging.Base;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
@@ -41,7 +43,7 @@ namespace SevenDigital.Messaging.MessageSending
 			{
 				try
 				{
-					hook.MessageReceived(msg);
+					hook.MessageReceived(msg, ContractTypeName(msg));
 				}
 				catch (Exception ex)
 				{
@@ -63,6 +65,10 @@ namespace SevenDigital.Messaging.MessageSending
 					Console.WriteLine("An event hook failed after handling " + exi.GetType() + "; " + exi.Message);
 				}
 			}
+		}
+		static string ContractTypeName<T>(T message) where T : class, IMessage
+		{
+			return message.DirectlyImplementedInterfaces().Single().ToString();
 		}
 	}
 }
