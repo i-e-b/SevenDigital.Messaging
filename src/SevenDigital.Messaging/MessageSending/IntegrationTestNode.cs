@@ -1,10 +1,9 @@
 using System;
 using SevenDigital.Messaging.Base.Routing;
-using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
-namespace SevenDigital.Messaging
+namespace SevenDigital.Messaging.MessageSending
 {
 	public class IntegrationTestNode:INode
 	{

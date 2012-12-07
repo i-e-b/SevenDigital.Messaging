@@ -35,6 +35,9 @@
     <Reference Include="Moq">
       <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\..\packages\NSubstitute.1.4.3.0\lib\NET40\NSubstitute.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -54,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dispatch\DestinationMessagePollingTests.cs" />
+    <Compile Include="Dispatch\DispatchControllerTests.cs" />
     <Compile Include="Dispatch\NodeDisposalTest.cs" />
     <Compile Include="Dispatch\MessageDispatcherTests.cs" />
     <Compile Include="Dispatch\SubscribeHandlerTests.cs" />
