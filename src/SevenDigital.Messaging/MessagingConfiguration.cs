@@ -33,13 +33,16 @@ namespace SevenDigital.Messaging
 				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
+				map.For<IDestinationPoller>().Use<DestinationPoller>();
+
+
 				map.For<IThreadPoolWrapper>().Use<ThreadPoolWrapper>();
 				map.For<ISleepWrapper>().Use<SleepWrapper>();
 				map.For<INode>().Use<Node>();
 
 				map.For<IMessageDispatcher>().Singleton().Use<MessageDispatcher>(); // this might have to change?
-
-				map.For<IDestinationPoller>().Singleton().Use<DestinationPoller>();
+				
+				map.For<IDispatchController>().Singleton().Use<DispatchController>();
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
                 map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
@@ -149,6 +152,14 @@ namespace SevenDigital.Messaging
 			ObjectFactory.EjectAllInstancesOf<INode>();
 			ObjectFactory.Configure(map => map.For<INode>().Use<IntegrationTestNode>());
 			return this;
+		}
+
+		/// <summary>
+		/// Stop the messaging system.
+		/// </summary>
+		public void Shutdown()
+		{
+			ObjectFactory.GetInstance<IDispatchController>().Shutdown();
 		}
 	}
 }

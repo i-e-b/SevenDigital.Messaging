@@ -12,6 +12,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 	{
 		INode subject;
 		Mock<IMessagingBase> messagingBase;
+		Mock<IDispatchController> dispatchController;
 		Mock<IDestinationPoller> destinationPoller;
 		Mock<IMessageDispatcher> messageDispatcher;
 		Action<IMessage> myAction;
@@ -22,8 +23,12 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			messagingBase = new Mock<IMessagingBase>();
 			destinationPoller = new Mock<IDestinationPoller>();
+			dispatchController = new Mock<IDispatchController>();
 			messageDispatcher = new Mock<IMessageDispatcher>();
-			subject = new Node(messagingBase.Object, messageDispatcher.Object, destinationPoller.Object);
+
+			dispatchController.Setup(m=>m.CreatePoller(destinationName)).Returns(destinationPoller.Object);
+
+			subject = new Node(messagingBase.Object, messageDispatcher.Object, dispatchController.Object);
 			subject.SetEndpoint(new Endpoint(destinationName));
 
 			myAction = msg => { };
@@ -51,7 +56,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void Should_make_sure_destination_poller_is_watching_target_destination ()
 		{
-			destinationPoller.Verify(m=>m.SetDestinationToWatch(destinationName));
+			dispatchController.Verify(m=>m.CreatePoller(destinationName));
 		}
 	}
 }

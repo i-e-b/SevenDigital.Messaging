@@ -10,24 +10,21 @@ namespace SevenDigital.Messaging.MessageSending
 
 		readonly IMessagingBase messagingBase;
 		readonly IMessageDispatcher messageDispatcher;
-		readonly IDestinationPoller destinationPoller;
+		readonly IDispatchController dispatchController;
+		IDestinationPoller destinationPoller;
 		string endpoint;
 
-		public Node(IMessagingBase messagingBase, IMessageDispatcher messageDispatcher, IDestinationPoller destinationPoller)
+		public Node(IMessagingBase messagingBase, IMessageDispatcher messageDispatcher, IDispatchController dispatchController)
 		{
 			this.messagingBase = messagingBase;
 			this.messageDispatcher = messageDispatcher;
-			this.destinationPoller = destinationPoller;
-		}
-
-		public void Dispose()
-		{
-			destinationPoller.Stop();
+			this.dispatchController = dispatchController;
 		}
 
 		public void SetEndpoint(IRoutingEndpoint targetEndpoint)
 		{
 			endpoint = targetEndpoint.ToString();
+			destinationPoller = dispatchController.CreatePoller(endpoint);
 		}
 
 		public void SubscribeHandler<T>(Action<T> action) where T: class
@@ -36,6 +33,11 @@ namespace SevenDigital.Messaging.MessageSending
 			messageDispatcher.AddHandler(action);
 			destinationPoller.SetDestinationToWatch(endpoint);
 			destinationPoller.Start();
+		}
+
+		public void Dispose()
+		{
+			destinationPoller.Stop();
 		}
 
 		#region Equality members
@@ -59,7 +61,6 @@ namespace SevenDigital.Messaging.MessageSending
 			{
 				int hashCode = (messagingBase != null ? messagingBase.GetHashCode() : 0);
 				hashCode = (hashCode*397) ^ (messageDispatcher != null ? messageDispatcher.GetHashCode() : 0);
-				hashCode = (hashCode*397) ^ (destinationPoller != null ? destinationPoller.GetHashCode() : 0);
 				return hashCode;
 			}
 		}
