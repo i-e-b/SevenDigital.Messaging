@@ -87,5 +87,10 @@ namespace SevenDigital.Messaging.Dispatch
 			if (pt != null) pt.Join();
 			pollingThread = null;
 		}
+
+		public void AddHandler<T>(Action<T> action)
+		{
+			dispatcher.AddHandler(action);
+		}
 	}
 }

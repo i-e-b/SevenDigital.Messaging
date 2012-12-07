@@ -28,7 +28,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 
 			dispatchController.Setup(m=>m.CreatePoller(destinationName)).Returns(destinationPoller.Object);
 
-			subject = new Node(messagingBase.Object, messageDispatcher.Object, dispatchController.Object);
+			subject = new Node(messagingBase.Object, dispatchController.Object);
 			subject.SetEndpoint(new Endpoint(destinationName));
 
 			myAction = msg => { };
@@ -42,9 +42,9 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		}
 
 		[Test]
-		public void Should_add_type_and_action_to_dispatcher ()
+		public void Should_add_type_and_action_to_poller ()
 		{
-			messageDispatcher.Verify(m=>m.AddHandler(myAction));
+			destinationPoller.Verify(m=>m.AddHandler(myAction));
 		}
 
 		[Test]

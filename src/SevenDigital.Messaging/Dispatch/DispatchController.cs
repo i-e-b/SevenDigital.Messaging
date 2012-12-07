@@ -30,10 +30,5 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 // ReSharper restore RedundantJumpStatement
 		}
-
-		public void Dispose()
-		{
-			Shutdown();
-		}
 	}
 }
