@@ -14,7 +14,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	{
 		INodeFactory node_factory;
 
-		protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
+		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		Mock<IEventHook> mock_event_hook;
@@ -25,6 +25,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			Helper.SetupTestMessaging();
 		}
+
 
 		[SetUp]
 		public void SetUp()
@@ -101,6 +102,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 					Times.Exactly(2));
 			}
 		}
+
+		[TestFixtureTearDown]
+		public void Stop() { new MessagingConfiguration().Shutdown(); }
 	}
 
 	public class GenericHandler:IHandle<IMessage>

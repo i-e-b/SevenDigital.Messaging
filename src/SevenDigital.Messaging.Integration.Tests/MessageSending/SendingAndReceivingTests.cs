@@ -104,7 +104,7 @@ namespace SevenDigital.Messaging.Integration.Tests
             }
         }
 
-        [Test, Ignore("local receiver nodes don't work like this currently")]
+        [Test]
         public void Only_one_handler_should_fire_when_competing_for_an_endpoint()
         {
             using (var namedReceiverNode1 = _nodeFactory.TakeFrom(new Endpoint("shared-endpoint")))
@@ -155,6 +155,9 @@ namespace SevenDigital.Messaging.Integration.Tests
                 Assert.That(villainSignal, Is.True);
             }
         }
+
+		[TestFixtureTearDown]
+		public void Stop() { new MessagingConfiguration().Shutdown(); }
 
     }
 }
