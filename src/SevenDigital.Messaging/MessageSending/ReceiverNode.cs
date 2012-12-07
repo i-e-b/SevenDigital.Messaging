@@ -22,10 +22,6 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public string DestinationName { get { return endpoint.ToString(); } }
 
-		public void Dispose()
-		{
-			node.Dispose();
-		}
 
 		#region Equality members
 		
@@ -51,7 +47,12 @@ namespace SevenDigital.Messaging.MessageSending
 				return (endpoint != null ? endpoint.GetHashCode() : 0);
 			}
 		}
-		
+
+		public void Dispose()
+		{
+			node.Dispose();
+		}
+
 		#endregion
 	}
 }

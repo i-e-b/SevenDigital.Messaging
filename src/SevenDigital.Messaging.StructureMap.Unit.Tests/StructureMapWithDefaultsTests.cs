@@ -57,6 +57,16 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
+		public void Should_have_singleton_dispatch_controller ()
+		{
+			var instance1 = ObjectFactory.GetInstance<IDispatchController>();
+			var instance2 = ObjectFactory.GetInstance<IDispatchController>();
+
+			Assert.That(instance1, Is.InstanceOf<DispatchController>());
+			Assert.That(instance1, Is.SameAs(instance2));
+		}
+
+		[Test]
 		public void Should_have_node_implementation ()
 		{
 			Assert.That(ObjectFactory.GetInstance<INode>(), Is.InstanceOf<Node>());
