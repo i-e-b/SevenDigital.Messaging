@@ -28,7 +28,6 @@ namespace SevenDigital.Messaging.Integration.Tests
             senderNode = ObjectFactory.GetInstance<ISenderNode>();
 		}
 
-		
 		[Test]
 		public void Should_trigger_all_event_hooks_with_message_when_sending_and_receiving_a_message()
 		{
@@ -50,6 +49,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Assert.That(SucceedingHook.ReceivedEvent.WaitOne(ShortInterval), Is.True, "Hook one didn't get received event");
 			}
 		}
+
+		[TestFixtureTearDown]
+		public void Stop() { new MessagingConfiguration().Shutdown(); }
 	}
 
 

@@ -46,6 +46,9 @@ namespace SevenDigital.Messaging.Integration.Tests
             }
 		}
 
+		[TestFixtureTearDown]
+		public void Stop() { new MessagingConfiguration().Shutdown(); }
+
 		static void KillAndRebuildQueue(IReceiverNode receiverNode)
 		{
 			Helper.DeleteQueue(TestQueue);

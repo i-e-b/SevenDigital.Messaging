@@ -49,7 +49,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 		}
 
-
 		[Test]
 		public void Should_not_trigger_received_hook_when_handler_throws_exception ()
 		{
@@ -61,6 +60,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 					Times.Exactly(0));
 			}
 		}
+		
+		[TestFixtureTearDown]
+		public void Stop() { new MessagingConfiguration().Shutdown(); }
 
 		GreenMessage TriggerFailingHandler(IReceiverNode receiverNode)
 		{

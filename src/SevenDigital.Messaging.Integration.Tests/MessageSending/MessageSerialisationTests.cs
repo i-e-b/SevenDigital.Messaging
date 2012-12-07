@@ -22,6 +22,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			Helper.SetupTestMessaging();
 		}
+
 		[SetUp]
 		public void SetUp()
 		{
@@ -57,5 +58,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Assert.That(sent.Text, Is.EqualTo(received.Text));
 			}
 		}
+
+		[TestFixtureTearDown]
+		public void Stop() { new MessagingConfiguration().Shutdown(); }
 	}
 }

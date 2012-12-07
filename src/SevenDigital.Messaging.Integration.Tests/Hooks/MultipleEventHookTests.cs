@@ -13,9 +13,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		INodeFactory node_factory;
 	    private ISenderNode senderNode;
 
-	    protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
+	    protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
-
 		
 		[TestFixtureSetUp]
 		public void StartMessaging()
@@ -53,7 +52,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Assert.That(WaitingHookTwo.ReceivedEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get received event");
 			}
 		}
-		
 
 		[Test]
 		public void Should_not_trigger_any_event_hooks_when_hooks_have_been_cleared ()
@@ -75,6 +73,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Assert.That(WaitingHookTwo.ReceivedEvent.WaitOne(ShortInterval), Is.False, "Hook one didn't get received event");
 			}
 		}
+
+		[TestFixtureTearDown]
+		public void Stop() { new MessagingConfiguration().Shutdown(); }
 
 		public class WaitingHookOne : IEventHook
 		{

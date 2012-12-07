@@ -11,11 +11,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 	{
         INodeFactory _nodeFactory;
         private ISenderNode _senderNode;
-
-        protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
+		
+	    protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
         protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
-		
 		[TestFixtureSetUp]
 		public void StartMessaging()
 		{
@@ -46,5 +45,8 @@ namespace SevenDigital.Messaging.Integration.Tests
                 Assert.That(colourSignal, Is.False);
             }
 		}
+
+		[TestFixtureTearDown]
+		public void Stop() { new MessagingConfiguration().Shutdown(); }
 	}
 }
