@@ -5,7 +5,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
 {
-	public class IntegrationTestNode : INode, IDisposable
+	public class IntegrationTestNode : INode
 	{
 		readonly IMessageRouter messageRouter;
 		Node baseNode;
@@ -23,6 +23,7 @@ namespace SevenDigital.Messaging.MessageSending
 			{
 				Console.WriteLine("Cleaning node");
 				if (baseNode == null) return;
+				baseNode.Dispose();
 				baseNode = null;
 				
 				// allow removal of any integration test routes, plus all the specific tests in the 
