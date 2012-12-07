@@ -87,7 +87,6 @@ namespace SevenDigital.Messaging.Dispatch
 			running = false;
 			if (pt == null) return;
 
-			pt.Join();
 			pt.IsBackground = true;
 		}
 
