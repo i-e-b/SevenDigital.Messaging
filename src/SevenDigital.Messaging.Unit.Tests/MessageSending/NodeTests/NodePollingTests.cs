@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 			poller = Substitute.For<IDestinationPoller>();
 			dispatch.CreatePoller("").ReturnsForAnyArgs(poller);
 
-			using(var subject = new Node(null, null, dispatch))
+			using(var subject = new Node(null, dispatch))
 			{
 				subject.SetEndpoint(new Endpoint("x"));
 			}

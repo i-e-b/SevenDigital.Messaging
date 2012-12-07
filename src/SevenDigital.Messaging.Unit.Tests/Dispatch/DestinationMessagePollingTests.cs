@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
@@ -34,6 +35,14 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		public void stop_poller ()
 		{
 			subject.Stop();
+		}
+
+		[Test]
+		public void Adding_a_handler_adds_to_dispatcher ()
+		{
+			subject.AddHandler((IMessage m) => { });
+
+			dispatcher.Verify(m=>m.AddHandler(It.IsAny<Action<IMessage>>()));
 		}
 
 		[Test]

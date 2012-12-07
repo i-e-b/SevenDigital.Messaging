@@ -1,3 +1,5 @@
+using System;
+
 namespace SevenDigital.Messaging.Dispatch
 {
 	public interface IDestinationPoller
@@ -5,5 +7,6 @@ namespace SevenDigital.Messaging.Dispatch
 		void SetDestinationToWatch(string targetDestination);
 		void Start();
 		void Stop();
+		void AddHandler<T>(Action<T> action);
 	}
 }

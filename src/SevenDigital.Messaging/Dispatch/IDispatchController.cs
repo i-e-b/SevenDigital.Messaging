@@ -1,8 +1,6 @@
-using System;
-
 namespace SevenDigital.Messaging.Dispatch
 {
-	public interface IDispatchController : IDisposable
+	public interface IDispatchController
 	{
 		IDestinationPoller CreatePoller(string destinationName);
 		void Shutdown();
