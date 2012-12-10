@@ -106,6 +106,7 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		public MessagingConfiguration WithLoopback()
 		{
+			new  MessagingBaseConfiguration().WithDefaults();
 			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
 			ObjectFactory.EjectAllInstancesOf<INode>();
 
