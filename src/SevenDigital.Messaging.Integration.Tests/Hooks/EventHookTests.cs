@@ -69,18 +69,20 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
-		public void Should_trigger_event_hook_with_message_when_receiving_a_message_from_a_base_type ()
+		public void Should_trigger_event_hook_with_message_when_receiving_a_message_from_a_base_type()
 		{
+			var message = new GreenMessage();
 			using (var receiverNode = node_factory.Listen())
 			{
-				var message = new GreenMessage();
-
 				receiverNode.Handle<IMessage>().With<GenericHandler>();
 				senderNode.SendMessage(message);
 
 				GenericHandler.AutoResetEvent.WaitOne(LongInterval);
-				
-				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im => im.CorrelationId == message.CorrelationId)));
+			}
+			ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
+			lock (mock_event_hook)
+			{
+				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
 			}
 		}
 
