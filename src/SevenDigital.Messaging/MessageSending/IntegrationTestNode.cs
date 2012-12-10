@@ -33,7 +33,8 @@ namespace SevenDigital.Messaging.MessageSending
 						|| name == "ping-pong-endpoint" || name == "registered-message-endpoint"
 						|| name == "shared-endpoint" || name == "unregistered-message-endpoint"
 						|| name == "survival_test_endpoint"
-						|| name.EndsWith("SevenDigital.Messaging_Listener")
+						|| name.EndsWith("sevendigital.messaging_listener")
+						|| name.StartsWith("testlistener_")
 					);
 			}
 		}
