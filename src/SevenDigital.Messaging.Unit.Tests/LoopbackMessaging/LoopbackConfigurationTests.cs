@@ -103,8 +103,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 				_senderNode.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
 			}
 
-			mock_event_hook.Verify(h => h.MessageSent(It.IsAny<DummyMessage>(), It.IsAny<string>(), It.IsAny<string>()));
-			mock_event_hook.Verify(h => h.MessageReceived(It.IsAny<DummyMessage>(), It.IsAny<string>()));
+			mock_event_hook.Verify(h => h.MessageSent(It.IsAny<DummyMessage>()));
+			mock_event_hook.Verify(h => h.MessageReceived(It.IsAny<DummyMessage>()));
 		}
 		
 		[Test]
@@ -116,7 +116,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 				_senderNode.SendMessage(new DummyMessage{CorrelationId = Guid.NewGuid()});
 			}
 
-			mock_event_hook.Verify(h=>h.MessageSent(It.IsAny<DummyMessage>(), It.IsAny<string>(), It.IsAny<string>()));
+			mock_event_hook.Verify(h=>h.MessageSent(It.IsAny<DummyMessage>()));
 			mock_event_hook.Verify(h=>h.HandlerFailed(It.IsAny<DummyMessage>(), It.Is<Type>(t=> t == typeof(CrappyHandler)), It.IsAny<Exception>()));
 		}
 	}
