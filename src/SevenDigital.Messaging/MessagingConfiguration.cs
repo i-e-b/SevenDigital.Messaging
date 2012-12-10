@@ -27,6 +27,7 @@ namespace SevenDigital.Messaging
 			if (UsingLoopbackMode()) return this;
 
 			new  MessagingBaseConfiguration().WithDefaults();
+			Cooldown.Activate();
 
 			ObjectFactory.Configure(map => {
 				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
@@ -162,7 +163,8 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		public void Shutdown()
 		{
-			ObjectFactory.GetInstance<IDispatchController>().Shutdown();
+			var controller = ObjectFactory.TryGetInstance<IDispatchController>();
+			if (controller != null) controller.Shutdown();
 		}
 	}
 }

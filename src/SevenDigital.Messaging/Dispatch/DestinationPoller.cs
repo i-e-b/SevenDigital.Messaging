@@ -86,11 +86,27 @@ namespace SevenDigital.Messaging.Dispatch
 
 		public void Stop()
 		{
+			StopPollingThread();
+			WaitForHandlersToFinish();
+		}
+
+		void WaitForHandlersToFinish()
+		{
+			while (dispatcher.HandlersInflight > 0)
+			{
+				sleeper.Sleep(100);
+			}
+		}
+
+		void StopPollingThread()
+		{
 			var pt = pollingThread;
 			pollingThread = null;
 			running = false;
-			if (pt == null) return;
-			pt.Join();
+			if (pt != null)
+			{
+				pt.Join();
+			}
 		}
 
 		public void AddHandler<T>(Action<T> action)

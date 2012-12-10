@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dispatch\DestinationMessagePollingTests.cs" />
+    <Compile Include="Dispatch\DestinationPollingCooldownTests.cs" />
     <Compile Include="Dispatch\DispatchControllerTests.cs" />
     <Compile Include="Dispatch\MessageDispatcherTests.cs" />
     <Compile Include="Dispatch\SubscribeHandlerTests.cs" />
