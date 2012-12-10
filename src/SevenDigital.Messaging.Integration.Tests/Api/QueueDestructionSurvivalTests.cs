@@ -53,7 +53,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			Helper.DeleteQueue(TestQueue);
 			Thread.Sleep(LongInterval);
-			MessagingBase.ResetRouteCache();
+			MessagingBase.ResetCaches();
 			receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 		}
 	}
