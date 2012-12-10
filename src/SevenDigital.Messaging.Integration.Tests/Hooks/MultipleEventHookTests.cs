@@ -82,12 +82,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 			public static AutoResetEvent SentEvent = new AutoResetEvent(false);
 			public static AutoResetEvent ReceivedEvent = new AutoResetEvent(false);
 
-			public void MessageSent(IMessage msg, string x, string y)
+			public void MessageSent(IMessage msg)
 			{
 				SentEvent.Set();
 			}
 
-			public void MessageReceived(IMessage msg, string x)
+			public void MessageReceived(IMessage msg)
 			{
 				ReceivedEvent.Set();
 			}
@@ -99,12 +99,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 			public static AutoResetEvent SentEvent = new AutoResetEvent(false);
 			public static AutoResetEvent ReceivedEvent = new AutoResetEvent(false);
 
-			public void MessageSent(IMessage msg, string x, string y)
+			public void MessageSent(IMessage msg)
 			{
 				SentEvent.Set();
 			}
 
-			public void MessageReceived(IMessage msg, string x)
+			public void MessageReceived(IMessage msg)
 			{
 				ReceivedEvent.Set();
 			}

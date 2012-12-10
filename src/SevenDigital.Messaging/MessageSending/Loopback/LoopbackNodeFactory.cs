@@ -63,7 +63,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			var hooks = ObjectFactory.GetAllInstances<IEventHook>();
 			foreach (var hook in hooks)
 			{
-				hook.MessageSent(message, "loopback", "loopback");
+				hook.MessageSent(message);
 			}
 
 			FireCooperativeListeners(message);
@@ -86,7 +86,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 						var hooks = ObjectFactory.GetAllInstances<IEventHook>();
 						foreach (var hook in hooks)
 						{
-							hook.MessageReceived(message, "loopback");
+							hook.MessageReceived(message);
 						}
 					}
 					catch (Exception ex)

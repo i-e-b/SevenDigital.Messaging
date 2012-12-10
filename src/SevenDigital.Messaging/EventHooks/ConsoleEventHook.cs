@@ -4,13 +4,13 @@ namespace SevenDigital.Messaging.EventHooks
 {
 	public class ConsoleEventHook : IEventHook
 	{
-		public void MessageSent(IMessage message, string serialisedMessage, string contractTypeName)
+		public void MessageSent(IMessage message)
 		{
-			Console.WriteLine("Sent: " + message + " contract: " + contractTypeName);
+			Console.WriteLine("Sent: " + message);
 		}
-		public void MessageReceived(IMessage message, string contractTypeName)
+		public void MessageReceived(IMessage message)
 		{
-			Console.WriteLine("Got: " + message + " contract: " + contractTypeName);
+			Console.WriteLine("Got: " + message);
 		}
 
 		public void HandlerFailed(IMessage message, Type handler, Exception ex)

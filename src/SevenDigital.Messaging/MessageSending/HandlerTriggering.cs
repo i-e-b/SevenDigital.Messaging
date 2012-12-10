@@ -43,7 +43,7 @@ namespace SevenDigital.Messaging.MessageSending
 			{
 				try
 				{
-					hook.MessageReceived(msg, ContractTypeName(msg));
+					hook.MessageReceived(msg);
 				}
 				catch (Exception ex)
 				{
