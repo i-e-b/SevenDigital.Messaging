@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigureWithMessageQueryTests.cs" />
     <Compile Include="StructureMapWithLoopbackTests.cs" />
     <Compile Include="DummyEventHook.cs" />
     <Compile Include="StructureMapWithDefaultsTests.cs" />
