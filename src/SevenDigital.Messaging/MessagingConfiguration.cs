@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging
 			if (UsingLoopbackMode()) return this;
 
 			new  MessagingBaseConfiguration().WithDefaults();
-			Cooldown.Activate();
+			//Cooldown.Activate();
 
 			ObjectFactory.Configure(map => {
 				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
