@@ -14,7 +14,6 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		Mock<IMessagingBase> messagingBase;
 		Mock<IDispatchController> dispatchController;
 		Mock<IDestinationPoller> destinationPoller;
-		Mock<IMessageDispatcher> messageDispatcher;
 		Action<IMessage> myAction;
 		string destinationName = "woop";
 
@@ -24,7 +23,6 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			messagingBase = new Mock<IMessagingBase>();
 			destinationPoller = new Mock<IDestinationPoller>();
 			dispatchController = new Mock<IDispatchController>();
-			messageDispatcher = new Mock<IMessageDispatcher>();
 
 			dispatchController.Setup(m=>m.CreatePoller(destinationName)).Returns(destinationPoller.Object);
 
