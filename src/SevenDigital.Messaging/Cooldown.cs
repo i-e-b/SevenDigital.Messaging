@@ -9,22 +9,12 @@ namespace SevenDigital.Messaging
 		static int calls = 0;
 
 		public static void Activate()
-		{
-			new Thread(() =>
+		{/*
+			if (Interlocked.CompareExchange(ref calls, 1, 0) == 0)
 			{
-				try
-				{
-					if (Interlocked.CompareExchange(ref calls, 1, 0) == 0)
-					{
-						Console.WriteLine("Activating cooldown capture");
-						CrossPlatformSignalDispatch.Instance.TerminateEvent += Instance_TerminateEvent;
-					}
-				}
-				catch (System.DllNotFoundException ex)
-				{
-					Console.WriteLine("Failed to start cooldown - " + ex.GetType() + ": " + ex.Message);
-				}
-			}).Start();
+				Console.WriteLine("Activating cooldown capture");
+				CrossPlatformSignalDispatch.Instance.TerminateEvent += Instance_TerminateEvent;
+			}*/
 		}
 
 		static void Instance_TerminateEvent(object sender, TerminateEventArgs args)
