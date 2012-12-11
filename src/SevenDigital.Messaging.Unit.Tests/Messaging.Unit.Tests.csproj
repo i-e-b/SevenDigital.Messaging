@@ -65,6 +65,7 @@
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackStabilityTests.cs" />
     <Compile Include="MessageSending\NodeTests\NodePollingTests.cs" />
+    <Compile Include="Routing\ReceiverNodeValidationTests.cs" />
     <Compile Include="Routing\SenderEndpointGeneratorTests.cs" />
     <Compile Include="Routing\UniqueEndpointGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

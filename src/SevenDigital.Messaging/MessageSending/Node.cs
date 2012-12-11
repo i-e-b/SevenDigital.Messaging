@@ -9,7 +9,6 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 
 		readonly IMessagingBase messagingBase;
-		//readonly IMessageDispatcher messageDispatcher;
 		readonly IDispatchController dispatchController;
 		IDestinationPoller destinationPoller;
 		string endpoint;
@@ -17,7 +16,6 @@ namespace SevenDigital.Messaging.MessageSending
 		public Node(IMessagingBase messagingBase, IDispatchController dispatchController)
 		{
 			this.messagingBase = messagingBase;
-			//this.messageDispatcher = messageDispatcher;
 			this.dispatchController = dispatchController;
 		}
 

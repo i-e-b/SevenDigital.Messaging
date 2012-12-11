@@ -10,19 +10,21 @@ namespace SevenDigital.Messaging
 
 		public static void Activate()
 		{
-			new Cooldown();
-		}
-
-		public Cooldown()
-		{
-			if (Interlocked.CompareExchange(ref calls, 1, 0) == 0)
+			try
 			{
-				Console.WriteLine("Activating cooldown capture");
-				CrossPlatformSignalDispatch.Instance.TerminateEvent += Instance_TerminateEvent;
+				if (Interlocked.CompareExchange(ref calls, 1, 0) == 0)
+				{
+					Console.WriteLine("Activating cooldown capture");
+					CrossPlatformSignalDispatch.Instance.TerminateEvent += Instance_TerminateEvent;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Failed to start cooldown - " + ex.GetType() + ": " + ex.Message);
 			}
 		}
 
-		void Instance_TerminateEvent(object sender, TerminateEventArgs args)
+		static void Instance_TerminateEvent(object sender, TerminateEventArgs args)
 		{
 			Console.WriteLine("Waiting for all handlers to exit");
 			new MessagingConfiguration().Shutdown();

@@ -1,3 +1,4 @@
+using System;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -17,6 +18,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public IMessageBinding<T> Handle<T>() where T : class, IMessage
 		{
+			if ( ! typeof(T).IsInterface) throw new ArgumentException("Handler type must be an interface that implements IMessage");
 			return new HandlerTriggering<T>(node);
 		}
 
