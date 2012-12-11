@@ -51,6 +51,12 @@ namespace SevenDigital.Messaging
 			return this;
 		}
 
+		public MessagingConfiguration WithMessagingQuery(string host, string username, string password, string vhost)
+		{
+			new MessagingBaseConfiguration().WithRabbitManagement(host, username, password, vhost);
+			return this;
+		}
+
 		static bool UsingLoopbackMode()
 		{
 			return ObjectFactory.GetAllInstances<INodeFactory>().Any(n=>n is LoopbackNodeFactory);
