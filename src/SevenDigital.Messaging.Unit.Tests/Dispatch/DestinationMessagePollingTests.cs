@@ -101,9 +101,16 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			dispatcher.SetupGet(m=>m.HandlersInflight).Returns(10);
 			subject.Start();
 			Thread.Sleep(750);
-			DestinationPoller.TaskLimit = 0;
-			dispatcher.SetupGet(m=>m.HandlersInflight).Returns(0);
-			subject.Stop();
+			try
+			{
+				DestinationPoller.TaskLimit = 0;
+				dispatcher.SetupGet(m => m.HandlersInflight).Returns(0);
+				subject.Stop();
+			}
+			finally
+			{
+				DestinationPoller.TaskLimit = 4;
+			}
 			messagingBase.Verify(m=>m.GetMessage<IMessage>(destinationName), Times.Never()); // slight delay between switching concurency and stopping.
 			sleeper.Verify(m=>m.Sleep(It.IsAny<int>()));
 		}
