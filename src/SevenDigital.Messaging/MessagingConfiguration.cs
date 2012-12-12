@@ -38,7 +38,7 @@ namespace SevenDigital.Messaging
 				map.For<IMessageDispatcher>().Use<MessageDispatcher>();
 
 
-				map.For<IThreadPoolWrapper>().Use<ThreadPoolWrapper>();
+				map.For<IWorkWrapper>().Use<WorkWrapper>();
 				map.For<ISleepWrapper>().Use<SleepWrapper>();
 				map.For<INode>().Use<Node>();
 

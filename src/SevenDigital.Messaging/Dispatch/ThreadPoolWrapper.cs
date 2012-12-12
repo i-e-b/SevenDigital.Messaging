@@ -1,27 +1,18 @@
 ﻿using System;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenDigital.Messaging.Dispatch
 {
-	public class ThreadPoolWrapper : IThreadPoolWrapper
+	public class WorkWrapper : IWorkWrapper
 	{
 		public void Do(Action action) 
 		{
-			ThreadPool.QueueUserWorkItem(o => action());
-		}
-
-		public bool IsThreadAvailable()
-		{
-			int workers, completion;
-			ThreadPool.GetAvailableThreads(out workers, out completion);
-
-			return (workers > 0);
+			Task.Factory.StartNew(action);
 		}
 	}
 
-	public interface IThreadPoolWrapper
+	public interface IWorkWrapper
 	{
 		void Do(Action action);
-		bool IsThreadAvailable();
 	}
 }
