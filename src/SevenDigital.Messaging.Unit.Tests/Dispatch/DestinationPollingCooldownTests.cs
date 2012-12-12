@@ -13,19 +13,19 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		IMessagingBase messagingBase;
 		ISleepWrapper sleepWrapper;
 		IMessageDispatcher dispatcher;
-		IThreadPoolWrapper pool;
+		IWorkWrapper pool;
 
 		[SetUp]
 		public void A_destination_poller_with_a_dispatcher ()
 		{
 			messagingBase = Substitute.For<IMessagingBase>();
 			sleepWrapper = Substitute.For<ISleepWrapper>();
-			pool = Substitute.For<IThreadPoolWrapper>();
+			pool = Substitute.For<IWorkWrapper>();
 
 			dispatcher = Substitute.For<IMessageDispatcher>();
 			dispatcher.HandlersInflight.Returns(2, 1, 0);
 
-			subject = new DestinationPoller(messagingBase, sleepWrapper, dispatcher, pool);
+			subject = new DestinationPoller(messagingBase, sleepWrapper, dispatcher);
 		}
 
 		[Test]

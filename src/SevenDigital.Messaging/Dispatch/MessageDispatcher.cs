@@ -8,13 +8,13 @@ namespace SevenDigital.Messaging.Dispatch
 {
 	public class MessageDispatcher : IMessageDispatcher
 	{
-		readonly IThreadPoolWrapper threadPoolWrapper;
+		readonly IWorkWrapper workWrapper;
 		readonly Dictionary<Type, ActionList> handlers;
 		int runningHandlers;
 
-		public MessageDispatcher(IThreadPoolWrapper threadPoolWrapper)
+		public MessageDispatcher(IWorkWrapper workWrapper)
 		{
-			this.threadPoolWrapper = threadPoolWrapper;
+			this.workWrapper = workWrapper;
 			handlers = new Dictionary<Type, ActionList>();
 		}
 
@@ -33,7 +33,7 @@ namespace SevenDigital.Messaging.Dispatch
 			foreach (var action in actions)
 			{
 				var handlerWrapper = action;
-				threadPoolWrapper.Do(() =>
+				workWrapper.Do(() =>
 				{
 					Interlocked.Increment(ref runningHandlers);
 					try

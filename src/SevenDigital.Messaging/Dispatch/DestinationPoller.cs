@@ -10,16 +10,14 @@ namespace SevenDigital.Messaging.Dispatch
 		readonly IMessagingBase messagingBase;
 		readonly ISleepWrapper sleeper;
 		readonly IMessageDispatcher dispatcher;
-		readonly IThreadPoolWrapper pool;
 		Thread pollingThread;
 		volatile bool running;
 
-		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageDispatcher dispatcher, IThreadPoolWrapper pool)
+		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageDispatcher dispatcher)
 		{
 			this.messagingBase = messagingBase;
 			this.sleeper = sleeper;
 			this.dispatcher = dispatcher;
-			this.pool = pool;
 		}
 
 		public void SetDestinationToWatch(string targetDestination)
@@ -33,7 +31,7 @@ namespace SevenDigital.Messaging.Dispatch
 			while (running)
 			{
 				object message = null;
-				if (pool.IsThreadAvailable()) message = GetMessageRobust();
+				if (dispatcher.HandlersInflight < 4) message = GetMessageRobust();
 				if (message != null)
 				{
 					dispatcher.TryDispatch(message);
@@ -52,8 +50,8 @@ namespace SevenDigital.Messaging.Dispatch
 			switch (sleep)
 			{
 				case 0: return 1;
-				case 1: return 50;
-				default: return 250;
+				case 1: return 125;
+				default: return 500;
 			}
 		}
 

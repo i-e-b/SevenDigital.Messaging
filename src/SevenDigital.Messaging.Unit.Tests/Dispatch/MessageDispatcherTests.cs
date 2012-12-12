@@ -11,7 +11,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		Action<ITestMessage> testHandler;
 		Action<ITestMessage> anotherHandler;
 		Action<IDifferentTypeMessage> aDifferentType;
-		IThreadPoolWrapper mockThreadPool;
+		IWorkWrapper mockWork;
 
 		volatile int testHandlerHits;
 		volatile int anotherHandlerHits;
@@ -20,8 +20,8 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[SetUp]
 		public void A_message_dispatcher ()
 		{
-			mockThreadPool = new FakeThreadPool();
-			subject = new MessageDispatcher(mockThreadPool);
+			mockWork = new FakeWork();
+			subject = new MessageDispatcher(mockWork);
 			testHandler = msg => { testHandlerHits++; };
 			anotherHandler = msg => { anotherHandlerHits++; };
 			aDifferentType = msg => { aDifferentHits++; };
@@ -90,16 +90,11 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		
 	}
 
-	public class FakeThreadPool : IThreadPoolWrapper
+	public class FakeWork : IWorkWrapper
 	{
 		public void Do(Action action)
 		{
 			action();
-		}
-
-		public bool IsThreadAvailable()
-		{
-			return true;
 		}
 	}
 

@@ -14,7 +14,6 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		Mock<IMessagingBase> messagingBase;
 		Mock<ISleepWrapper> sleeper;
 		Mock<IMessageDispatcher> dispatcher;
-		Mock<IThreadPoolWrapper> pool;
 		string destinationName;
 
 		[SetUp]
@@ -23,11 +22,9 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			messagingBase = new Mock<IMessagingBase>();
 			sleeper = new Mock<ISleepWrapper>();
 			dispatcher = new Mock<IMessageDispatcher>();
-			pool = new Mock<IThreadPoolWrapper>();
 			destinationName = "a-destination";
-			pool.Setup(m=>m.IsThreadAvailable()).Returns(true);
 
-			subject = new DestinationPoller(messagingBase.Object, sleeper.Object, dispatcher.Object, pool.Object);
+			subject = new DestinationPoller(messagingBase.Object, sleeper.Object, dispatcher.Object);
 			subject.SetDestinationToWatch(destinationName);
 		}
 
@@ -101,11 +98,12 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void If_thread_pool_is_full_should_not_try_to_get_messages ()
 		{
-			pool.Setup(m=>m.IsThreadAvailable()).Returns(false);
+			dispatcher.SetupGet(m=>m.HandlersInflight).Returns(10);
 			subject.Start();
 			Thread.Sleep(750);
+			dispatcher.SetupGet(m=>m.HandlersInflight).Returns(0);
 			subject.Stop();
-			messagingBase.Verify(m=>m.GetMessage<IMessage>(destinationName), Times.Never());
+			messagingBase.Verify(m=>m.GetMessage<IMessage>(destinationName), Times.AtMost(3)); // slight delay between switching concurency and stopping.
 			sleeper.Verify(m=>m.Sleep(It.IsAny<int>()));
 		}
 
