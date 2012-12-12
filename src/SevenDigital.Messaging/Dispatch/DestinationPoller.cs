@@ -12,6 +12,7 @@ namespace SevenDigital.Messaging.Dispatch
 		readonly IMessageDispatcher dispatcher;
 		Thread pollingThread;
 		volatile bool running;
+		internal static volatile int TaskLimit = 4;
 
 		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageDispatcher dispatcher)
 		{
@@ -31,7 +32,7 @@ namespace SevenDigital.Messaging.Dispatch
 			while (running)
 			{
 				object message = null;
-				if (dispatcher.HandlersInflight < 4) message = GetMessageRobust();
+				if (dispatcher.HandlersInflight < TaskLimit) message = GetMessageRobust();
 				if (message != null)
 				{
 					dispatcher.TryDispatch(message);
