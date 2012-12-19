@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
+using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Dispatch;
 using StructureMap;
 
@@ -11,12 +12,17 @@ namespace SevenDigital.Messaging.Unit.Tests.Shutdown
 		[Test]
 		public void Calling_messaging_shutdown_stops_dispatch_controller ()
 		{
-			var mock = Substitute.For<IDispatchController>();
-			ObjectFactory.Configure(map=>map.For<IDispatchController>().Use(mock));
+			var dispatchMock = Substitute.For<IDispatchController>();
+			var channelMock = Substitute.For<IChannelAction>();
+			ObjectFactory.Configure(map=> {
+				map.For<IDispatchController>().Use(dispatchMock);
+				map.For<IChannelAction>().Use(channelMock);
+			});
 
 			new MessagingConfiguration().Shutdown();
 
-			mock.Received().Shutdown();
+			dispatchMock.Received().Shutdown();
+			channelMock.Received().Dispose();
 		}
 	}
 }
