@@ -180,6 +180,9 @@ namespace SevenDigital.Messaging
 		{
 			var controller = ObjectFactory.TryGetInstance<IDispatchController>();
 			if (controller != null) controller.Shutdown();
+
+			var connection = ObjectFactory.TryGetInstance<IChannelAction>();
+			if (connection != null) connection.Dispose();
 		}
 	}
 }
