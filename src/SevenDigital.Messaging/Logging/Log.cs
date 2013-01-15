@@ -10,13 +10,13 @@ namespace SevenDigital.Messaging.Logging
 		{
 			try
 			{
-				var mb = ObjectFactory.TryGetInstance<IMessagingBase>();
-				if (mb == null) return;
-				mb.CreateDestination<LogMessage>("WarningLog");
+				var mb = ObjectFactory.GetInstance<IMessagingBase>();
+				mb.CreateDestination<ILogMessage>("WarningLog");
+				mb.SendMessage(new LogMessage{Message = message});
 			}
-			catch
+			catch (Exception ex)
 			{
-				Console.WriteLine("Messaging is broken!");
+				Console.WriteLine("Messaging is broken? " + ex.GetType().Name + ": " + ex.Message);
 			}
 		}
 	}
