@@ -11,6 +11,7 @@ namespace SevenDigital.Messaging.Dispatch
 		readonly ISleepWrapper sleeper;
 		readonly IMessageDispatcher dispatcher;
 		Thread pollingThread;
+		int runningExch;
 		volatile bool running;
 		internal static volatile int TaskLimit = 4;
 
@@ -62,18 +63,18 @@ namespace SevenDigital.Messaging.Dispatch
 			{
 				return messagingBase.GetMessage<IMessage>(destination);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				Log.Warning("Could not pick up message because "+ex.GetType().Name+": "+ex.Message);
 				return null;
 			}
 		}
 
 		public void Start()
 		{
-			if (running) return;
 			lock (this)
 			{
-				running = true;
+				if (!TryStartRunning()) return;
 				if (pollingThread == null) pollingThread = new Thread(PollingMethod)
 					{
 						Name = "Polling_" + destination,
@@ -81,6 +82,23 @@ namespace SevenDigital.Messaging.Dispatch
 					};
 				if (pollingThread.ThreadState != ThreadState.Running) pollingThread.Start();
 			}
+		}
+
+		public bool TryStartRunning()
+		{
+			var original = Interlocked.CompareExchange(ref runningExch, -1, 0);
+			if (original == 0)
+			{
+				running = true;
+				return true;
+			}
+			return false;
+		}
+
+		public void StopRunning()
+		{
+			running = false;
+			runningExch = 0;
 		}
 
 		public void Stop()
@@ -99,9 +117,9 @@ namespace SevenDigital.Messaging.Dispatch
 
 		void StopPollingThread()
 		{
+			StopRunning();
 			var pt = pollingThread;
 			pollingThread = null;
-			running = false;
 			if (pt != null)
 			{
 				pt.Join();

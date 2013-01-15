@@ -26,7 +26,7 @@ namespace SevenDigital.Messaging.Dispatch
 
 			if (!actions.Any())
 			{
-				Console.WriteLine("Ignoring message of type "+type+" because there are no handlers");
+				Log.Warning("Ignoring message of type "+type+" because there are no handlers");
 				return;
 			}
 
@@ -102,5 +102,4 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 		}
 	}
-
 }

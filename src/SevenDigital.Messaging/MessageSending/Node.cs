@@ -5,7 +5,7 @@ using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.MessageSending
 {
-	public class Node: INode
+	public class Node : INode
 	{
 
 		readonly IMessagingBase messagingBase;
