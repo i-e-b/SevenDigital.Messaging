@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cooldown.cs" />
+    <Compile Include="Logging\Log.cs" />
     <Compile Include="Dispatch\LoopbackDispatchController.cs" />
     <Compile Include="Dispatch\DestinationPoller.cs" />
     <Compile Include="Dispatch\DispatchController.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
     <Compile Include="EventHooks\ITestEventHook.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />
+    <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="MessageSending\IntegrationTestNode.cs" />
     <Compile Include="MessageSending\IMessageBinding.cs" />
     <Compile Include="IReceiverNode.cs" />
