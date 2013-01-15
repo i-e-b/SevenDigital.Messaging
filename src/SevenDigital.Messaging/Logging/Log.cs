@@ -2,7 +2,7 @@ using System;
 using SevenDigital.Messaging.Base;
 using StructureMap;
 
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.Logging
 {
 	public class Log
 	{
