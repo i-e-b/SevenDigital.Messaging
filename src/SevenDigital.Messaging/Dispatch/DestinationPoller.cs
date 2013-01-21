@@ -43,19 +43,15 @@ namespace SevenDigital.Messaging.Dispatch
 				else
 				{
 					sleeper.Sleep(sleep);
-					sleep = burstSleep(sleep);
+					sleep = BurstSleep(sleep);
 				}
 			}
 		}
 
-		int burstSleep(int sleep)
+		static int BurstSleep(int sleep)
 		{
-			switch (sleep)
-			{
-				case 0: return 1;
-				case 1: return 125;
-				default: return 500;
-			}
+			if (sleep < 255) return (sleep * 2) + 1;
+			return 255;
 		}
 
 		IMessage GetMessageRobust()

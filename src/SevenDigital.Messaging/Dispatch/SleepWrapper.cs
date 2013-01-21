@@ -6,7 +6,7 @@ namespace SevenDigital.Messaging.Dispatch
 	{
 		public void Sleep(int i)
 		{
-			Thread.Sleep(0);
+			Thread.Sleep(i);
 		}
 	}
 
