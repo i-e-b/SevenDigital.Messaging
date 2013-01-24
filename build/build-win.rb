@@ -61,8 +61,9 @@ namespace :build do
  
 	desc 'Run nunit unit tests'
   	task :test, [:solution_directory, :solution_file, :compilation_configuration] do |task, args|
+		Dir.glob("#{args.solution_directory}/**/bin/**/*").each{|file| puts file}
     	specs = ["Specs.dll", "*.Specs.dll", "*.Specs.*.dll", "*.Tests.dll", "*.Tests.*.dll"].inject([]) { |files, pattern| 
-        	Dir.glob(File.join("#{args.solution_directory}/**/bin/**/#{args.compilation_configuration}", pattern)).each{|file|
+        	Dir.glob(File.join("#{args.solution_directory}/**/bin/**/*", pattern)).each{|file|
 				files += [file.concat(" ")]
 			}
 			puts "found NUnit assemblies: #{files}"
@@ -75,6 +76,8 @@ namespace :build do
 			}
 		else
 			warn "No test assemblies found.  I find your lack of tests disturbing..."
+			raise "No test assemblies found.  I find your lack of tests disturbing..."
 		end 
 	end   
+	
 end

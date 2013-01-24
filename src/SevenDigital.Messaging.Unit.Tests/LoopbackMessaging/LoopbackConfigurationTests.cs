@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 	    private INodeFactory _nodeFactory;
 
 	    [SetUp]
-		public void When_configuring_with_loopback_even_if_default_configuration_used ()
+		public void When_configuring_with_loopback_even_if_default_configuration_used_afterwards ()
 		{
 			new MessagingConfiguration().WithLoopback();
 		    new MessagingConfiguration().WithDefaults();
@@ -119,6 +119,18 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 			mock_event_hook.Verify(h=>h.MessageSent(It.IsAny<DummyMessage>()));
 			mock_event_hook.Verify(h=>h.HandlerFailed(It.IsAny<DummyMessage>(), It.Is<Type>(t=> t == typeof(CrappyHandler)), It.IsAny<Exception>()));
 		}
+
+        [Test]
+        public void Should_get_registered_listener_for_type()
+        {
+            using (var receiver = _nodeFactory.Listen())
+            {
+                receiver.Handle<IMessage>().With<AHandler>();
+                var listeners = new MessagingConfiguration().LoopbackListenersForMessage<IMessage>();
+
+                Assert.That(listeners, Contains.Item(typeof (AHandler)));
+            }
+        }
 	}
 
 	public class CrappyHandler:IHandle<IDummyMessage>
