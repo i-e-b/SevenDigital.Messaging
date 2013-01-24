@@ -62,6 +62,7 @@
     <Compile Include="Dispatch\MessageDispatcherTests.cs" />
     <Compile Include="Dispatch\SubscribeHandlerTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackConfigurationTests.cs" />
+    <Compile Include="LoopbackMessaging\LoopbackNodeFactoryTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackStabilityTests.cs" />
     <Compile Include="MessageSending\NodeTests\NodePollingTests.cs" />

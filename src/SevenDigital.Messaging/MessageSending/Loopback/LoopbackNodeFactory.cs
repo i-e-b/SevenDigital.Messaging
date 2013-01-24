@@ -19,10 +19,11 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 
 		public List<Type> ListenersFor<T>()
 		{
-			return listenerBindings[typeof(T)].ToList();
+		    var key = typeof (T);
+            return listenerBindings.ContainsKey(key) ? listenerBindings[key].ToList() : new List<Type>();
 		}
 
-		public IReceiverNode TakeFrom(Endpoint endpoint)
+	    public IReceiverNode TakeFrom(Endpoint endpoint)
 		{
 			// In the real version, agents compete for incoming messages.
 			// In this test version, we only really bind the first listener for a given endpoint -- roughly the same effect!
