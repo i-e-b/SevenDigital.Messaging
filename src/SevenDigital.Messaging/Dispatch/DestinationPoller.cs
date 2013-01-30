@@ -72,6 +72,7 @@ namespace SevenDigital.Messaging.Dispatch
 			lock (this)
 			{
 				if (!TryStartRunning()) return;
+
 				if (pollingThread == null) pollingThread = new Thread(PollingMethod)
 					{
 						Name = "Polling_" + destination,

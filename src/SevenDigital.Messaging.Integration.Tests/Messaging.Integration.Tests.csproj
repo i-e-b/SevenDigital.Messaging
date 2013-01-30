@@ -58,6 +58,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EdgeCases\PartiallyAvailableContracts.cs" />
     <Compile Include="Hooks\FailingEventHookTests.cs" />
     <Compile Include="Hooks\FailingHandlerEventHookTests.cs" />
     <Compile Include="Logging\LoggingTest.cs" />
