@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EdgeCases\PartiallyAvailableContracts.cs" />
+    <Compile Include="EdgeCases\ShutDownBeforeConfiguration.cs" />
     <Compile Include="Hooks\FailingEventHookTests.cs" />
     <Compile Include="Hooks\FailingHandlerEventHookTests.cs" />
     <Compile Include="Logging\LoggingTest.cs" />

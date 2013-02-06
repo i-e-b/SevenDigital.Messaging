@@ -62,7 +62,7 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 			catch (Exception ex)
 			{
-				Log.Warning("Could not pick up message because "+ex.GetType().Name+": "+ex.Message);
+				Log.Warning("Could not pick up message because " + ex.GetType().Name + ": " + ex.Message);
 				return null;
 			}
 		}
