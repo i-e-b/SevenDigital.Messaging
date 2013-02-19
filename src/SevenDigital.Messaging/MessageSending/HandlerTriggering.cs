@@ -30,10 +30,11 @@ namespace SevenDigital.Messaging.MessageSending
 				catch (Exception ex)
 				{
 					FireHandlerFailedHooks<THandler>(msg, hooks, ex);
-					return;
+					return ex;
 				}
 				FireHandledOkHooks(msg, hooks);
 
+                return null;
 			});
 		}
 

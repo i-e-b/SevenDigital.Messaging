@@ -1,4 +1,4 @@
-using System;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Dispatch
 {
@@ -7,6 +7,6 @@ namespace SevenDigital.Messaging.Dispatch
 		void SetDestinationToWatch(string targetDestination);
 		void Start();
 		void Stop();
-		void AddHandler<T>(Action<T> action);
+		void AddHandler<T>(HandlerAction<T> action) where T : class, IMessage;
 	}
 }

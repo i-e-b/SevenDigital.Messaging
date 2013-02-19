@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 {
@@ -37,9 +38,9 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void Adding_a_handler_adds_to_dispatcher ()
 		{
-			subject.AddHandler((IMessage m) => { });
+			subject.AddHandler((IMessage m) => null);
 
-			dispatcher.Verify(m=>m.AddHandler(It.IsAny<Action<IMessage>>()));
+			dispatcher.Verify(m=>m.AddHandler(It.IsAny<HandlerAction<IMessage>>()));
 		}
 
 		[Test]

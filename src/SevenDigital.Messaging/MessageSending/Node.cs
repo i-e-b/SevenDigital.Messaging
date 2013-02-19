@@ -25,7 +25,7 @@ namespace SevenDigital.Messaging.MessageSending
 			destinationPoller = dispatchController.CreatePoller(endpoint);
 		}
 
-		public void SubscribeHandler<T>(Action<T> action) where T: class
+		public void SubscribeHandler<T>(HandlerAction<T> action) where T: class, IMessage
 		{
 			messagingBase.CreateDestination<T>(endpoint);
 			destinationPoller.SetDestinationToWatch(endpoint);

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Dispatch
 {
@@ -124,7 +125,7 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 		}
 
-		public void AddHandler<T>(Action<T> action)
+		public void AddHandler<T>(HandlerAction<T> action) where T : class, IMessage
 		{
 			dispatcher.AddHandler(action);
 		}

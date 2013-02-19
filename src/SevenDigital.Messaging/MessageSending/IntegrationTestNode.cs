@@ -45,7 +45,7 @@ namespace SevenDigital.Messaging.MessageSending
 			baseNode.SetEndpoint(endpoint);
 		}
 
-		public void SubscribeHandler<T>(Action<T> action) where T : class
+		public void SubscribeHandler<T>(HandlerAction<T> action) where T : class, IMessage
 		{
 // ReSharper disable EmptyGeneralCatchClause
 			try { messageRouter.Purge(endpoint.ToString()); } catch { }

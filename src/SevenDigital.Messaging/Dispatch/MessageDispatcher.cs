@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Dispatch
 {
@@ -53,7 +54,7 @@ namespace SevenDigital.Messaging.Dispatch
 			return from key in handlers.Keys where key.IsAssignableFrom(type) select handlers[key];
 		}
 
-		public void AddHandler<T>(Action<T> handlerAction)
+		public void AddHandler<T>(HandlerAction<T> handlerAction) where T : class, IMessage
 		{
 			lock (handlers)
 			{
@@ -67,7 +68,7 @@ namespace SevenDigital.Messaging.Dispatch
 
 		public int HandlersInflight { get { return runningHandlers; } }
 
-		public IEnumerable<Action<T>> HandlersForType<T>()
+		public IEnumerable<HandlerAction<T>> HandlersForType<T>() where T : class, IMessage
 		{
 			return handlers[typeof(T)].GetOfType<T>();
 		}
@@ -81,14 +82,14 @@ namespace SevenDigital.Messaging.Dispatch
 				list = new List<object>();
 			}
 
-			public void Add<T>(Action<T> act)
+			public void Add<T>(HandlerAction<T> act) where T : class, IMessage
 			{
 				list.Add(act);
 			}
 
-			public IEnumerable<Action<T>> GetOfType<T>()
+			public IEnumerable<HandlerAction<T>> GetOfType<T>() where T : class, IMessage
 			{
-				return list.Select(boxed => (Action<T>)boxed);
+				return list.Select(boxed => (HandlerAction<T>)boxed);
 			}
 
 			public IEnumerable<Action> GetClosed(object obj)
