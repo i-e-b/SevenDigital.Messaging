@@ -129,7 +129,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 
 		}
 
-		[Test, Ignore("may be broken by pending changes")]
+		[Test]
 		public void Can_restart_after_stopping  ()
 		{
 			int[] count = {0};
