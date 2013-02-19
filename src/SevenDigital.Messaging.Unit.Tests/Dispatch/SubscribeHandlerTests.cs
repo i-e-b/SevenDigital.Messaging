@@ -1,5 +1,4 @@
-﻿using System;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Dispatch;
@@ -14,7 +13,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		Mock<IMessagingBase> messagingBase;
 		Mock<IDispatchController> dispatchController;
 		Mock<IDestinationPoller> destinationPoller;
-		Action<IMessage> myAction;
+		HandlerAction<IMessage> myAction;
 		string destinationName = "woop";
 
 		[SetUp]
@@ -29,7 +28,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject = new Node(messagingBase.Object, dispatchController.Object);
 			subject.SetEndpoint(new Endpoint(destinationName));
 
-			myAction = msg => { };
+			myAction = msg => null;
 			subject.SubscribeHandler(myAction);
 		}
 

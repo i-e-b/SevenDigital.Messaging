@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 {
@@ -8,9 +9,9 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 	public class MessageDispatcherTests
 	{
 		IMessageDispatcher subject;
-		Action<ITestMessage> testHandler;
-		Action<ITestMessage> anotherHandler;
-		Action<IDifferentTypeMessage> aDifferentType;
+		HandlerAction<ITestMessage> testHandler;
+		HandlerAction<ITestMessage> anotherHandler;
+		HandlerAction<IDifferentTypeMessage> aDifferentType;
 		IWorkWrapper mockWork;
 
 		volatile int testHandlerHits;
@@ -22,9 +23,9 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			mockWork = new FakeWork();
 			subject = new MessageDispatcher(mockWork);
-			testHandler = msg => { testHandlerHits++; };
-			anotherHandler = msg => { anotherHandlerHits++; };
-			aDifferentType = msg => { aDifferentHits++; };
+			testHandler = msg => { testHandlerHits++; return null;};
+			anotherHandler = msg => { anotherHandlerHits++; return null;};
+			aDifferentType = msg => { aDifferentHits++; return null;};
 		}
 
 		[Test]
