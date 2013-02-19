@@ -1,4 +1,3 @@
-using System;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Routing;
@@ -25,11 +24,13 @@ namespace SevenDigital.Messaging.MessageSending
 			destinationPoller = dispatchController.CreatePoller(endpoint);
 		}
 
-		public void SubscribeHandler<T>(HandlerAction<T> action) where T: class, IMessage
+		public void SubscribeHandler<TMessage, THandler>()
+			where TMessage: class, IMessage 
+            where THandler: IHandle<TMessage>
 		{
-			messagingBase.CreateDestination<T>(endpoint);
+			messagingBase.CreateDestination<TMessage>(endpoint);
 			destinationPoller.SetDestinationToWatch(endpoint);
-			destinationPoller.AddHandler(action);
+			destinationPoller.AddHandler<TMessage>(typeof(THandler));
 			destinationPoller.Start();
 		}
 

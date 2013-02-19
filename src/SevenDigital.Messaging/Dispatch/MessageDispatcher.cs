@@ -27,30 +27,71 @@ namespace SevenDigital.Messaging.Dispatch
 
 			var actions = GetMatchingActions(type).SelectMany(t=>t.GetClosed(messageObject)).ToList();
 
-            pendingMessage.Finish(); // temp until refactor.
 
 			if (!actions.Any())
 			{
+				pendingMessage.Finish();
 				Log.Warning("Ignoring message of type "+type+" because there are no handlers");
 				return;
 			}
 
-			foreach (var action in actions)
+			pendingMessage.Finish();// temp until finished retry logic
+
+			workWrapper.Do(() =>
 			{
-				var handlerWrapper = action;
-				workWrapper.Do(() =>
+				foreach (var action in actions)
 				{
+					var handlerWrapper = action;
 					Interlocked.Increment(ref runningHandlers);
 					try
 					{
 						handlerWrapper();
-					} finally
+					}
+					/*catch (Exception ex)
+					{
+
+					}*/
+					finally
 					{
 						Interlocked.Decrement(ref runningHandlers);
 					}
-				});
+				}
+			});
+		}
+
+
+		static void FireHandledOkHooks<TMessage>(TMessage msg, IEnumerable<IEventHook> hooks) where TMessage : IMessage
+		{
+			foreach (var hook in hooks)
+			{
+				try
+				{
+					hook.MessageReceived(msg);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("An event hook failed after handling " + ex.GetType() + "; " + ex.Message);
+				}
 			}
 		}
+
+		static void FireHandlerFailedHooks<TMessage, THandler>(TMessage msg, IEnumerable<IEventHook> hooks, Exception ex)
+			where TMessage : IMessage
+			where THandler : IHandle<TMessage>
+		{
+			foreach (var hook in hooks)
+			{
+				try
+				{
+					hook.HandlerFailed(msg, typeof(THandler), ex);
+				}
+				catch (Exception exi)
+				{
+					Console.WriteLine("An event hook failed after handling " + exi.GetType() + "; " + exi.Message);
+				}
+			}
+		}
+		
 
 		IEnumerable<ActionList> GetMatchingActions(Type type)
 		{
