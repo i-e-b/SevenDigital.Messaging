@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
-using SevenDigital.Messaging.MessageSending;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Dispatch
@@ -12,18 +11,18 @@ namespace SevenDigital.Messaging.Dispatch
 	public class MessageDispatcher : IMessageDispatcher
 	{
 		readonly IWorkWrapper workWrapper;
-		readonly Dictionary<Type, List<Type>> handlers; // message type => [handler types]
+		readonly Dictionary<Type, HashSet<Type>> handlers; // message type => [handler types]
 		int runningHandlers;
 
 		public MessageDispatcher(IWorkWrapper workWrapper)
 		{
 			this.workWrapper = workWrapper;
-			handlers = new Dictionary<Type, List<Type>>();
+			handlers = new Dictionary<Type, HashSet<Type>>();
 		}
 
 		public void TryDispatch(IPendingMessage<object> pendingMessage)
 		{
-            var messageObject = pendingMessage.Message;
+			var messageObject = pendingMessage.Message;
 			var type = messageObject.GetType().DirectlyImplementedInterfaces().Single();
 
 			var matchingHandlers = GetMatchingHandlers(type).ToList();
@@ -31,38 +30,49 @@ namespace SevenDigital.Messaging.Dispatch
 			if (!matchingHandlers.Any())
 			{
 				pendingMessage.Finish();
-				Log.Warning("Ignoring message of type "+type+" because there are no handlers");
+				Log.Warning("Ignoring message of type " + type + " because there are no handlers");
 				return;
 			}
-
-			pendingMessage.Finish();// temp until finished retry logic
 
 			workWrapper.Do(() =>
 			{
 				foreach (var handler in matchingHandlers)
 				{
 					Interlocked.Increment(ref runningHandlers);
+					var hooks = ObjectFactory.GetAllInstances<IEventHook>();
+
 					try
 					{
 						var instance = ObjectFactory.GetInstance(handler);
-						handler.GetMethod("Handle").MakeGenericMethod(type).Invoke(instance, new object[] { messageObject } );
-						//(instance as IHandle<IMessage>).Handle(messageObject);
-						//handlerWrapper();
+						handler.GetMethod("Handle").MakeGenericMethod(type).Invoke(instance, new[] { messageObject });
+						FireHandledOkHooks((IMessage)messageObject, hooks);
 					}
-					/*catch (Exception ex)
+					catch (Exception ex)
 					{
+						FireHandlerFailedHooks((IMessage)messageObject, hooks, ex, handler);
 
-					}*/
+						if (ShouldRetry(ex.GetType(), handler)) pendingMessage.Cancel();
+						else pendingMessage.Finish();
+						return;
+					}
 					finally
 					{
 						Interlocked.Decrement(ref runningHandlers);
 					}
 				}
+				pendingMessage.Finish();
 			});
 		}
 
+		static bool ShouldRetry(Type exceptionType, Type handlerType)
+		{
+			return handlerType.GetCustomAttributes(typeof(RetryMessageAttribute), false)
+				.OfType<RetryMessageAttribute>()
+				.Any(r => r.RetryExceptionType == exceptionType);
+		}
 
-		static void FireHandledOkHooks<TMessage>(TMessage msg, IEnumerable<IEventHook> hooks) where TMessage : IMessage
+
+		static void FireHandledOkHooks(IMessage msg, IEnumerable<IEventHook> hooks)
 		{
 			foreach (var hook in hooks)
 			{
@@ -77,15 +87,13 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 		}
 
-		static void FireHandlerFailedHooks<TMessage, THandler>(TMessage msg, IEnumerable<IEventHook> hooks, Exception ex)
-			where TMessage : IMessage
-			where THandler : IHandle<TMessage>
+		static void FireHandlerFailedHooks(IMessage msg, IEnumerable<IEventHook> hooks, Exception ex, Type handlerType)
 		{
 			foreach (var hook in hooks)
 			{
 				try
 				{
-					hook.HandlerFailed(msg, typeof(THandler), ex);
+					hook.HandlerFailed(msg, handlerType, ex);
 				}
 				catch (Exception exi)
 				{
@@ -93,23 +101,21 @@ namespace SevenDigital.Messaging.Dispatch
 				}
 			}
 		}
-		
 
 		IEnumerable<Type> GetMatchingHandlers(Type type)
 		{
-            return handlers.Keys.Where(k=>k.IsAssignableFrom(type)).SelectMany(k => handlers[k]);
-            //return from key in handlers.Keys where key.IsAssignableFrom(type) select handlers[key];
+			return handlers.Keys.Where(k => k.IsAssignableFrom(type)).SelectMany(k => handlers[k]);
 		}
 
 		public void AddHandler<TMessage, THandler>()
 			where TMessage : class, IMessage
-            where THandler : IHandle<TMessage>
+			where THandler : IHandle<TMessage>
 		{
 			lock (handlers)
 			{
-				if (!handlers.ContainsKey(typeof (TMessage)))
+				if (!handlers.ContainsKey(typeof(TMessage)))
 				{
-					handlers.Add(typeof(TMessage), new List<Type> { typeof(THandler) });
+					handlers.Add(typeof(TMessage), new HashSet<Type> { typeof(THandler) });
 				}
 				handlers[typeof(TMessage)].Add(typeof(THandler));
 			}
@@ -117,9 +123,11 @@ namespace SevenDigital.Messaging.Dispatch
 
 		public int HandlersInflight { get { return runningHandlers; } }
 
-		public IEnumerable<IHandle<T>> HandlersForType<T>() where T : class, IMessage
+		public IEnumerable<Type> HandlersForType<T>() where T : class, IMessage
 		{
-			return handlers[typeof(T)].Cast<IHandle<T>>();
+			return handlers[typeof(T)]
+				.Select(t => Type.GetType(t.AssemblyQualifiedName ?? ""))
+				.ToList();
 		}
 
 	}
