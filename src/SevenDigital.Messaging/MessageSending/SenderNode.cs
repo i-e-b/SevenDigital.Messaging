@@ -1,5 +1,6 @@
 using System;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Logging;
 using StructureMap;
 
@@ -8,10 +9,12 @@ namespace SevenDigital.Messaging.MessageSending
 	public class SenderNode : ISenderNode
 	{
 		readonly IMessagingBase messagingBase;
+		readonly ISleepWrapper _sleeper;
 
-		public SenderNode(IMessagingBase messagingBase)
+		public SenderNode(IMessagingBase messagingBase, ISleepWrapper sleeper)
 		{
 			this.messagingBase = messagingBase;
+			_sleeper = sleeper;
 		}
 
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
@@ -48,6 +51,7 @@ namespace SevenDigital.Messaging.MessageSending
 				}
 				catch (Exception ex)
 				{
+                    _sleeper.Sleep(12000);
 					lastError = ex;
 					Log.Warning("Could not send message " + ex.GetType() + ": " + ex.Message);
 				}

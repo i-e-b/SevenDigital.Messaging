@@ -19,7 +19,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 			messageDispatch = new Mock<IMessagingBase>();
 		    var endpointGenerator = new Mock<ISenderEndpointGenerator>();
 		    endpointGenerator.Setup(g => g.Generate()).Returns(new Endpoint("endpoint"));
-		    _subject = new SenderNode(messageDispatch.Object);
+		    _subject = new SenderNode(messageDispatch.Object, null);
 		}
 
 		[Test]

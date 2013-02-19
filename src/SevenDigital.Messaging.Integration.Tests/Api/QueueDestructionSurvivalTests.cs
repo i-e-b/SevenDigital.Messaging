@@ -29,7 +29,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 		}
 
-		[Test, Ignore("may be broken by pending changes")]
+		[Test]
 		public void Listener_endpoint_should_survive_connection_being_lost()
 		{
 			using (var receiverNode = nodeFactory.TakeFrom(new Endpoint(TestQueue)))
