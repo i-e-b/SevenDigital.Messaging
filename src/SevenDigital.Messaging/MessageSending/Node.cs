@@ -30,7 +30,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			messagingBase.CreateDestination<TMessage>(endpoint);
 			destinationPoller.SetDestinationToWatch(endpoint);
-			destinationPoller.AddHandler<TMessage>(typeof(THandler));
+			destinationPoller.AddHandler<TMessage, THandler>();
 			destinationPoller.Start();
 		}
 

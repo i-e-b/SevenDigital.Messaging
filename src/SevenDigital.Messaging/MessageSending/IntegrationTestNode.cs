@@ -45,11 +45,13 @@ namespace SevenDigital.Messaging.MessageSending
 			baseNode.SetEndpoint(endpoint);
 		}
 
-		public void SubscribeHandler<T>(HandlerAction<T> action) where T : class, IMessage
+		public void SubscribeHandler<TMessage, THandler>()
+			where TMessage : class, IMessage
+			where THandler : IHandle<TMessage>
 		{
 // ReSharper disable EmptyGeneralCatchClause
 			try { messageRouter.Purge(endpoint.ToString()); } catch { }
-			baseNode.SubscribeHandler(action);
+			baseNode.SubscribeHandler<TMessage, THandler>();
 // ReSharper restore EmptyGeneralCatchClause
 		}
 	}

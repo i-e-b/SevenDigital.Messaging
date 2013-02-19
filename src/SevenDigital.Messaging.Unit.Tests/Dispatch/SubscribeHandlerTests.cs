@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.MessageSending;
+using SevenDigital.Messaging.Unit.Tests.LoopbackMessaging;
 
 namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 {
@@ -13,8 +14,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		Mock<IMessagingBase> messagingBase;
 		Mock<IDispatchController> dispatchController;
 		Mock<IDestinationPoller> destinationPoller;
-		HandlerAction<IMessage> myAction;
-		string destinationName = "woop";
+		const string destinationName = "woop";
 
 		[SetUp]
 		public void Subscribing_a_handler_with_a_message_dispatcher ()
@@ -28,8 +28,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject = new Node(messagingBase.Object, dispatchController.Object);
 			subject.SetEndpoint(new Endpoint(destinationName));
 
-			myAction = msg => null;
-			subject.SubscribeHandler(myAction);
+			subject.SubscribeHandler<IDummyMessage, DummyHandler>();
 		}
 
 		[Test]
@@ -41,7 +40,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void Should_add_type_and_action_to_poller ()
 		{
-			destinationPoller.Verify(m=>m.AddHandler(myAction));
+			destinationPoller.Verify(m=>m.AddHandler<IDummyMessage, DummyHandler>());
 		}
 
 		[Test]
