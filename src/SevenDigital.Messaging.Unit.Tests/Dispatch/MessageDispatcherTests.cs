@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.MessageSending;
 
@@ -67,7 +68,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.AddHandler(anotherHandler);
 			subject.AddHandler(aDifferentType);
 
-			subject.TryDispatch(new FakeMessage());
+			subject.TryDispatch(Wrap(new FakeMessage()));
 
 			Assert.That(testHandlerHits, Is.EqualTo(1));
 			Assert.That(anotherHandlerHits, Is.EqualTo(1));
@@ -82,13 +83,22 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.AddHandler(anotherHandler);
 			subject.AddHandler(aDifferentType);
 
-			subject.TryDispatch(new SuperMessage());
+			subject.TryDispatch(Wrap(new SuperMessage()));
 
 			Assert.That(testHandlerHits, Is.EqualTo(1));
 			Assert.That(anotherHandlerHits, Is.EqualTo(1));
 			Assert.That(aDifferentHits, Is.EqualTo(0));
 		}
-		
+
+        IPendingMessage<T> Wrap<T>(T message)
+        {
+            return new PendingMessage<T> {
+                Message = message,
+                Cancel = () => { },
+                Finish = () => { }
+            };
+        }
+
 	}
 
 	public class FakeWork : IWorkWrapper
