@@ -34,7 +34,7 @@ namespace SevenDigital.Messaging.Dispatch
 			var sleep = 0;
 			while (running)
 			{
-				object message = null;
+				IPendingMessage<object> message = null;
 				if (dispatcher.HandlersInflight < TaskLimit) message = GetMessageRobust();
 				if (message != null)
 				{
@@ -55,11 +55,11 @@ namespace SevenDigital.Messaging.Dispatch
 			return 255;
 		}
 
-		IMessage GetMessageRobust()
+		IPendingMessage<IMessage> GetMessageRobust()
 		{
 			try
 			{
-				return messagingBase.GetMessage<IMessage>(destination);
+				return messagingBase.TryStartMessage<IMessage>(destination);
 			}
 			catch (Exception ex)
 			{

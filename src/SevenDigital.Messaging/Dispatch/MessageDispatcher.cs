@@ -20,11 +20,14 @@ namespace SevenDigital.Messaging.Dispatch
 			handlers = new Dictionary<Type, ActionList>();
 		}
 
-		public void TryDispatch(object messageObject)
+		public void TryDispatch(IPendingMessage<object> pendingMessage)
 		{
+            var messageObject = pendingMessage.Message;
 			var type = messageObject.GetType().DirectlyImplementedInterfaces().Single();
 
 			var actions = GetMatchingActions(type).SelectMany(t=>t.GetClosed(messageObject)).ToList();
+
+            pendingMessage.Finish(); // temp until refactor.
 
 			if (!actions.Any())
 			{
