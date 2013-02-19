@@ -26,25 +26,4 @@ namespace SevenDigital.Messaging
 			get { return _retryExceptionType; }
 		}
 	}
-
-
-    [RetryMessage(typeof(IOException))]
-    [RetryMessage(typeof(WebException))]
-	class Sample : IHandle<IMessage>
-	{
-		public void Handle(IMessage message)
-		{
-            var rnd = new Random();
-            var retryMessage = rnd.Next() % 2 == 0;
-
-			if (retryMessage)
-			{
-				throw new IOException();
-			}
-			else
-			{
-				throw new InvalidOperationException();
-            }
-		}
-	}
 }
