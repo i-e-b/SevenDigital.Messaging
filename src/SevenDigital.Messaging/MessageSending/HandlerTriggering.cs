@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using SevenDigital.Messaging.Base;
-using StructureMap;
-
 namespace SevenDigital.Messaging.MessageSending
 {
 	public class HandlerTriggering<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
@@ -17,7 +11,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			listenerNode.SubscribeHandler<TMessage>(msg =>
+			listenerNode.SubscribeHandler<TMessage, THandler>(/*msg =>
 			{
 
 				var hooks = ObjectFactory.GetAllInstances<IEventHook>();
@@ -35,41 +29,7 @@ namespace SevenDigital.Messaging.MessageSending
 				FireHandledOkHooks(msg, hooks);
 
                 return null;
-			});
-		}
-
-		static void FireHandledOkHooks(TMessage msg, IEnumerable<IEventHook> hooks)
-		{
-			foreach (var hook in hooks)
-			{
-				try
-				{
-					hook.MessageReceived(msg);
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine("An event hook failed after handling " + ex.GetType() + "; " + ex.Message);
-				}
-			}
-		}
-
-		static void FireHandlerFailedHooks<THandler>(TMessage msg, IEnumerable<IEventHook> hooks, Exception ex) where THandler : IHandle<TMessage>
-		{
-			foreach (var hook in hooks)
-			{
-				try
-				{
-					hook.HandlerFailed(msg, typeof(THandler), ex);
-				}
-				catch (Exception exi)
-				{
-					Console.WriteLine("An event hook failed after handling " + exi.GetType() + "; " + exi.Message);
-				}
-			}
-		}
-		static string ContractTypeName<T>(T message) where T : class, IMessage
-		{
-			return message.DirectlyImplementedInterfaces().Single().ToString();
+			}*/);
 		}
 	}
 }

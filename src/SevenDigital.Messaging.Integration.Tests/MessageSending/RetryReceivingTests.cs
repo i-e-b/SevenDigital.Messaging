@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging.Integration.Tests
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();
         }
 
-	    [Test, Ignore("failing because not implemented")]
+	    [Test]
         public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
         {
             ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
