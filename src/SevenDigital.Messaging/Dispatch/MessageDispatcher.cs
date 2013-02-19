@@ -5,19 +5,20 @@ using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.MessageSending;
+using StructureMap;
 
 namespace SevenDigital.Messaging.Dispatch
 {
 	public class MessageDispatcher : IMessageDispatcher
 	{
 		readonly IWorkWrapper workWrapper;
-		readonly Dictionary<Type, ActionList> handlers;
+		readonly Dictionary<Type, List<Type>> handlers; // message type => [handler types]
 		int runningHandlers;
 
 		public MessageDispatcher(IWorkWrapper workWrapper)
 		{
 			this.workWrapper = workWrapper;
-			handlers = new Dictionary<Type, ActionList>();
+			handlers = new Dictionary<Type, List<Type>>();
 		}
 
 		public void TryDispatch(IPendingMessage<object> pendingMessage)
@@ -25,10 +26,9 @@ namespace SevenDigital.Messaging.Dispatch
             var messageObject = pendingMessage.Message;
 			var type = messageObject.GetType().DirectlyImplementedInterfaces().Single();
 
-			var actions = GetMatchingActions(type).SelectMany(t=>t.GetClosed(messageObject)).ToList();
+			var matchingHandlers = GetMatchingHandlers(type).ToList();
 
-
-			if (!actions.Any())
+			if (!matchingHandlers.Any())
 			{
 				pendingMessage.Finish();
 				Log.Warning("Ignoring message of type "+type+" because there are no handlers");
@@ -39,13 +39,15 @@ namespace SevenDigital.Messaging.Dispatch
 
 			workWrapper.Do(() =>
 			{
-				foreach (var action in actions)
+				foreach (var handler in matchingHandlers)
 				{
-					var handlerWrapper = action;
 					Interlocked.Increment(ref runningHandlers);
 					try
 					{
-						handlerWrapper();
+						var instance = ObjectFactory.GetInstance(handler);
+						handler.GetMethod("Handle").MakeGenericMethod(type).Invoke(instance, new object[] { messageObject } );
+						//(instance as IHandle<IMessage>).Handle(messageObject);
+						//handlerWrapper();
 					}
 					/*catch (Exception ex)
 					{
@@ -93,59 +95,32 @@ namespace SevenDigital.Messaging.Dispatch
 		}
 		
 
-		IEnumerable<ActionList> GetMatchingActions(Type type)
+		IEnumerable<Type> GetMatchingHandlers(Type type)
 		{
-			return from key in handlers.Keys where key.IsAssignableFrom(type) select handlers[key];
+            return handlers.Keys.Where(k=>k.IsAssignableFrom(type)).SelectMany(k => handlers[k]);
+            //return from key in handlers.Keys where key.IsAssignableFrom(type) select handlers[key];
 		}
 
-		public void AddHandler<T>(HandlerAction<T> handlerAction) where T : class, IMessage
+		public void AddHandler<TMessage, THandler>()
+			where TMessage : class, IMessage
+            where THandler : IHandle<TMessage>
 		{
 			lock (handlers)
 			{
-				if (!handlers.ContainsKey(typeof(T)))
+				if (!handlers.ContainsKey(typeof (TMessage)))
 				{
-					handlers.Add(typeof(T), new ActionList());
+					handlers.Add(typeof(TMessage), new List<Type> { typeof(THandler) });
 				}
-				handlers[typeof(T)].Add(handlerAction);
+				handlers[typeof(TMessage)].Add(typeof(THandler));
 			}
 		}
 
 		public int HandlersInflight { get { return runningHandlers; } }
 
-		public IEnumerable<HandlerAction<T>> HandlersForType<T>() where T : class, IMessage
+		public IEnumerable<IHandle<T>> HandlersForType<T>() where T : class, IMessage
 		{
-			return handlers[typeof(T)].GetOfType<T>();
+			return handlers[typeof(T)].Cast<IHandle<T>>();
 		}
 
-		class ActionList
-		{
-			readonly List<object> list;
-
-			public ActionList()
-			{
-				list = new List<object>();
-			}
-
-			public void Add<T>(HandlerAction<T> act) where T : class, IMessage
-			{
-				list.Add(act);
-			}
-
-			public IEnumerable<HandlerAction<T>> GetOfType<T>() where T : class, IMessage
-			{
-				return list.Select(boxed => (HandlerAction<T>)boxed);
-			}
-
-			public IEnumerable<Action> GetClosed(object obj)
-			{
-				return list.Select(boxed => unboxAndEnclose(boxed, obj));
-			}
-
-			Action unboxAndEnclose(object boxedAction, object obj)
-			{
-				var x = (Delegate)boxedAction;
-				return () => x.DynamicInvoke(obj);
-			}
-		}
 	}
 }

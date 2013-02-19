@@ -7,6 +7,8 @@ namespace SevenDigital.Messaging.Dispatch
 		void SetDestinationToWatch(string targetDestination);
 		void Start();
 		void Stop();
-		void AddHandler<T>(Type handlerType) where T : class, IMessage;
+		void AddHandler<TMessage, THandler>()
+			where TMessage : class, IMessage
+            where THandler : IHandle<TMessage>;
 	}
 }

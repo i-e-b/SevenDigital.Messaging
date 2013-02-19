@@ -125,9 +125,11 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 		}
 
-		public void AddHandler<T>(HandlerAction<T> action) where T : class, IMessage
+		public void AddHandler<TMessage, THandler>()
+			where TMessage : class, IMessage
+			where THandler : IHandle<TMessage>
 		{
-			dispatcher.AddHandler(action);
+			dispatcher.AddHandler<TMessage, THandler>();
 		}
 	}
 }
