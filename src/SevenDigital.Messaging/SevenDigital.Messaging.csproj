@@ -73,6 +73,7 @@
     <Compile Include="MessageSending\Node.cs" />
     <Compile Include="MessagingConfiguration.cs" />
     <Compile Include="Endpoint.cs" />
+    <Compile Include="RetryMessageAttribute.cs" />
     <Compile Include="Routing\Host.cs" />
     <Compile Include="Routing\IEndpointGenerator.cs" />
     <Compile Include="Routing\IMessagingHost.cs" />

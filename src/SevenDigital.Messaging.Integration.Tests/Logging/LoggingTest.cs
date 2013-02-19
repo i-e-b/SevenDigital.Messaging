@@ -8,7 +8,7 @@ namespace SevenDigital.Messaging.Integration.Tests.Logging
 	[TestFixture]
 	public class LoggingTest
 	{
-		[Test]
+		[Test, Explicit]
 		public void Logging_works ()
 		{
 			new MessagingConfiguration().WithDefaults();
