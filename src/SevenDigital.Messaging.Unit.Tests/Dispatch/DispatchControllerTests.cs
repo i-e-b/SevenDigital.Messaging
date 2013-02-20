@@ -1,5 +1,4 @@
-﻿using NSubstitute;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SevenDigital.Messaging.Dispatch;
 using StructureMap;
 
@@ -17,7 +16,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			destinationPollerCalls = 0;
 			ObjectFactory.Configure(map => map.For<IDestinationPoller>().Use(() => { 
 				destinationPollerCalls++;
-				return Substitute.For<IDestinationPoller>(); }));
+				return new FakeDestinationPoller(); }));
 
 			subject = new DispatchController();
 		}
@@ -44,9 +43,9 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void When_creating_a_poller_should_set_the_destination_name ()
 		{
-			var result = subject.CreatePoller("name");
+			var result = (FakeDestinationPoller)subject.CreatePoller("name");
 
-			result.Received().SetDestinationToWatch("name");
+			Assert.That(result.Destination, Is.EqualTo("name"));
 		}
 
 		[Test]
@@ -58,9 +57,20 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 
 			subject.Shutdown();
 
-			one.Received().Stop();
-			two.Received().Stop();
-			three.Received().Stop();
+			Assert.That(((FakeDestinationPoller) one).StopCalls, Is.EqualTo(1));
+			Assert.That(((FakeDestinationPoller) two).StopCalls, Is.EqualTo(1));
+			Assert.That(((FakeDestinationPoller) three).StopCalls, Is.EqualTo(1));
+		}
+
+		public class FakeDestinationPoller: IDestinationPoller
+		{
+			public int StartCalls, StopCalls;
+            public string Destination = "";
+
+			public void SetDestinationToWatch(string targetDestination) { Destination = targetDestination; }
+			public void Start() { StartCalls++; }
+			public void Stop() { StopCalls++; }
+			public void AddHandler<TMessage, THandler>() where TMessage : class, IMessage where THandler : IHandle<TMessage> { }
 		}
 	}
 }
