@@ -67,6 +67,7 @@
     <Compile Include="MessageSending\RetryReceivingTests.cs" />
     <Compile Include="MessageSending\StressTests.cs" />
     <Compile Include="MessageSending\UnreachableEndpointTests.cs" />
+    <Compile Include="MessageSending\UnregisteringHandlersTests.cs" />
     <Compile Include="_Helpers\Handlers\FailingColourHandler.cs" />
     <Compile Include="_Helpers\Helper.cs" />
     <Compile Include="_Helpers\HoldingEventHook.cs" />
