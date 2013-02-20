@@ -1,5 +1,3 @@
-using System;
-
 namespace SevenDigital.Messaging.Dispatch
 {
 	public interface IDestinationPoller
@@ -10,5 +8,8 @@ namespace SevenDigital.Messaging.Dispatch
 		void AddHandler<TMessage, THandler>()
 			where TMessage : class, IMessage
             where THandler : IHandle<TMessage>;
+
+		void RemoveHandler<T>();
+		int HandlerCount { get; }
 	}
 }

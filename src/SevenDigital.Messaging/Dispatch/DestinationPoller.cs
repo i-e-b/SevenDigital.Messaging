@@ -130,5 +130,16 @@ namespace SevenDigital.Messaging.Dispatch
 		{
 			dispatcher.AddHandler<TMessage, THandler>();
 		}
+
+		public void RemoveHandler<THandler>()
+		{
+            dispatcher.RemoveHandler<THandler>();
+		}
+
+		public int HandlerCount {
+			get {
+			    return dispatcher.CountHandlers();
+			}
+		}
 	}
 }

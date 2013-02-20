@@ -9,5 +9,8 @@ namespace SevenDigital.Messaging.Dispatch
 		void AddHandler<TMessage, THandler>()
 			where TMessage : class, IMessage
 			where THandler : IHandle<TMessage>;
+
+		void RemoveHandler<T>();
+		int CountHandlers();
 	}
 }

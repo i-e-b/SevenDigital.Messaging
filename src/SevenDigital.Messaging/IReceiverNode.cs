@@ -7,5 +7,6 @@ namespace SevenDigital.Messaging
 	{
 		IMessageBinding<T> Handle<T>() where T : class, IMessage;
 		string DestinationName { get; }
+		void Unregister<T>();
 	}
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
@@ -9,7 +7,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 {
-	[TestFixture, Ignore("Not yet implemented")]
+	[TestFixture]
 	public class UnregisteringHandlersTests
 	{
 		INodeFactory _nodeFactory;
@@ -30,15 +28,24 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		[Test]
 		public void can_deregister_a_handler_causing_no_further_messages_to_be_processed ()
 		{
-			RetryReceivingTests.ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
+            UnregisterSample.handledTimes = 0;
 			using (var receiverNode = _nodeFactory.Listen())
 			{
-				/*receiverNode.Handle<IColourMessage>().With<RetryReceivingTests.ExceptionSample>();
-
+				receiverNode.Handle<IColourMessage>().With<UnregisterSample>();
 				_senderNode.SendMessage(new RedMessage());
 
-				RetryReceivingTests.ExceptionSample.AutoResetEvent.WaitOne(ShortInterval);
-				Assert.That(RetryReceivingTests.ExceptionSample.handledTimes, Is.EqualTo(2));*/
+                Thread.Sleep(250);
+				receiverNode.Unregister<UnregisterSample>();
+                Thread.Sleep(50);
+				_senderNode.SendMessage(new RedMessage());
+
+                Thread.Sleep(250);
+				Assert.That(UnregisterSample.handledTimes, Is.EqualTo(1));
+                
+				receiverNode.Handle<IColourMessage>().With<UnregisterSample>();
+				_senderNode.SendMessage(new RedMessage());
+                Thread.Sleep(250);
+				Assert.That(UnregisterSample.handledTimes, Is.EqualTo(2));
 			}
 		}
 
@@ -46,28 +53,13 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		public void Stop() { new MessagingConfiguration().Shutdown(); }
 
 
-		[RetryMessage(typeof(IOException))]
-		[RetryMessage(typeof(WebException))]
-		class ExceptionSample : IHandle<IColourMessage>
+		public class UnregisterSample : IHandle<IColourMessage>
 		{
 			public static int handledTimes = 0;
-			readonly object lockobj = new Object();
-
-			public static AutoResetEvent AutoResetEvent { get; set; }
 
 			public void Handle(IColourMessage message)
 			{
-				lock (lockobj)
-				{
-					handledTimes++;
-				}
-
-				if (handledTimes == 1)
-				{
-					throw new IOException();
-				}
-				AutoResetEvent.Set();
-				throw new InvalidOperationException();
+                Interlocked.Increment(ref handledTimes);
 			}
 		}
 

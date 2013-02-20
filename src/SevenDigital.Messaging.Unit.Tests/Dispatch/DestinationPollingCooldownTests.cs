@@ -65,6 +65,14 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 				}
 			}
 			public void AddHandler<TMessage, THandler>() where TMessage : class, IMessage where THandler : IHandle<TMessage> { }
+			public void RemoveHandler<T>()
+			{
+			}
+
+			public int CountHandlers()
+			{
+				return 0;
+			}
 		}
 	}
 }
