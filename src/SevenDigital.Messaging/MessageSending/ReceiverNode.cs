@@ -24,6 +24,10 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public string DestinationName { get { return endpoint.ToString(); } }
 
+		public void Unregister<T>()
+		{
+            node.RemoveHandler<T>();
+		}
 
 		#region Equality members
 		

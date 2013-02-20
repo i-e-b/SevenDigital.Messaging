@@ -104,6 +104,21 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 				}
 			}
 		}
+
+		public void Unregister<T>()
+		{
+            lock (listenerBindings)
+            {
+	            foreach (var kvp in listenerBindings)
+	            {
+                    if ( kvp.Value.Any(t => t == typeof(T)) )
+                    {
+	                    var newList = kvp.Value.Where(t => t != typeof (T)).ToList();
+	                    listenerBindings[kvp.Key] = newList;
+                    }
+	            }
+            }
+		}
 	}
 
 }

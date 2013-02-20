@@ -32,6 +32,11 @@
 		}
 
 		public string DestinationName { get { return ""; }}
+
+		public void Unregister<T>()
+		{
+            loopbackNodeFactory.Unregister<T>();
+		}
 	}
 
 	public class LoopbackBinder<T>:IMessageBinding<T> where T : class, IMessage

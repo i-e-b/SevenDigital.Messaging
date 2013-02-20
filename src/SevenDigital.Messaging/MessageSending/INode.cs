@@ -11,5 +11,7 @@ namespace SevenDigital.Messaging.MessageSending
 		void SubscribeHandler<TMessage, THandler>()
 			where TMessage : class, IMessage
 			where THandler : IHandle<TMessage>;
+
+		void RemoveHandler<T>();
 	}
 }

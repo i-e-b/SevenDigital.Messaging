@@ -10,6 +10,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 		}
 
 		public string DestinationName { get; private set; }
+		public void Unregister<T>() { }
 	}
 	
 	public class DummyBinding<T> : IMessageBinding<T> where T : class, IMessage

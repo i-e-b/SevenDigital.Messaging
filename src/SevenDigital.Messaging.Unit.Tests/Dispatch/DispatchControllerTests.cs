@@ -71,6 +71,8 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			public void Start() { StartCalls++; }
 			public void Stop() { StopCalls++; }
 			public void AddHandler<TMessage, THandler>() where TMessage : class, IMessage where THandler : IHandle<TMessage> { }
+			public void RemoveHandler<T>() { }
+			public int HandlerCount { get; set; }
 		}
 	}
 }

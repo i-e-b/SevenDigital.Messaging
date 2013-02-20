@@ -54,5 +54,10 @@ namespace SevenDigital.Messaging.MessageSending
 			baseNode.SubscribeHandler<TMessage, THandler>();
 // ReSharper restore EmptyGeneralCatchClause
 		}
+
+		public void RemoveHandler<T>()
+		{
+            baseNode.RemoveHandler<T>();
+		}
 	}
 }

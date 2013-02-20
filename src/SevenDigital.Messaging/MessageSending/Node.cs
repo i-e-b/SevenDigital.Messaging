@@ -34,6 +34,12 @@ namespace SevenDigital.Messaging.MessageSending
 			destinationPoller.Start();
 		}
 
+		public void RemoveHandler<THandler>()
+		{
+            destinationPoller.RemoveHandler<THandler>();
+            if (destinationPoller.HandlerCount < 1) destinationPoller.Stop();
+		}
+
 		public void Dispose()
 		{
 			destinationPoller.Stop();

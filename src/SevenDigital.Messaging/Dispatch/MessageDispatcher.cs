@@ -128,6 +128,19 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 		}
 
+		public void RemoveHandler<T>()
+		{
+			foreach (var hashSet in handlers.Values)
+			{
+				hashSet.Remove(typeof(T));
+			}
+		}
+
+		public int CountHandlers()
+		{
+			return handlers.Values.Sum(hs=>hs.Count);
+		}
+
 		public int HandlersInflight { get { return runningHandlers; } }
 
 		public IEnumerable<Type> HandlersForType<T>() where T : class, IMessage
