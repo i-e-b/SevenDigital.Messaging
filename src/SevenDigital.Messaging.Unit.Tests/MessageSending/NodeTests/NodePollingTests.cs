@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.MessageSending;
+using SevenDigital.Messaging.Unit.Tests._Helpers;
 
 namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 {
@@ -14,6 +15,9 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 		[Test]
 		public void Disposing_a_node_should_call_stop_on_its_poller ()
 		{
+            if (Iam.RunningMono()) Assert.Inconclusive("This test doesn't run under Mono");
+			// Mono has a reflection fault that stop CastleProxy faking correctly
+
 			dispatch = Substitute.For<IDispatchController>();
 			poller = Substitute.For<IDestinationPoller>();
 			dispatch.CreatePoller("").ReturnsForAnyArgs(poller);

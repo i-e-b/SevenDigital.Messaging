@@ -74,6 +74,7 @@
     <Compile Include="MessageSending\NodeFactoryTests\ListenerTests.cs" />
     <Compile Include="MessageSending\NodeTests\SendMessageTests.cs" />
     <Compile Include="Shutdown\ShutdownTests.cs" />
+    <Compile Include="_Helpers\IsMono.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
