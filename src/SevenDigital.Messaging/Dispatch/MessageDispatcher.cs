@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
@@ -34,34 +35,40 @@ namespace SevenDigital.Messaging.Dispatch
 				return;
 			}
 
-			workWrapper.Do(() =>
+			workWrapper.Do(() => HandleMessageWithInstancesOfHandlers(pendingMessage, matchingHandlers, messageObject));
+		}
+
+		void HandleMessageWithInstancesOfHandlers(IPendingMessage<object> pendingMessage, IEnumerable<Type> matchingHandlers, object messageObject)
+		{
+			foreach (var handler in matchingHandlers)
 			{
-				foreach (var handler in matchingHandlers)
+				Interlocked.Increment(ref runningHandlers);
+				var hooks = ObjectFactory.GetAllInstances<IEventHook>();
+
+				try
 				{
-					Interlocked.Increment(ref runningHandlers);
-					var hooks = ObjectFactory.GetAllInstances<IEventHook>();
-
-					try
-					{
-						var instance = ObjectFactory.GetInstance(handler);
-						handler.GetMethod("Handle").MakeGenericMethod(type).Invoke(instance, new[] { messageObject });
-						FireHandledOkHooks((IMessage)messageObject, hooks);
-					}
-					catch (Exception ex)
-					{
-						FireHandlerFailedHooks((IMessage)messageObject, hooks, ex, handler);
-
-						if (ShouldRetry(ex.GetType(), handler)) pendingMessage.Cancel();
-						else pendingMessage.Finish();
-						return;
-					}
-					finally
-					{
-						Interlocked.Decrement(ref runningHandlers);
-					}
+					var instance = ObjectFactory.GetInstance(handler);
+					handler.GetMethod("Handle").Invoke(instance, new[] {messageObject});
+					FireHandledOkHooks((IMessage) messageObject, hooks);
 				}
-				pendingMessage.Finish();
-			});
+				catch (Exception ex)
+				{
+					if (ex is TargetInvocationException)
+					{
+						ex = ex.InnerException;
+					}
+					FireHandlerFailedHooks((IMessage) messageObject, hooks, ex, handler);
+
+					if (ShouldRetry(ex.GetType(), handler)) pendingMessage.Cancel();
+					else pendingMessage.Finish();
+					return;
+				}
+				finally
+				{
+					Interlocked.Decrement(ref runningHandlers);
+				}
+			}
+			pendingMessage.Finish();
 		}
 
 		static bool ShouldRetry(Type exceptionType, Type handlerType)

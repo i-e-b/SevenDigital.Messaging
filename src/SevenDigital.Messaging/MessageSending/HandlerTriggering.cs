@@ -11,25 +11,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			listenerNode.SubscribeHandler<TMessage, THandler>(/*msg =>
-			{
-
-				var hooks = ObjectFactory.GetAllInstances<IEventHook>();
-
-				try
-				{
-					ObjectFactory.GetInstance<THandler>().Handle(msg);
-
-				}
-				catch (Exception ex)
-				{
-					FireHandlerFailedHooks<THandler>(msg, hooks, ex);
-					return ex;
-				}
-				FireHandledOkHooks(msg, hooks);
-
-                return null;
-			}*/);
+			listenerNode.SubscribeHandler<TMessage, THandler>();
 		}
 	}
 }

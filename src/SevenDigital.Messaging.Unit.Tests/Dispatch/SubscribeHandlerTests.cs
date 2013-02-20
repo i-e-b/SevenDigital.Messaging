@@ -34,7 +34,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void Should_ensure_destination_is_set_up_for_node ()
 		{
-			messagingBase.Verify(m=>m.CreateDestination<IMessage>(destinationName));
+			messagingBase.Verify(m=>m.CreateDestination<IDummyMessage>(destinationName));
 		}
 
 		[Test]

@@ -28,7 +28,7 @@ namespace SevenDigital.Messaging.Integration.Tests
         }
 
 	    [Test]
-        public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
+        public void Handler_should_retry_on_matched_exceptions_but_not_un_unmatched_exceptions ()
         {
             ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
             using (var receiverNode = _nodeFactory.Listen())
