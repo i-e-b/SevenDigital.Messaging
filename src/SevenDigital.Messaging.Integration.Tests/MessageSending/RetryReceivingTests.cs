@@ -30,6 +30,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	    [Test]
         public void Handler_should_retry_on_matched_exceptions_but_not_un_unmatched_exceptions ()
         {
+            ExceptionSample.handledTimes = 0;
             ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
             using (var receiverNode = _nodeFactory.Listen())
             {
