@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
-using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Dispatch
 {
