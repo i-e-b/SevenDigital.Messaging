@@ -48,7 +48,7 @@ namespace SevenDigital.Messaging.Dispatch
 				try
 				{
 					var instance = ObjectFactory.GetInstance(handler);
-					handler.GetMethod("Handle").Invoke(instance, new[] {messageObject});
+					handler.GetMethod("Handle", new[] { messageObject.GetType() }).Invoke(instance, new[] { messageObject });
 					FireHandledOkHooks((IMessage) messageObject, hooks);
 				}
 				catch (Exception ex)

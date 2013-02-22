@@ -25,6 +25,26 @@ namespace SevenDigital.Messaging.Integration.Tests
             _senderNode = ObjectFactory.GetInstance<ISenderNode>();
         }
 
+		[Test]
+		public void Handler_should_react_for_all_message_types_it_is_handling()
+		{
+			using (var receiverNode = _nodeFactory.Listen())
+			{
+				AllColourMessagesHandler.Prepare();
+
+				receiverNode.Handle<IColourMessage>().With<AllColourMessagesHandler>();
+				receiverNode.Handle<ITwoColoursMessage>().With<AllColourMessagesHandler>();
+
+				_senderNode.SendMessage(new RedMessage());
+				var signal1 = AllColourMessagesHandler.AutoResetEventForColourMessage.WaitOne(ShortInterval);
+				_senderNode.SendMessage(new GreenWhiteMessage());
+
+				var signal2 = AllColourMessagesHandler.AutoResetEventForTwoColourMessage.WaitOne(ShortInterval);
+				Assert.That(signal1, Is.True);
+				Assert.That(signal2, Is.True);
+			}
+		}
+
 	    [Test]
         public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
         {
