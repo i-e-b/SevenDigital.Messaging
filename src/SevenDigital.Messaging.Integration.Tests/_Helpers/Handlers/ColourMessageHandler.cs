@@ -4,41 +4,63 @@ using SevenDigital.Messaging.Integration.Tests.Messages;
 
 namespace SevenDigital.Messaging.Integration.Tests.Handlers
 {
-    public class ColourMessageHandler : IHandle<IColourMessage>
-    {
-        public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
+	public class ColourMessageHandler : IHandle<IColourMessage>
+	{
+		public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
 
-        public void Handle(IColourMessage message)
-        {
+		public void Handle(IColourMessage message)
+		{
 			Console.WriteLine("Got: " + message.GetType());
-            AutoResetEvent.Set();
-        }
-    }
+			AutoResetEvent.Set();
+		}
+	}
 
-    public class AnotherColourMessageHandler : IHandle<IColourMessage>
-    {
-        public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
+	public class AnotherColourMessageHandler : IHandle<IColourMessage>
+	{
+		public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
 
-        public void Handle(IColourMessage message)
-        {
-            AutoResetEvent.Set();
-        }
-    }
+		public void Handle(IColourMessage message)
+		{
+			AutoResetEvent.Set();
+		}
+	}
 
-    public class TwoColourMessageHandler : IHandle<ITwoColoursMessage>
-    {
-        public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
-        public static ITwoColoursMessage ReceivedMessage { get; private set; }
+	public class TwoColourMessageHandler : IHandle<ITwoColoursMessage>
+	{
+		public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
+		public static ITwoColoursMessage ReceivedMessage { get; private set; }
 
 		public static void Prepare()
 		{
 			AutoResetEvent = new AutoResetEvent(false);
 		}
 
-	    public void Handle(ITwoColoursMessage message)
-        {
-            ReceivedMessage = message;
-            AutoResetEvent.Set();
-        }
-    }
+		public void Handle(ITwoColoursMessage message)
+		{
+			ReceivedMessage = message;
+			AutoResetEvent.Set();
+		}
+	}
+
+	public class AllColourMessagesHandler : IHandle<ITwoColoursMessage>, IHandle<IColourMessage>
+	{
+		public static AutoResetEvent AutoResetEventForColourMessage = new AutoResetEvent(false);
+		public static AutoResetEvent AutoResetEventForTwoColourMessage = new AutoResetEvent(false);
+
+		public static void Prepare()
+		{
+			AutoResetEventForColourMessage = new AutoResetEvent(false);
+			AutoResetEventForTwoColourMessage = new AutoResetEvent(false);
+		}
+
+		public void Handle(ITwoColoursMessage message)
+		{
+			AutoResetEventForTwoColourMessage.Set();
+		}
+
+		public void Handle(IColourMessage message)
+		{
+			AutoResetEventForColourMessage.Set();
+		}
+	}
 }
