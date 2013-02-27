@@ -64,6 +64,7 @@
     <Compile Include="Hooks\FailingHandlerEventHookTests.cs" />
     <Compile Include="Logging\LoggingTest.cs" />
     <Compile Include="Loopback\LoopbackModeTests.cs" />
+    <Compile Include="MessageSending\StoreAndForwardSpike.cs" />
     <Compile Include="MessageSending\RetryReceivingTests.cs" />
     <Compile Include="MessageSending\StressTests.cs" />
     <Compile Include="MessageSending\UnreachableEndpointTests.cs" />
@@ -105,6 +106,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\DiskQueue\src\Rhino.Queues.Storage.Disk\DiskQueue.csproj">
+      <Project>{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}</Project>
+      <Name>DiskQueue</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SevenDigital.Messaging\SevenDigital.Messaging.csproj">
       <Project>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</Project>
       <Name>SevenDigital.Messaging</Name>
