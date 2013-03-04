@@ -4,13 +4,12 @@ using DiskQueue;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base.Serialisation;
 using SevenDigital.Messaging.EventHooks;
-using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture]
+	[TestFixture, Explicit]
 	public class StoreAndForwardSpike
 	{
 		INodeFactory _nodeFactory;
