@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiskQueue;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Dispatch;
@@ -37,6 +38,7 @@ namespace SevenDigital.Messaging
 				map.For<IDestinationPoller>().Use<DestinationPoller>();
 				map.For<IMessageDispatcher>().Use<MessageDispatcher>();
 
+				map.For<IPersistentQueue>().Singleton().Use(() => new PersistentQueue("."));
 
 				map.For<IWorkWrapper>().Use<WorkWrapper>();
 				map.For<ISleepWrapper>().Use<SleepWrapper>();
@@ -179,10 +181,30 @@ namespace SevenDigital.Messaging
 		public void Shutdown()
 		{
 			var controller = ObjectFactory.TryGetInstance<IDispatchController>();
-			if (controller != null) controller.Shutdown();
+			if (controller != null)
+			{
+				controller.Shutdown();
+				ObjectFactory.EjectAllInstancesOf<IDispatchController>();
+			}
 
 			var connection = ObjectFactory.TryGetInstance<IChannelAction>();
-			if (connection != null) connection.Dispose();
+			if (connection != null)
+			{
+				connection.Dispose();
+				ObjectFactory.EjectAllInstancesOf<IChannelAction>();
+			}
+
+			try
+			{
+				var persistentQueue = ObjectFactory.TryGetInstance<IPersistentQueue>();
+				if (persistentQueue != null)
+				{
+					ObjectFactory.EjectAllInstancesOf<IPersistentQueue>();
+					persistentQueue.Dispose();
+				}
+			} catch (StructureMapException)
+			{
+			}
 		}
 	}
 }
