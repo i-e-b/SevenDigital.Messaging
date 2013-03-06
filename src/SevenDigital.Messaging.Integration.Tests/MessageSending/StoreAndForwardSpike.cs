@@ -1,4 +1,5 @@
 using System;// ReSharper disable InconsistentNaming
+using System.IO;
 using System.Text;
 using DiskQueue;
 using NUnit.Framework;
@@ -9,12 +10,13 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-	[TestFixture, Explicit]
+	[TestFixture]
 	public class StoreAndForwardSpike
 	{
 		INodeFactory _nodeFactory;
 		private ISenderNode _senderNode;
 		IMessageSerialiser _messageSerialisation;
+		string _storagePath = @"/tmp/queue";
 
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(20); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
@@ -27,7 +29,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
 			_senderNode = ObjectFactory.GetInstance<ISenderNode>();
 			_messageSerialisation = ObjectFactory.GetInstance<IMessageSerialiser>();
-			
+			if (!Directory.Exists(_storagePath)) Directory.CreateDirectory(_storagePath);
 		}
 
 		[Test]
@@ -37,16 +39,17 @@ namespace SevenDigital.Messaging.Integration.Tests
 			var raw = _messageSerialisation.Serialise(sampleMessage);
 			var bytes = Encoding.UTF8.GetBytes(raw);
 
-			using (var q = new PersistentQueue(@"C:\temp\queue"))
+			using (var q = new PersistentQueue(_storagePath))
 			{
 				using (var s = q.OpenSession())
 				{
 					s.Enqueue(bytes);
 					s.Flush();
 				}
+				Assert.That(q.EstimatedCountOfItemsInQueue, Is.EqualTo(1));
 			}
 
-			using (var q2 = new PersistentQueue(@"C:\temp\queue"))
+			using (var q2 = new PersistentQueue(_storagePath))
 			{
 				using (var s2 = q2.OpenSession())
 				{
@@ -59,12 +62,17 @@ namespace SevenDigital.Messaging.Integration.Tests
 					var final = (IColourMessage)returnedMessage;
 
 					Assert.That(final.CorrelationId, Is.EqualTo(sampleMessage.CorrelationId));
+					Assert.That(q2.EstimatedCountOfItemsInQueue, Is.EqualTo(0));
 				}
 			}
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { 
+			new MessagingConfiguration().Shutdown();
+			if (Directory.Exists(_storagePath))
+				Directory.Delete(_storagePath, true);
+		}
 
 	}
 }
