@@ -33,6 +33,18 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
+		public void should_have_a_singleton_persistent_queue_configured ()
+		{
+			new MessagingConfiguration().WithDefaults();
+
+			var queue_a = ObjectFactory.GetInstance<IPersistentQueue>();
+			var queue_b = ObjectFactory.GetInstance<IPersistentQueue>();
+
+			Assert.That(queue_a, Is.InstanceOf<PersistentQueue>());
+			Assert.That(queue_a, Is.EqualTo(queue_b));
+		}
+
+		[Test, Description("the spike")]
 		public void trying_to_stash_messages_to_disk_and_send_from_there ()
 		{
 			var sampleMessage = new GreenMessage{CorrelationId = Guid.NewGuid()};
