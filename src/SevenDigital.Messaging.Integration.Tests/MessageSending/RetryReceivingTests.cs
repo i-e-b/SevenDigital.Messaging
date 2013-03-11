@@ -1,5 +1,6 @@
 using System;// ReSharper disable InconsistentNaming
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using NUnit.Framework;
@@ -9,39 +10,69 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-    [TestFixture]
-    public class RetryReceivingTests
-    {
-        INodeFactory _nodeFactory;
-        private ISenderNode _senderNode;
+	[TestFixture]
+	public class RetryReceivingTests
+	{
+		INodeFactory _nodeFactory;
+		ISenderNode _senderNode;
 
-        protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(20); } }
-        protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
+		protected TimeSpan LongInterval
+		{
+			get { return TimeSpan.FromSeconds(20); }
+		}
 
-        [SetUp]
-        public void SetUp()
-        {
+		protected TimeSpan ShortInterval
+		{
+			get { return TimeSpan.FromSeconds(3); }
+		}
+
+		[SetUp]
+		public void SetUp()
+		{
 			Helper.SetupTestMessaging();
-            ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
-            _nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-            _senderNode = ObjectFactory.GetInstance<ISenderNode>();
-        }
+			ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
+			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
+			_senderNode = ObjectFactory.GetInstance<ISenderNode>();
+		}
 
-	    [Test]
-        public void Handler_should_retry_on_matched_exceptions_but_not_un_unmatched_exceptions ()
-        {
-            ExceptionSample.handledTimes = 0;
-            ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
-            using (var receiverNode = _nodeFactory.Listen())
-            {
-                receiverNode.Handle<IColourMessage>().With<ExceptionSample>();
+		[Test]
+		public void Handler_should_retry_on_matched_exceptions_but_not_un_unmatched_exceptions()
+		{
+			ExceptionSample.handledTimes = 0;
+			ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
+			using (var receiverNode = _nodeFactory.Listen())
+			{
+				receiverNode.Handle<IColourMessage>().With<ExceptionSample>();
 
-                _senderNode.SendMessage(new RedMessage());
+				_senderNode.SendMessage(new RedMessage());
 
-                ExceptionSample.AutoResetEvent.WaitOne(ShortInterval);
-                Assert.That(ExceptionSample.handledTimes, Is.EqualTo(2));
-            }
-        }
+				ExceptionSample.AutoResetEvent.WaitOne(ShortInterval);
+				Assert.That(ExceptionSample.handledTimes, Is.EqualTo(2));
+			}
+		}
+
+		[Test]
+		public void Should_send_handler_failed_event_after_retry ()
+		{
+			ExceptionSample.handledTimes = 0;
+			ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
+			var hook = new TestEventHook();
+			ObjectFactory.Configure(map => map.For<IEventHook>().Use(hook));
+			using (var receiverNode = _nodeFactory.Listen())
+			{
+				receiverNode.Handle<IColourMessage>().With<ExceptionSample>();
+
+				_senderNode.SendMessage(new RedMessage());
+
+				ExceptionSample.AutoResetEvent.WaitOne(ShortInterval);
+			//	Assert.That(ExceptionSample.handledTimes, Is.EqualTo(2));
+			}
+
+			ObjectFactory.GetInstance<IEventHook>();
+			Assert.That(hook.HandlerExceptions.Count(e => e is IOException), Is.EqualTo(1));
+		}
+
+
 
 		[TestFixtureTearDown]
 		public void Stop() { new MessagingConfiguration().Shutdown(); }
@@ -51,17 +82,17 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[RetryMessage(typeof(WebException))]
 		public class ExceptionSample : IHandle<IColourMessage>
 		{
-            public static int handledTimes = 0;
+			public static int handledTimes = 0;
 			readonly object lockobj = new Object();
 
 			public static AutoResetEvent AutoResetEvent { get; set; }
 
 			public void Handle(IColourMessage message)
 			{
-                lock (lockobj)
-                {
-                    handledTimes++;
-                }
+				lock (lockobj)
+				{
+					handledTimes++;
+				}
 
 				if (handledTimes == 1)
 				{
@@ -71,5 +102,5 @@ namespace SevenDigital.Messaging.Integration.Tests
 				throw new InvalidOperationException();
 			}
 		}
-    }
+	}
 }
