@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using NUnit.Framework;
-using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
@@ -12,8 +11,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class QueueDestructionSurvivalTests
 	{
-        INodeFactory nodeFactory;
-        ISenderNode senderNode;
+		INodeFactory nodeFactory;
+		ISenderNode senderNode;
 
 		const string TestQueue = "survival_test_endpoint";
 
@@ -26,35 +25,26 @@ namespace SevenDigital.Messaging.Integration.Tests
 			ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
 			nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
 			senderNode = ObjectFactory.GetInstance<ISenderNode>();
-
 		}
 
 		[Test]
-		public void Listener_endpoint_should_survive_connection_being_lost()
+		public void Listener_endpoint_should_survive_queue_destruction()
 		{
 			using (var receiverNode = nodeFactory.TakeFrom(new Endpoint(TestQueue)))
-            {
-                receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
+			{
+				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-				KillAndRebuildQueue(receiverNode);
+				Helper.DeleteQueue(TestQueue);
+				Thread.Sleep(500);
 
-                senderNode.SendMessage(new RedMessage());
-                var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				senderNode.SendMessage(new RedMessage());
+				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-                Assert.That(colourSignal, Is.True);
-
-            }
+				Assert.That(colourSignal, Is.True);
+			}
 		}
 
 		[TestFixtureTearDown]
 		public void Stop() { new MessagingConfiguration().Shutdown(); }
-
-		static void KillAndRebuildQueue(IReceiverNode receiverNode)
-		{
-			Helper.DeleteQueue(TestQueue);
-			Thread.Sleep(LongInterval);
-			MessagingBase.ResetCaches();
-			receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-		}
 	}
 }

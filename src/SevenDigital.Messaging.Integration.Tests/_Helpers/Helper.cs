@@ -20,7 +20,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 		public static void DeleteQueue(string queueName)
 		{
-			ObjectFactory.GetInstance<IRabbitMqConnection>().WithChannel(channel=>channel.QueueDelete(queueName));
+			try
+			{
+				ObjectFactory.GetInstance<IRabbitMqConnection>().WithChannel(channel => channel.QueueDelete(queueName));
+			} catch
+			{
+			}
 		}
 	}
 }
