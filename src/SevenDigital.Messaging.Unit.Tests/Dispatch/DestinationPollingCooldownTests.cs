@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NSubstitute;
@@ -72,6 +73,11 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			public int CountHandlers()
 			{
 				return 0;
+			}
+
+			public IEnumerable<Type> Handlers()
+			{
+				yield break;
 			}
 		}
 	}

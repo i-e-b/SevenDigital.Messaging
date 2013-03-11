@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
@@ -15,9 +16,11 @@ namespace SevenDigital.Messaging.Dispatch
 		int runningExch;
 		volatile bool running;
 		internal static volatile int TaskLimit = 4;
+		readonly HashSet<Type> _boundMessageTypes;
 
 		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageDispatcher dispatcher)
 		{
+			_boundMessageTypes = new HashSet<Type>();
 			this.messagingBase = messagingBase;
 			this.sleeper = sleeper;
 			this.dispatcher = dispatcher;
@@ -62,8 +65,25 @@ namespace SevenDigital.Messaging.Dispatch
 			}
 			catch (Exception ex)
 			{
+				if (IsMissingQueue(ex)) TryRebuildQueues();
 				Log.Warning("Could not pick up message because " + ex.GetType().Name + ": " + ex.Message);
 				return null;
+			}
+		}
+
+		static bool IsMissingQueue(Exception exception)
+		{
+			var e = exception as RabbitMQ.Client.Exceptions.OperationInterruptedException;
+			return (e != null)
+				&& (e.ShutdownReason.ReplyCode == 404);
+		}
+
+		void TryRebuildQueues()
+		{
+			MessagingBase.ResetCaches();
+			foreach (var sourceMessage in _boundMessageTypes)
+			{
+				messagingBase.CreateDestination(sourceMessage, destination);
 			}
 		}
 
@@ -128,7 +148,16 @@ namespace SevenDigital.Messaging.Dispatch
 			where TMessage : class, IMessage
 			where THandler : IHandle<TMessage>
 		{
+			AddMessageType(typeof(TMessage));
 			dispatcher.AddHandler<TMessage, THandler>();
+		}
+
+		void AddMessageType(Type type)
+		{
+			lock(_boundMessageTypes)
+			{
+				_boundMessageTypes.Add(type);
+			}
 		}
 
 		public void RemoveHandler<THandler>()

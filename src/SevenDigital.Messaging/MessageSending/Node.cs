@@ -25,8 +25,8 @@ namespace SevenDigital.Messaging.MessageSending
 		}
 
 		public void SubscribeHandler<TMessage, THandler>()
-			where TMessage: class, IMessage 
-            where THandler: IHandle<TMessage>
+			where TMessage : class, IMessage
+			where THandler : IHandle<TMessage>
 		{
 			messagingBase.CreateDestination<TMessage>(endpoint);
 			destinationPoller.SetDestinationToWatch(endpoint);
@@ -36,8 +36,8 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void RemoveHandler<THandler>()
 		{
-            destinationPoller.RemoveHandler<THandler>();
-            if (destinationPoller.HandlerCount < 1) destinationPoller.Stop();
+			destinationPoller.RemoveHandler<THandler>();
+			if (destinationPoller.HandlerCount < 1) destinationPoller.Stop();
 		}
 
 		public void Dispose()
