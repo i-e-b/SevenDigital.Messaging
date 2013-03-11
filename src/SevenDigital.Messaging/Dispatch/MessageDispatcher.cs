@@ -57,10 +57,16 @@ namespace SevenDigital.Messaging.Dispatch
 					{
 						ex = ex.InnerException;
 					}
-					FireHandlerFailedHooks((IMessage) messageObject, hooks, ex, handler);
+					try
+					{
+						if (ShouldRetry(ex.GetType(), handler)) pendingMessage.Cancel();
+						else pendingMessage.Finish();
 
-					if (ShouldRetry(ex.GetType(), handler)) pendingMessage.Cancel();
-					else pendingMessage.Finish();
+						FireHandlerFailedHooks((IMessage) messageObject, hooks, ex, handler);
+					} catch (Exception exinner)
+					{
+						Log.Warning("Firing handler failed hooks didn't succeed: " + exinner.Message);
+					}
 					return;
 				}
 				finally

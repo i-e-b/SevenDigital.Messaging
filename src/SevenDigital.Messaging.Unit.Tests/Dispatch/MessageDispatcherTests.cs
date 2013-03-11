@@ -79,11 +79,42 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			Assert.That(DifferentTestMessageHandler.Hits, Is.EqualTo(0));
 		}
 
-        IPendingMessage<T> Wrap<T>(T message)
+		[Test]
+		public void If_a_handler_fails_AND_an_event_hook_fails_when_reporting_it_then_should_finish_or_cancel_the_message ()
+		{
+			subject.AddHandler<ITestMessage, FailingMessageHandler>();
+
+			int cancelCount = 0;
+			int finishCount = 0;
+			var pendingMessage =new PendingMessage<ITestMessage> {
+                Message = new FakeMessage(),
+				Cancel = () => { cancelCount++; },
+                Finish = () => { finishCount++; }
+			};
+			subject.TryDispatch(pendingMessage);
+			subject.TryDispatch(pendingMessage);
+
+			Assert.That(finishCount, Is.EqualTo(1));
+			Assert.That(cancelCount, Is.EqualTo(1));
+		}
+
+		[RetryMessage(typeof(ArgumentException))]
+		public class FailingMessageHandler:IHandle<ITestMessage>
+		{
+			public static int Hits = 0;
+			public void Handle(ITestMessage message)
+			{
+				Hits++;
+				if (Hits == 1) throw new ArgumentException();
+				throw new Exception();
+			}
+		}
+
+		IPendingMessage<T> Wrap<T>(T message)
         {
             return new PendingMessage<T> {
                 Message = message,
-                Cancel = () => { },
+				Cancel = () => { },
                 Finish = () => { }
 			};
 		}
