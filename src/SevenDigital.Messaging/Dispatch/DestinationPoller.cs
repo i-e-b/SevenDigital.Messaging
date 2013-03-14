@@ -154,7 +154,7 @@ namespace SevenDigital.Messaging.Dispatch
 
 		void AddMessageType(Type type)
 		{
-			lock(_boundMessageTypes)
+			lock (_boundMessageTypes)
 			{
 				_boundMessageTypes.Add(type);
 			}
@@ -162,12 +162,14 @@ namespace SevenDigital.Messaging.Dispatch
 
 		public void RemoveHandler<THandler>()
 		{
-            dispatcher.RemoveHandler<THandler>();
+			dispatcher.RemoveHandler<THandler>();
 		}
 
-		public int HandlerCount {
-			get {
-			    return dispatcher.CountHandlers();
+		public int HandlerCount
+		{
+			get
+			{
+				return dispatcher.CountHandlers();
 			}
 		}
 	}
