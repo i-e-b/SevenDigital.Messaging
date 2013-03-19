@@ -6,6 +6,13 @@ using SevenDigital.Messaging.Logging;
 
 namespace SevenDigital.Messaging.Dispatch
 {
+	/// <summary>
+	/// Destination poller is bound to a single destination queue
+	/// and keeps a list of message types that have been registered.
+	/// 
+	/// When a message is available on the queue, the Message Dispatcher
+	/// is called to run all the handlers for the received message type.
+	/// </summary>
 	public class DestinationPoller : IDestinationPoller
 	{
 		string destination;

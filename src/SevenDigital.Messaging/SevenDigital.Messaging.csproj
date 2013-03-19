@@ -58,7 +58,7 @@
     <Compile Include="Dispatch\IMessageDispatcher.cs" />
     <Compile Include="Dispatch\MessageDispatcher.cs" />
     <Compile Include="Dispatch\SleepWrapper.cs" />
-    <Compile Include="Dispatch\ThreadPoolWrapper.cs" />
+    <Compile Include="Dispatch\WorkWrapper.cs" />
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
     <Compile Include="EventHooks\ITestEventHook.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />
