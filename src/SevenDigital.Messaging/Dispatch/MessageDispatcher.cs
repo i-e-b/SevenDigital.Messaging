@@ -9,6 +9,13 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Dispatch
 {
+	/// <summary>
+	/// Message dispatcher keeps a set of bindings 
+	/// between message types and handler types.
+	/// 
+	/// It uses a Work Wrapper to trigger handling of 
+	/// incoming messages.
+	/// </summary>
 	public class MessageDispatcher : IMessageDispatcher
 	{
 		readonly IWorkWrapper workWrapper;

@@ -53,13 +53,25 @@ namespace SevenDigital.Messaging
 			return this;
 		}
 
+		/// <summary>
+		/// Configure RabbitMq specific management API.
+		/// This makes the IRabbitMqQuery type available to query the health
+		/// of your message broker cluster.
+		/// </summary>
+		/// <param name="host">RMQ host name or IP address</param>
+		/// <param name="username">Management user name</param>
+		/// <param name="password">Management password</param>
+		/// <param name="vhost">Virtual host (used where appropriate)</param>
 		public MessagingConfiguration WithMessagingQuery(string host, string username, string password, string vhost)
 		{
 			new MessagingBaseConfiguration().WithRabbitManagement(host, username, password, vhost);
 			return this;
 		}
 
-		static bool UsingLoopbackMode()
+		/// <summary>
+		/// Returns true if in loopback mode
+		/// </summary>
+		public bool UsingLoopbackMode()
 		{
 			return ObjectFactory.GetAllInstances<INodeFactory>().Any(n=>n is LoopbackNodeFactory);
 		}
