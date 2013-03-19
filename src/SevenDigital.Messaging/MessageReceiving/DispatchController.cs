@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StructureMap;
 
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	public class DispatchController:IDispatchController
 	{

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	public class SleepWrapper : ISleepWrapper
 	{

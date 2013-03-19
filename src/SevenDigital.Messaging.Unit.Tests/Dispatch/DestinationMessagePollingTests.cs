@@ -2,7 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Unit.Tests.LoopbackMessaging;
 
 namespace SevenDigital.Messaging.Unit.Tests.Dispatch

@@ -1,5 +1,5 @@
 using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.MessageSending
