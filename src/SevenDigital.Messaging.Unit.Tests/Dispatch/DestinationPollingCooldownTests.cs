@@ -42,7 +42,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			subject.Stop();
 
-			sleepWrapper.Received(2).Sleep(100);
+			sleepWrapper.Received(2).SleepMore();
 		}
 
 		public class FakeDispatcher : IMessageDispatcher

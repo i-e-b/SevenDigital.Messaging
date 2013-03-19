@@ -40,7 +40,6 @@ namespace SevenDigital.Messaging.MessageReceiving
 
 		public void PollingMethod()
 		{
-			var sleep = 0;
 			while (running)
 			{
 				IPendingMessage<object> message = null;
@@ -48,20 +47,13 @@ namespace SevenDigital.Messaging.MessageReceiving
 				if (message != null)
 				{
 					dispatcher.TryDispatch(message);
-					sleep = 0;
+					sleeper.Reset();
 				}
 				else
 				{
-					sleeper.Sleep(sleep);
-					sleep = BurstSleep(sleep);
+					sleeper.SleepMore();
 				}
 			}
-		}
-
-		static int BurstSleep(int sleep)
-		{
-			if (sleep < 255) return (sleep * 2) + 1;
-			return 255;
 		}
 
 		IPendingMessage<IMessage> GetMessageRobust()
@@ -134,9 +126,10 @@ namespace SevenDigital.Messaging.MessageReceiving
 
 		void WaitForHandlersToFinish()
 		{
+			sleeper.Reset();
 			while (dispatcher.HandlersInflight > 0)
 			{
-				sleeper.Sleep(100);
+				sleeper.SleepMore();
 			}
 		}
 

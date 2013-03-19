@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 	public class UnreachableEndpointTests
 	{
 		[SetUp]
-		public void Messaging_configured_to_point_at_an_unreachable_server ()
+		public void Messaging_configured_to_point_at_an_unreachable_server()
 		{
 			new MessagingConfiguration().WithDefaults().WithMessagingServer("complete rubbish!");
 		}
@@ -51,10 +51,15 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 
 	public class CountingSleepWrapper : ISleepWrapper
 	{
-        public long total = 0;
-		public void Sleep(int i)
+		public long total = 0;
+
+		public void Reset()
 		{
-            total += i;
+		}
+
+		public void SleepMore()
+		{
+			total++;
 		}
 	}
 }

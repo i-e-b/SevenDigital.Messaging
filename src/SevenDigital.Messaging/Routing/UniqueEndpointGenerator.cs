@@ -11,7 +11,6 @@ namespace SevenDigital.Messaging.Routing
 				+ "_" 
 				+ Naming.GoodAssemblyName()
 				+ "_Listener";
-		
 		}
 
 		public Endpoint Generate()

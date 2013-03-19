@@ -67,7 +67,8 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.Start();
 			Thread.Sleep(100);
 			subject.Stop();
-			sleeper.Verify(m=>m.Sleep(It.IsAny<int>()));
+			sleeper.Verify(m=>m.SleepMore(), Times.AtLeastOnce());
+			sleeper.Verify(m=>m.Reset(), Times.Once());
 		}
 
 		[Test]
@@ -79,7 +80,8 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.Start();
 			Thread.Sleep(100);
 			subject.Stop();
-			sleeper.Verify(m=>m.Sleep(It.IsAny<int>()), Times.Never());
+			sleeper.Verify(m=>m.SleepMore(), Times.Never());
+			sleeper.Verify(m=>m.Reset());
 		}
 
 		[Test]
@@ -112,7 +114,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 				DestinationPoller.TaskLimit = 4;
 			}
 			messagingBase.Verify(m=>m.TryStartMessage<IMessage>(destinationName), Times.Never()); // slight delay between switching concurency and stopping.
-			sleeper.Verify(m=>m.Sleep(It.IsAny<int>()));
+			sleeper.Verify(m=>m.SleepMore());
 		}
 
 		[Test]
