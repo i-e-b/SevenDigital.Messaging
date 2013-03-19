@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace SevenDigital.Messaging.Dispatch
 {
@@ -7,7 +7,10 @@ namespace SevenDigital.Messaging.Dispatch
 	{
 		public void Do(Action action) 
 		{
-			Task.Factory.StartNew(action);
+			new Thread(() => action()) {
+				IsBackground = true,
+				Name = "HandlerAction"
+			}.Start();
 		}
 	}
 
