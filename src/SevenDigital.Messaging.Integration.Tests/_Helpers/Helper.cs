@@ -1,5 +1,6 @@
 using System.Configuration;
 using SevenDigital.Messaging.Base.RabbitMq;
+using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
@@ -11,6 +12,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 			var server = ConfigurationManager.AppSettings["rabbitServer"];
 			new MessagingConfiguration().WithDefaults().WithMessagingServer(server)
 				.IntegrationTestMode();
+
+			ObjectFactory.Configure(map=>map.For<IUniqueEndpointGenerator>().Use<TestEndpointGenerator>());
 		}
 		
 		public static void SetupTestMessagingWithoutPurging()
@@ -26,6 +29,14 @@ namespace SevenDigital.Messaging.Integration.Tests
 			} catch
 			{
 			}
+		}
+	}
+
+	public class TestEndpointGenerator : IUniqueEndpointGenerator
+	{
+		public Endpoint Generate()
+		{
+			return new Endpoint("Messaging.Integration.TestEndpoint");
 		}
 	}
 }

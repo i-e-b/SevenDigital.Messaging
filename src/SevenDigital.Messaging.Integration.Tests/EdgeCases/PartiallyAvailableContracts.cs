@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
+using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.Routing;
 using StructureMap;
 
@@ -13,19 +14,19 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		INodeFactory _nodeFactory;
 
 		[SetUp]
-        public void SetUp()
-        {
+		public void SetUp()
+		{
 			Helper.SetupTestMessagingWithoutPurging();
 			new MessagingConfiguration().ClearEventHooks();
-            _nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-        }
+			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
+		}
 
 		[Test]
-		public void when_a_message_has_a_more_specific_type_than_we_support_should_use_most_specific_available ()
+		public void when_a_message_has_a_more_specific_type_than_we_support_should_use_most_specific_available()
 		{
 			var cid = Guid.Parse("05c90feb5c1041799fc0d26dda5fd1c6");
 
-			using (var listener = _nodeFactory.TakeFrom("TestListener_edgecases"))
+			using (var listener = _nodeFactory.TakeFrom("TestListener.Integration.edgecases"))
 			{
 
 				// Simulate sending a message with an unavailable type
@@ -41,11 +42,11 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		}
 
 		[Test]
-		public void can_still_receive_messages_without_contract_stack ()
+		public void can_still_receive_messages_without_contract_stack()
 		{
 			var cid = Guid.Parse("05c90feb5c1041799fc0d26dda5fd1c6");
 
-			using (var listener = _nodeFactory.TakeFrom("TestListener_edgecases"))
+			using (var listener = _nodeFactory.TakeFrom("TestListener.Integration.edgecases"))
 			{
 
 				// Simulate sending a message with an unavailable type
@@ -65,20 +66,20 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 			var router = ObjectFactory.GetInstance<IMessageRouter>();
 
 			var wrong = "Not.A.Real.Type, Example.Types";
-// ReSharper disable PossibleNullReferenceException
+			// ReSharper disable PossibleNullReferenceException
 			var correct = string.Join(", ", typeof(ISpecificMessage).AssemblyQualifiedName.Split(',').Take(2));
 			var imsg = string.Join(", ", typeof(IMessage).AssemblyQualifiedName.Split(',').Take(2));
-// ReSharper restore PossibleNullReferenceException
+			// ReSharper restore PossibleNullReferenceException
 
 			var sample = "{\"__type\":\"" + wrong + "\",\"Message\":\"hello\",\"CorrelationId\":\"05c90feb5c1041799fc0d26dda5fd1c6\",\"HashValue\":123124512," +
-		                "\"__contracts\":\"" +
-		                wrong + ";" +
+						"\"__contracts\":\"" +
+						wrong + ";" +
 						correct + ";" +
 						imsg + "\"}";
-			
+
 			router.AddSource("TestExchange_edgecases");
-			router.AddDestination("TestListener_edgecases");
-			router.Link("TestExchange_edgecases", "TestListener_edgecases");
+			router.AddDestination("TestListener.Integration.edgecases");
+			router.Link("TestExchange_edgecases", "TestListener.Integration.edgecases");
 			router.Send("TestExchange_edgecases", sample);
 		}
 
@@ -86,19 +87,30 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		{
 			var router = ObjectFactory.GetInstance<IMessageRouter>();
 
-// ReSharper disable PossibleNullReferenceException
+			// ReSharper disable PossibleNullReferenceException
 			var correct = string.Join(", ", typeof(ISpecificMessage).AssemblyQualifiedName.Split(',').Take(2));
-// ReSharper restore PossibleNullReferenceException
+			// ReSharper restore PossibleNullReferenceException
 
 			var sample = "{\"__type\":\"" + correct + "\",\"Message\":\"hello\",\"CorrelationId\":\"05c90feb5c1041799fc0d26dda5fd1c6\",\"HashValue\":123124512}";
-			
+
 			router.AddSource("TestExchange_edgecases");
-			router.AddDestination("TestListener_edgecases");
-			router.Link("TestExchange_edgecases", "TestListener_edgecases");
+			router.AddDestination("TestListener.Integration.edgecases");
+			router.Link("TestExchange_edgecases", "TestListener.Integration.edgecases");
 			router.Send("TestExchange_edgecases", sample);
 		}
 
-		public class SampleHandler:IHandle<ISpecificMessage>
+		[TestFixtureTearDown]
+		public void cleanup()
+		{
+			var act = ObjectFactory.GetInstance<IChannelAction>();
+			act.WithChannel(ch => {
+				ch.ExchangeDelete("TestExchange_edgecases");
+				ch.QueueDelete("TestListener.Integration.edgecases");
+			});
+
+		}
+
+		public class SampleHandler : IHandle<ISpecificMessage>
 		{
 			public static AutoResetEvent Trigger = new AutoResetEvent(false);
 			public static ISpecificMessage LastMessage;
@@ -111,8 +123,8 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		}
 
 	}
-		public interface ISpecificMessage:IMessage
-		{
-			string Message { get; set; }
-		}
+	public interface ISpecificMessage : IMessage
+	{
+		string Message { get; set; }
+	}
 }

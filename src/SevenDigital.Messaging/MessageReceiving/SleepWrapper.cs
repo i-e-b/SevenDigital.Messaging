@@ -4,14 +4,28 @@ namespace SevenDigital.Messaging.MessageReceiving
 {
 	public class SleepWrapper : ISleepWrapper
 	{
-		public void Sleep(int i)
+		int _sleep;
+		
+		int BurstSleep()
 		{
-			Thread.Sleep(i);
+			if (_sleep < 255) return (_sleep * 2) + 1;
+			return 255;
+		}
+
+		public void Reset()
+		{
+			_sleep = 0;
+		}
+
+		public void SleepMore()
+		{
+			Thread.Sleep(BurstSleep());
 		}
 	}
 
 	public interface ISleepWrapper
 	{
-		void Sleep(int i);
+		void Reset();
+		void SleepMore();
 	}
 }

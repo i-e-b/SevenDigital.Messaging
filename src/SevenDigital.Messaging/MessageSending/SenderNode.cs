@@ -41,23 +41,8 @@ namespace SevenDigital.Messaging.MessageSending
 
 		void TrySendMessage<T>(T message) where T : class, IMessage
 		{
-			var lastError = new Exception("Unknown state");
-			for (int i = 0; i < 5; i++)
-			{
-				try
-				{
-					messagingBase.SendMessage(message);
-					return;
-				}
-				catch (Exception ex)
-				{
-                    _sleeper.Sleep(12000);
-					lastError = ex;
-					Log.Warning("Could not send message " + ex.GetType() + ": " + ex.Message);
-				}
-			}
-
-			throw lastError;
+			messagingBase.SendMessage(message);
+				
 		}
 	}
 }
