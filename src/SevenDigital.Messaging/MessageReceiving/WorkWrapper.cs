@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	public class WorkWrapper : IWorkWrapper
 	{

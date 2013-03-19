@@ -1,6 +1,6 @@
 using SevenDigital.Messaging.Base;
 
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	/// <summary>
 	/// Message dispatcher keeps a set of bindings 

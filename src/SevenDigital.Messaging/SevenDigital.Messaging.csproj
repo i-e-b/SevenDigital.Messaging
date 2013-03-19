@@ -50,15 +50,15 @@
   <ItemGroup>
     <Compile Include="Cooldown.cs" />
     <Compile Include="Logging\Log.cs" />
-    <Compile Include="Dispatch\LoopbackDispatchController.cs" />
-    <Compile Include="Dispatch\DestinationPoller.cs" />
-    <Compile Include="Dispatch\DispatchController.cs" />
-    <Compile Include="Dispatch\IDestinationPoller.cs" />
-    <Compile Include="Dispatch\IDispatchController.cs" />
-    <Compile Include="Dispatch\IMessageDispatcher.cs" />
-    <Compile Include="Dispatch\MessageDispatcher.cs" />
-    <Compile Include="Dispatch\SleepWrapper.cs" />
-    <Compile Include="Dispatch\WorkWrapper.cs" />
+    <Compile Include="MessageReceiving\LoopbackDispatchController.cs" />
+    <Compile Include="MessageReceiving\DestinationPoller.cs" />
+    <Compile Include="MessageReceiving\DispatchController.cs" />
+    <Compile Include="MessageReceiving\IDestinationPoller.cs" />
+    <Compile Include="MessageReceiving\IDispatchController.cs" />
+    <Compile Include="MessageReceiving\IMessageDispatcher.cs" />
+    <Compile Include="MessageReceiving\MessageDispatcher.cs" />
+    <Compile Include="MessageReceiving\SleepWrapper.cs" />
+    <Compile Include="MessageReceiving\WorkWrapper.cs" />
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
     <Compile Include="EventHooks\ITestEventHook.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />

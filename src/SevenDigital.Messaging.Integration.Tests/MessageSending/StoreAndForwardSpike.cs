@@ -33,7 +33,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
-		public void should_have_a_singleton_persistent_queue_configured ()
+		public void should_have_a_singleton_persistent_queue_configured()
 		{
 			new MessagingConfiguration().WithDefaults();
 
@@ -45,9 +45,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test, Description("the spike")]
-		public void trying_to_stash_messages_to_disk_and_send_from_there ()
+		public void trying_to_stash_messages_to_disk_and_send_from_there()
 		{
-			var sampleMessage = new GreenMessage{CorrelationId = Guid.NewGuid()};
+			var sampleMessage = new GreenMessage { CorrelationId = Guid.NewGuid() };
 			var raw = _messageSerialisation.Serialise(sampleMessage);
 			var bytes = Encoding.UTF8.GetBytes(raw);
 
@@ -79,8 +79,29 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 		}
 
+		[Test]
+		public void can_have_two_sessions_open_at_once ()
+		{
+			var bytes = Encoding.UTF8.GetBytes("Hello");
+			new MessagingConfiguration().WithDefaults();
+			var queue = ObjectFactory.GetInstance<IPersistentQueue>();
+
+			using (var s1 = queue.OpenSession())
+			{
+				using (var s2 = queue.OpenSession())
+				{
+					s2.Enqueue(bytes);
+					s2.Flush();
+					var message = Encoding.UTF8.GetString(s1.Dequeue());
+
+					Assert.That(message, Is.EqualTo("Hello"));
+				}
+			}
+		}
+
 		[TestFixtureTearDown]
-		public void Stop() { 
+		public void Stop()
+		{
 			new MessagingConfiguration().Shutdown();
 			if (Directory.Exists(_storagePath))
 				Directory.Delete(_storagePath, true);

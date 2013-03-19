@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;

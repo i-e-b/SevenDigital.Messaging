@@ -7,7 +7,7 @@ using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
 using StructureMap;
 
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	/// <summary>
 	/// Message dispatcher keeps a set of bindings 

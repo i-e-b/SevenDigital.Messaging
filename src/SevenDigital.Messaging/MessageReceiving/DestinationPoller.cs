@@ -4,7 +4,7 @@ using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
 
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	/// <summary>
 	/// Destination poller is bound to a single destination queue

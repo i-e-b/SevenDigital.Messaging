@@ -1,6 +1,6 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
-using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Unit.Tests._Helpers;
 

@@ -1,7 +1,7 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base.RabbitMq;
-using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageReceiving;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.Shutdown

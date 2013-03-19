@@ -4,8 +4,8 @@ using System.Linq;
 using DiskQueue;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
-using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.EventHooks;
+using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.MessageSending.Loopback;
 using SevenDigital.Messaging.Routing;
@@ -27,28 +27,29 @@ namespace SevenDigital.Messaging
 		{
 			if (UsingLoopbackMode()) return this;
 
-			new  MessagingBaseConfiguration().WithDefaults();
+			new MessagingBaseConfiguration().WithDefaults();
 			Cooldown.Activate();
 
-			ObjectFactory.Configure(map => {
-				map.For<IMessagingHost>().Use(()=> new Host("localhost"));
+			ObjectFactory.Configure(map =>
+			{
+				map.For<IMessagingHost>().Use(() => new Host("localhost"));
 				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
 				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IDestinationPoller>().Use<DestinationPoller>();
 				map.For<IMessageDispatcher>().Use<MessageDispatcher>();
 
-				map.For<IPersistentQueue>().Singleton().Use(() => new PersistentQueue("."));
-
 				map.For<IWorkWrapper>().Use<WorkWrapper>();
 				map.For<ISleepWrapper>().Use<SleepWrapper>();
 				map.For<INode>().Use<Node>();
 
-				
 				map.For<IDispatchController>().Singleton().Use<DispatchController>();
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
-                map.For<ISenderNode>().Singleton().Use<SenderNode>();
+				map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
+
+			if (ObjectFactory.TryGetInstance<IPersistentQueue>() == null)
+				ObjectFactory.Configure(map => map.For<IPersistentQueue>().Singleton().Use(() => new PersistentQueue(".")));
 
 			return this;
 		}
@@ -73,7 +74,7 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		public bool UsingLoopbackMode()
 		{
-			return ObjectFactory.GetAllInstances<INodeFactory>().Any(n=>n is LoopbackNodeFactory);
+			return ObjectFactory.GetAllInstances<INodeFactory>().Any(n => n is LoopbackNodeFactory);
 		}
 
 		/// <summary>
@@ -119,7 +120,7 @@ namespace SevenDigital.Messaging
 			}
 			return this;
 		}
-		
+
 		/// <summary>
 		/// Configure SevenDigital.Messaging with loopback communications for testing.
 		/// After calling this method, you can use the INodeFactory as a collaborator.
@@ -127,18 +128,18 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		public MessagingConfiguration WithLoopback()
 		{
-			new  MessagingBaseConfiguration().WithDefaults();
+			new MessagingBaseConfiguration().WithDefaults();
 			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
 			ObjectFactory.EjectAllInstancesOf<INode>();
 
-		    var factory = new LoopbackNodeFactory();
+			var factory = new LoopbackNodeFactory();
 			ObjectFactory.Configure(map =>
 			{
-                map.For<INodeFactory>().Singleton().Use(factory);
-                map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackNodeFactory>().Is(factory);
+				map.For<INodeFactory>().Singleton().Use(factory);
+				map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackNodeFactory>().Is(factory);
 				map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
 				map.For<IDispatchController>().Singleton().Use<LoopbackDispatchController>();
-	        });
+			});
 
 
 			ObjectFactory.Configure(map =>
@@ -214,7 +215,8 @@ namespace SevenDigital.Messaging
 					ObjectFactory.EjectAllInstancesOf<IPersistentQueue>();
 					persistentQueue.Dispose();
 				}
-			} catch (StructureMapException)
+			}
+			catch (StructureMapException)
 			{
 			}
 		}

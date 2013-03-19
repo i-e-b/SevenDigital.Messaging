@@ -1,4 +1,4 @@
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	public class LoopbackDispatchController:IDispatchController
 	{

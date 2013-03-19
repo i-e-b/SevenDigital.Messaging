@@ -1,4 +1,4 @@
-namespace SevenDigital.Messaging.Dispatch
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	/// <summary>
 	/// Dispatch controller is a simple list

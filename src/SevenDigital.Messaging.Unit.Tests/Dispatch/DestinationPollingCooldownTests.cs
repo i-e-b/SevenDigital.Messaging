@@ -5,7 +5,7 @@ using System.Threading;
 using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.Dispatch;
+using SevenDigital.Messaging.MessageReceiving;
 
 namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 {

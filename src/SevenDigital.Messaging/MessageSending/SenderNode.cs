@@ -1,7 +1,7 @@
 using System;
 using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.Dispatch;
 using SevenDigital.Messaging.Logging;
+using SevenDigital.Messaging.MessageReceiving;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
