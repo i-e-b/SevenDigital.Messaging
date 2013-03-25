@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DiskQueue;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.EventHooks;
@@ -47,9 +46,6 @@ namespace SevenDigital.Messaging
 				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
 				map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
-
-			if (ObjectFactory.TryGetInstance<IPersistentQueue>() == null)
-				ObjectFactory.Configure(map => map.For<IPersistentQueue>().Singleton().Use(() => new PersistentQueue(".")));
 
 			return this;
 		}
@@ -205,19 +201,6 @@ namespace SevenDigital.Messaging
 			{
 				connection.Dispose();
 				ObjectFactory.EjectAllInstancesOf<IChannelAction>();
-			}
-
-			try
-			{
-				var persistentQueue = ObjectFactory.TryGetInstance<IPersistentQueue>();
-				if (persistentQueue != null)
-				{
-					ObjectFactory.EjectAllInstancesOf<IPersistentQueue>();
-					persistentQueue.Dispose();
-				}
-			}
-			catch (StructureMapException)
-			{
 			}
 		}
 	}

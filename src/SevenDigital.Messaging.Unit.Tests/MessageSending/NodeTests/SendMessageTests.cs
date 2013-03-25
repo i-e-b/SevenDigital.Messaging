@@ -1,5 +1,4 @@
 using System;
-using DiskQueue;
 using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;

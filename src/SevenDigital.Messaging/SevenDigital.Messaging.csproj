@@ -92,10 +92,6 @@
     <Compile Include="MessageSending\SenderNode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\modules\DiskQueue\src\Rhino.Queues.Storage.Disk\DiskQueue.csproj">
-      <Project>{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}</Project>
-      <Name>DiskQueue</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SevenDigital.Messaging.Types\Messaging.Types.csproj">
       <Project>{D24B3022-DF19-4E06-9588-54A16A195B84}</Project>
       <Name>Messaging.Types</Name>
