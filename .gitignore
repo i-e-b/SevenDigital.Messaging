@@ -53,12 +53,6 @@ _ReSharper*
 *.ncrunch*
 .*crunch*.local.xml
 
-# Click-Once directory
-publish
-
-# Publish Web Output
-*.Publish.xml
-
 # Others
 [Bb]in
 [Oo]bj
