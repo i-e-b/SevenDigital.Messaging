@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Shift-it</id>
+    <version>1.0.1</version>
+    <title>Shift-it</title>
+    <authors>i-e-b</authors>
+    <owners>i-e-b</owners>
+    <projectUrl>https://github.com/i-e-b/Shift-it</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Collection of low-level HTTP and FTP file transfer tools</description>
+    <summary>Collection of low-level HTTP and FTP file transfer tools</summary>
+    <releaseNotes />
+    <copyright />
+    <language>en-GB</language>
+    <tags>http ftp sockets client</tags>
+    <references>
+      <reference file="ShiftIt.dll" />
+    </references>
+  </metadata>
+</package>
