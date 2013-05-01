@@ -12,7 +12,6 @@ namespace SevenDigital.Messaging
 		{
 			if (Interlocked.CompareExchange(ref calls, 1, 0) == 0)
 			{
-				Console.WriteLine("Activating cooldown capture");
 				CrossPlatformSignalDispatch.Instance.TerminateEvent += Instance_TerminateEvent;
 			}
 		}
