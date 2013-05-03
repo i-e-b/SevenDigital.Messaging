@@ -7,8 +7,10 @@ using System.Runtime.CompilerServices;
 
 [assembly: AssemblyProduct("SevenDigital.Messaging")]
 
-[assembly: AssemblyVersion("1.0.2.0")]
-[assembly: AssemblyFileVersion("1.0.2.0")]
+
+
 [assembly: NeutralResourcesLanguageAttribute("en")]
 [assembly: InternalsVisibleTo("SevenDigital.Messaging.Unit.Tests")]
 [assembly: InternalsVisibleTo("SevenDigital.Messaging.Integration.Tests")]
+[assembly: AssemblyFileVersion("1")]
+[assembly: AssemblyVersion("1")]
