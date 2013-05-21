@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>MessagingBase</id>
+    <version>1.0.1</version>
+    <title>MessagingBase</title>
+    <authors>iainb</authors>
+    <owners>iainb</owners>
+    <projectUrl>https://github.com/i-e-b/BearBones-Messaging</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>BearBones messaging: lower-level framework, part of a contract-interface based distributed event framework for .Net</description>
+    <summary>BearBones messaging: lower-level framework, part of a contract-interface based distributed event framework for .Net</summary>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="structuremap" version="2.6.4.1" />
+        <dependency id="ServiceStackSnapShot" version="1.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

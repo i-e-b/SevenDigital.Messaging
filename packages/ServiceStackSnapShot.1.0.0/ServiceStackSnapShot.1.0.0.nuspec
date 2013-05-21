@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>ServiceStackSnapShot</id>
+    <version>1.0.0</version>
+    <title>ServiceStackSnapShot</title>
+    <authors>iainb</authors>
+    <owners>iainb</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A snapshot of service stack binaries merged into a single DLL
+
+This makes working with the fast moving service stack repository easier in a large code base</description>
+    <summary>A snapshot of service stack binaries merged into a single DLL</summary>
+  </metadata>
+</package>
