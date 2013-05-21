@@ -40,9 +40,6 @@
     <Reference Include="SevenDigital.ServiceStack.Merged">
       <HintPath>..\..\packages\ServiceStackSnapShot.1.0.0\lib\net40\SevenDigital.ServiceStack.Merged.dll</HintPath>
     </Reference>
-    <Reference Include="ShiftIt">
-      <HintPath>..\..\packages\Shift-it.1.0.1\lib\net40\ShiftIt.dll</HintPath>
-    </Reference>
     <Reference Include="SignalHandling">
       <HintPath>..\..\packages\MessagingBase.1.0.1\lib\net40\SignalHandling.dll</HintPath>
     </Reference>
