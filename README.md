@@ -3,17 +3,17 @@ SevenDigital.Messaging
 A distributed contracts-based sender/handler messaging system built on RabbitMQ and BearBones-Messaging
 
 Installation
-============
+------------
 Windows
--------
+
 * Install [Erlang](http://www.erlang.org/download.html) and [RabbitMQ server](http://www.rabbitmq.com/download.html)
 
 Linux
------
+
 * As Windows, or use your distro's package manager to get RabbitMQ (you should get Erlang automatically)
 
 Getting Started: Path of least resistance
-=========================================
+-----------------------------------------
 * Add NuGet reference from [SevenDigital.Messaging](https://nuget.org/packages/SevenDigital.Messaging)
 
 Configure messaging:
