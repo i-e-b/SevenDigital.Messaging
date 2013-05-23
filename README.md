@@ -46,8 +46,12 @@ public class MyHandler : IHandle<IExampleMessage> {
 Register handler with listener:
 ```csharp
 // Spawns sets of background threads to handle incoming messages
-ObjectFactory.GetInstance<INodeFactory>().Listen().Handle<IExampleMessage>().With<MyHandler>();
+var node = ObjectFactory.GetInstance<INodeFactory>().Listen();
+node.Handle<IExampleMessage>().With<MyHandler>();
+
 while (true) {Thread.Sleep(1000);}
+
+node.Dispose();
 ```
 
 Send some messages:
