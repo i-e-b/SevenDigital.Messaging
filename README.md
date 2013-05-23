@@ -6,7 +6,7 @@ Installation
 ============
 Windows
 -------
-* Install Erlang [http://www.erlang.org/download.html] and RabbitMQ server [http://www.rabbitmq.com/download.html]
+* Install [Erlang](http://www.erlang.org/download.html) and [RabbitMQ server](http://www.rabbitmq.com/download.html)
 
 Linux
 -----
@@ -14,7 +14,7 @@ Linux
 
 Getting Started: Path of least resistance
 =========================================
-* Add NuGet reference from (SevenDigital.Messaging)[https://nuget.org/packages/SevenDigital.Messaging/]
+* Add NuGet reference from [SevenDigital.Messaging](https://nuget.org/packages/SevenDigital.Messaging)
 
 Configure messaging:
 ```csharp
