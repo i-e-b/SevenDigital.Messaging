@@ -124,7 +124,8 @@ namespace SevenDigital.Messaging
 	{
 		/// <summary>
 		/// Configure messaging for normal use. Sets defaults for running on the local host.
-		/// The returned configuration options object can be used to setup further
+		/// The returned configuration options object can be used to setup further.
+		/// Calling `WithDefaults()` more than once has no effect.
 		/// </summary>
 		IMessagingConfigureOptions WithDefaults();
 
@@ -132,6 +133,7 @@ namespace SevenDigital.Messaging
 		/// Configure messaging to run in-process. This mode is for testing.
 		/// All sent messages will be handled immediately, blocking the calling thread until finished.
 		/// This should be called BEFORE 'WithDefaults()'
+		/// Calling `WithLoopbackMode()` more than once has no effect.
 		/// </summary>
 		void WithLoopbackMode();
 	}
@@ -218,9 +220,8 @@ namespace SevenDigital.Messaging
 	{
 		public IMessagingConfigureOptions WithDefaults()
 		{
-			if (Messaging.IsConfigured())
-				throw new InvalidOperationException("Messaging system has already been configured");
-			if (Messaging.UsingLoopbackMode()) return new SDM_ConfigureOptions();
+			if (Messaging.IsConfigured() || Messaging.UsingLoopbackMode())
+				return new SDM_ConfigureOptions();
 
 			new MessagingBaseConfiguration().WithDefaults();
 			Cooldown.Activate();
@@ -248,8 +249,7 @@ namespace SevenDigital.Messaging
 
 		public void WithLoopbackMode()
 		{
-			if (Messaging.UsingLoopbackMode()) 
-				throw new InvalidOperationException("Loopback mode has already been configured");
+			if (Messaging.UsingLoopbackMode()) return;
 			if (Messaging.IsConfigured())
 				throw new InvalidOperationException("Messaging system has already been configured. You should set up loopback mode first.");
 

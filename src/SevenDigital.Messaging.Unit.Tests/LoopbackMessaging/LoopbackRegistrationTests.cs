@@ -3,29 +3,29 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 {
-    [TestFixture]
-    public class LoopbackRegistrationTests
-    {
-        [SetUp]
-        public void SetUp()
-        {
-            new MessagingConfiguration().WithLoopback();
+	[TestFixture]
+	public class LoopbackRegistrationTests
+	{
+		[SetUp]
+		public void SetUp()
+		{
+			Messaging.Configure.WithLoopbackMode();
 
-            ObjectFactory.GetInstance<INodeFactory>().Listen().Handle<IMessage>().With<AHandler>();
-        }
+			ObjectFactory.GetInstance<INodeFactory>().Listen().Handle<IMessage>().With<AHandler>();
+		}
 
-        [Test]
-        public void Should_not_throw_exception_if_in_loopback_mode()
-        {
-            Assert.DoesNotThrow(() => new MessagingConfiguration().LoopbackListenersForMessage<IMessage>());
-        }
-    }
+		[Test]
+		public void Should_not_throw_exception_if_in_loopback_mode()
+		{
+			Assert.DoesNotThrow(() => Messaging.Testing.LoopbackListenersForMessage<IMessage>());
+		}
+	}
 
-    public class AHandler : IHandle<IMessage>
-    {
-        public void Handle(IMessage message)
-        {
+	public class AHandler : IHandle<IMessage>
+	{
+		public void Handle(IMessage message)
+		{
 
-        }
-    }
+		}
+	}
 }

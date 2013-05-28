@@ -9,10 +9,10 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 	{
 		IRabbitMqQuery subject;
 
-		[SetUp]
+		[TestFixtureSetUp]
 		public void Configured_with_message_query ()
 		{
-			new MessagingConfiguration().WithMessagingQuery("host", "user", "pass", "vhost");
+			Messaging.Configure.WithDefaults().SetManagementServer("host", "user", "pass", "vhost");
 			subject = ObjectFactory.GetInstance<IRabbitMqQuery>();
 		}
 
