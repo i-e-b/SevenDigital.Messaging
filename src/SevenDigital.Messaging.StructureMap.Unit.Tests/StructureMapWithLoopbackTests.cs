@@ -12,9 +12,9 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[SetUp]
 		public void Setup()
 		{
-			Messaging.Configure.WithLoopbackMode();
+			MessagingSystem.Configure.WithLoopbackMode();
 
-			Messaging.Configure.WithDefaults().SetMessagingServer(HostName);
+			MessagingSystem.Configure.WithDefaults().SetMessagingServer(HostName);
 		}
 
 		[TestFixtureTearDown]

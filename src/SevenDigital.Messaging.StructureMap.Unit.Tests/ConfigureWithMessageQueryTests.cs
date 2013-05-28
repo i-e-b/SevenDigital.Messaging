@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[TestFixtureSetUp]
 		public void Configured_with_message_query ()
 		{
-			Messaging.Configure.WithDefaults().SetManagementServer("host", "user", "pass", "vhost");
+			MessagingSystem.Configure.WithDefaults().SetManagementServer("host", "user", "pass", "vhost");
 			subject = ObjectFactory.GetInstance<IRabbitMqQuery>();
 		}
 

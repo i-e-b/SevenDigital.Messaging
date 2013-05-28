@@ -10,7 +10,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public static void SetupTestMessaging()
 		{
 			var server = ConfigurationManager.AppSettings["rabbitServer"];
-			Messaging.Configure.WithDefaults().SetMessagingServer(server).SetIntegrationTestMode();
+			MessagingSystem.Configure.WithDefaults().SetMessagingServer(server).SetIntegrationTestMode();
 
 			ObjectFactory.Configure(map=>map.For<IUniqueEndpointGenerator>().Use<TestEndpointGenerator>());
 		}
@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public static void SetupTestMessagingWithoutPurging()
 		{
 			var server = ConfigurationManager.AppSettings["rabbitServer"];
-			Messaging.Configure.WithDefaults().SetMessagingServer(server);
+			MessagingSystem.Configure.WithDefaults().SetMessagingServer(server);
 		}
 		public static void DeleteQueue(string queueName)
 		{

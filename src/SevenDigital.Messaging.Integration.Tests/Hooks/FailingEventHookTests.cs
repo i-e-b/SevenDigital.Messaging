@@ -23,14 +23,14 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			node_factory = Messaging.Receiver();
-			senderNode = Messaging.Sender();
+			node_factory = MessagingSystem.Receiver();
+			senderNode = MessagingSystem.Sender();
 		}
 
 		[Test]
 		public void Should_trigger_all_event_hooks_with_message_when_sending_and_receiving_a_message()
 		{
-			Messaging.Events
+			MessagingSystem.Events
 				.AddEventHook<FailingHook>()
 				.AddEventHook<SucceedingHook>();
 
@@ -50,7 +50,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { Messaging.Control.Shutdown(); }
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
 	}
 
 

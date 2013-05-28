@@ -14,9 +14,9 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		public void SetUp()
 		{
 			Helper.SetupTestMessaging();
-			Messaging.Events.ClearEventHooks();
-			nodeFactory = Messaging.Receiver();
-			sender = Messaging.Sender();
+			MessagingSystem.Events.ClearEventHooks();
+			nodeFactory = MessagingSystem.Receiver();
+			sender = MessagingSystem.Sender();
 		}
 
 		[Test]

@@ -19,7 +19,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Shutdown
 				map.For<IChannelAction>().Use(channelMock);
 			});
 
-			Messaging.Control.Shutdown();
+			MessagingSystem.Control.Shutdown();
 
 			dispatchMock.Received().Shutdown();
 			channelMock.Received().Dispose();

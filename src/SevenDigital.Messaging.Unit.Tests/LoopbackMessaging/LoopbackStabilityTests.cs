@@ -10,9 +10,9 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void clearing_event_hooks_after_settings_up_loopback_should_leave_loopback_hooks_in_place ()
 		{
-			Messaging.Configure.WithLoopbackMode();
+			MessagingSystem.Configure.WithLoopbackMode();
 
-			Messaging.Events.ClearEventHooks();
+			MessagingSystem.Events.ClearEventHooks();
 
 			Assert.That(
 				ObjectFactory.GetInstance<IEventHook>(),

@@ -11,7 +11,7 @@ namespace SevenDigital.Messaging.Integration.Tests.Logging
 		[Test, Explicit]
 		public void Logging_works()
 		{
-			Messaging.Configure.WithDefaults();
+			MessagingSystem.Configure.WithDefaults();
 			var mbase = ObjectFactory.GetInstance<IMessagingBase>();
 
 			while (mbase.GetMessage<ILogMessage>("WarningLog") != null)

@@ -9,15 +9,15 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[SetUp]
 		public void SetUp()
 		{
-			Messaging.Configure.WithLoopbackMode();
+			MessagingSystem.Configure.WithLoopbackMode();
 
-			Messaging.Receiver().Listen().Handle<IMessage>().With<AHandler>();
+			MessagingSystem.Receiver().Listen().Handle<IMessage>().With<AHandler>();
 		}
 
 		[Test]
 		public void Should_not_throw_exception_if_in_loopback_mode()
 		{
-			Assert.DoesNotThrow(() => Messaging.Testing.LoopbackListenersForMessage<IMessage>());
+			Assert.DoesNotThrow(() => MessagingSystem.Testing.LoopbackListenersForMessage<IMessage>());
 		}
 	}
 

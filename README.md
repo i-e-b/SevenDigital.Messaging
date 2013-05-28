@@ -18,7 +18,7 @@ Getting Started: Path of least resistance
 
 Configure messaging:
 ```csharp
-Messaging.Configure.WithDefaults().WithMessagingServer("localhost");
+MessagingSystem.Configure.WithDefaults().WithMessagingServer("localhost");
 ```
 
 Define a message:
@@ -46,18 +46,18 @@ public class MyHandler : IHandle<IExampleMessage> {
 Register handler with listener:
 ```csharp
 // Spawns sets of background threads to handle incoming messages
-using (var node = Messaging.Receiver().Listen()) {
+using (var node = MessagingSystem.Receiver().Listen()) {
 	node.Handle<IExampleMessage>().With<MyHandler>();
 	
 	while (true) {Thread.Sleep(1000);}
 	
 }
-Messaging.Control.Shutdown();
+MessagingSystem.Control.Shutdown();
 ```
 
 Send some messages:
 ```csharp
-Messaging.Sender().SendMessage(new MyExample{Hello = "World"});
+MessagingSystem.Sender().SendMessage(new MyExample{Hello = "World"});
 ```
 
 Notes

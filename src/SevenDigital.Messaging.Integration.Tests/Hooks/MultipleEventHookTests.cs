@@ -24,14 +24,14 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			node_factory = Messaging.Receiver();
-			senderNode = Messaging.Sender();
+			node_factory = MessagingSystem.Receiver();
+			senderNode = MessagingSystem.Sender();
 		}
 
 		[Test]
 		public void Should_trigger_all_event_hooks_with_message_when_sending_and_receiving_a_message()
 		{
-			Messaging.Events
+			MessagingSystem.Events
 				.AddEventHook<WaitingHookOne>()
 				.AddEventHook<WaitingHookTwo>();
 
@@ -55,7 +55,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_not_trigger_any_event_hooks_when_hooks_have_been_cleared()
 		{
-			Messaging.Events.ClearEventHooks();
+			MessagingSystem.Events.ClearEventHooks();
 
 			using (var receiverNode = node_factory.Listen())
 			{
@@ -74,7 +74,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { Messaging.Control.Shutdown(); }
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
 
 		public class WaitingHookOne : IEventHook
 		{

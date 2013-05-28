@@ -21,9 +21,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Setup()
 		{
 			Helper.SetupTestMessaging();
-			Messaging.Events.AddEventHook<ConsoleEventHook>();
-			nodeFactory = Messaging.Receiver();
-			senderNode = Messaging.Sender();
+			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
+			nodeFactory = MessagingSystem.Receiver();
+			senderNode = MessagingSystem.Sender();
 		}
 
 		[Test]
@@ -44,6 +44,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { Messaging.Control.Shutdown(); }
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
 	}
 }

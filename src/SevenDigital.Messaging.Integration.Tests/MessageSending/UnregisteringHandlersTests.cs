@@ -19,9 +19,9 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		public void SetUp()
 		{
 			Helper.SetupTestMessaging();
-			Messaging.Events.AddEventHook<ConsoleEventHook>();
-			_nodeFactory = Messaging.Receiver();
-			_senderNode = Messaging.Sender();
+			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
+			_nodeFactory = MessagingSystem.Receiver();
+			_senderNode = MessagingSystem.Sender();
 		}
 
 		[Test]
@@ -49,7 +49,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { Messaging.Control.Shutdown(); }
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
 
 
 		public class UnregisterSample : IHandle<IColourMessage>

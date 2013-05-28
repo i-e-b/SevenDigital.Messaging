@@ -62,7 +62,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 		
 		[TestFixtureTearDown]
-		public void Stop() { Messaging.Control.Shutdown(); }
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
 
 		GreenMessage TriggerFailingHandler(IReceiverNode receiverNode)
 		{
