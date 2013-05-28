@@ -11,9 +11,9 @@ namespace SevenDigital.Messaging.Integration.Tests.Loopback
 		[Test]
 		public void Loopback_mode_configures_correctly ()
 		{
-			Messaging.Configure.WithLoopbackMode();
+			MessagingSystem.Configure.WithLoopbackMode();
 			
-			using (var listener = Messaging.Receiver().Listen())
+			using (var listener = MessagingSystem.Receiver().Listen())
 			{
 				listener.Handle<IMessage>().With<IntegrationHandler>();
 			}

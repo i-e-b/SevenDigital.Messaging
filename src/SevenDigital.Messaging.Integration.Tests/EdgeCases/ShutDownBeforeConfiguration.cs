@@ -8,7 +8,7 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		[Test]
 		public void can_call_shutdown_without_having_configured_messaging()
 		{
-			Messaging.Control.Shutdown();
+			MessagingSystem.Control.Shutdown();
 			Assert.Pass();
 		}
 	}

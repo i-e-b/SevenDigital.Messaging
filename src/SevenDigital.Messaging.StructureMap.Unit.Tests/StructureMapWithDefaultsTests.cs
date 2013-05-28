@@ -15,7 +15,7 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[TestFixtureSetUp]
 		public void Setup()
 		{
-			Messaging.Configure.WithDefaults().SetMessagingServer(HostName);
+			MessagingSystem.Configure.WithDefaults().SetMessagingServer(HostName);
 		}
 
 		[TestFixtureTearDown]
@@ -107,17 +107,17 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[Test]
 		public void Should_be_able_to_set_and_clear_event_hooks()
 		{
-			Messaging.Events.AddEventHook<DummyEventHook>();
+			MessagingSystem.Events.AddEventHook<DummyEventHook>();
 			Assert.That(ObjectFactory.GetInstance<IEventHook>(), Is.InstanceOf<DummyEventHook>());
 
-			Messaging.Events.ClearEventHooks();
+			MessagingSystem.Events.ClearEventHooks();
 			Assert.That(ObjectFactory.TryGetInstance<IEventHook>(), Is.Null);
 		}
 
 		[Test]
 		public void Should_get_node_factory_implementation()
 		{
-			var factory = Messaging.Receiver();
+			var factory = MessagingSystem.Receiver();
 			Assert.That(factory, Is.Not.Null);
 			Assert.That(factory, Is.InstanceOf<NodeFactory>());
 		}
@@ -125,7 +125,7 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[Test]
 		public void Should_get_sender_node_implementation()
 		{
-			var sender = Messaging.Sender();
+			var sender = MessagingSystem.Sender();
 			Assert.That(sender, Is.InstanceOf<SenderNode>());
 			Assert.That(sender, Is.Not.Null);
 		}

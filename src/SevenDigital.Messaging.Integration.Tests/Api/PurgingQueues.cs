@@ -24,8 +24,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			_nodeFactory = Messaging.Receiver();
-			_senderNode = Messaging.Sender();
+			_nodeFactory = MessagingSystem.Receiver();
+			_senderNode = MessagingSystem.Sender();
 
 			using (var l = _nodeFactory.Listen())
 			{
@@ -48,6 +48,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { Messaging.Control.Shutdown(); }
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
 	}
 }

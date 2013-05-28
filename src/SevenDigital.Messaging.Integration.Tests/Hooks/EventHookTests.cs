@@ -34,8 +34,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 			ObjectFactory.Configure(map => map.For<IEventHook>().Use(mock_event_hook.Object));
 
-			node_factory = Messaging.Receiver();
-			senderNode = Messaging.Sender();
+			node_factory = MessagingSystem.Receiver();
+			senderNode = MessagingSystem.Sender();
 		}
 
 		[Test]
@@ -106,7 +106,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { Messaging.Control.Shutdown(); }
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
 	}
 
 	public class GenericHandler : IHandle<IMessage>

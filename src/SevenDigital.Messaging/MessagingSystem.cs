@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging
 	/// Messaging configuration and control.
 	/// You should call at least one basic configuration option to get a valid messaging system.
 	/// </summary>
-	public static class Messaging
+	public static class MessagingSystem
 	{
 		/// <summary>
 		/// Basic configuration. You should call at least one basic configuration option to get a valid messaging system.
@@ -223,7 +223,7 @@ namespace SevenDigital.Messaging
 	{
 		public ITestEventHook LoopbackEvents()
 		{
-			if (!Messaging.UsingLoopbackMode())
+			if (!MessagingSystem.UsingLoopbackMode())
 				throw new InvalidOperationException("Loopback events are not available: Loopback mode has not be set. Try `Messaging.Configure.WithLoopbackMode()` before your service starts.");
 
 			return ObjectFactory.GetInstance<ITestEventHook>();
@@ -241,7 +241,7 @@ namespace SevenDigital.Messaging
 	{
 		public IMessagingConfigureOptions WithDefaults()
 		{
-			if (Messaging.IsConfigured() || Messaging.UsingLoopbackMode())
+			if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
 				return new SDM_ConfigureOptions();
 
 			new MessagingBaseConfiguration().WithDefaults();
@@ -269,8 +269,8 @@ namespace SevenDigital.Messaging
 
 		public void WithLoopbackMode()
 		{
-			if (Messaging.UsingLoopbackMode()) return;
-			if (Messaging.IsConfigured())
+			if (MessagingSystem.UsingLoopbackMode()) return;
+			if (MessagingSystem.IsConfigured())
 				throw new InvalidOperationException("Messaging system has already been configured. You should set up loopback mode first.");
 
 			new MessagingBaseConfiguration().WithDefaults();
@@ -325,7 +325,7 @@ namespace SevenDigital.Messaging
 	{
 		public IMessagingEventOptions ClearEventHooks()
 		{
-			var loopback = Messaging.UsingLoopbackMode();
+			var loopback = MessagingSystem.UsingLoopbackMode();
 			ObjectFactory.EjectAllInstancesOf<IEventHook>();
 
 			if (loopback)

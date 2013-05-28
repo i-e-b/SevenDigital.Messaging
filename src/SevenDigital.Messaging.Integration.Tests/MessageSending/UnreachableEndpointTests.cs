@@ -14,13 +14,13 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		[SetUp]
 		public void Messaging_configured_to_point_at_an_unreachable_server()
 		{
-			Messaging.Configure.WithDefaults().SetMessagingServer("complete rubbish!");
+			MessagingSystem.Configure.WithDefaults().SetMessagingServer("complete rubbish!");
 		}
 
 		[TearDown]
 		public void teardown()
 		{
-			Messaging.Control.Shutdown();
+			MessagingSystem.Control.Shutdown();
 			ObjectFactory.EjectAllInstancesOf<ISleepWrapper>();
 			ObjectFactory.EjectAllInstancesOf<IMessagingHost>();
 			ObjectFactory.EjectAllInstancesOf<IRabbitMqConnection>();

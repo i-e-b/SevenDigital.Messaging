@@ -15,17 +15,17 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[SetUp]
 		public void When_configuring_with_loopback_and_default_configuration_used_afterwards()
 		{
-			Messaging.Configure.WithLoopbackMode();
+			MessagingSystem.Configure.WithLoopbackMode();
 
-			Messaging.Configure.WithDefaults();
+			MessagingSystem.Configure.WithDefaults();
 
 			mock_event_hook = new Mock<IEventHook>();
 			ObjectFactory.Configure(map => map.For<IEventHook>().Use(mock_event_hook.Object));
 
 			ResetHandlers();
 
-			_nodeFactory = Messaging.Receiver();
-			_senderNode = Messaging.Sender();
+			_nodeFactory = MessagingSystem.Receiver();
+			_senderNode = MessagingSystem.Sender();
 		}
 
 		static void ResetHandlers()
@@ -127,7 +127,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 			using (var receiver = _nodeFactory.Listen())
 			{
 				receiver.Handle<IMessage>().With<AHandler>();
-				var listeners = Messaging.Testing.LoopbackListenersForMessage<IMessage>();
+				var listeners = MessagingSystem.Testing.LoopbackListenersForMessage<IMessage>();
 
 				Assert.That(listeners, Contains.Item(typeof(AHandler)));
 			}
