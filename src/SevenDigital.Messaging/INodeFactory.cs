@@ -1,5 +1,8 @@
 namespace SevenDigital.Messaging
 {
+	/// <summary>
+	/// A receiver node source that can produce competitive or co-operative consumers
+	/// </summary>
 	public interface INodeFactory
 	{
 		/// <summary>

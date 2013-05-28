@@ -5,15 +5,26 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
 {
+	/// <summary>
+	/// Standard sender node for Messaging.
+	/// You do not need to create this yourself. Use `Messaging.Sender()`
+	/// </summary>
 	public class SenderNode : ISenderNode
 	{
 		readonly IMessagingBase messagingBase;
 
+		/// <summary>
+		/// Create a new message sending node. You do not need to create this yourself. Use `Messaging.Sender()`
+		/// </summary>
 		public SenderNode(IMessagingBase messagingBase)
 		{
 			this.messagingBase = messagingBase;
 		}
 
+		/// <summary>
+		/// Send the given message. Does not guarantee reception.
+		/// </summary>
+		/// <param name="message">Message to be send. This must be a serialisable type</param>
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
 			TryFireHooks(message);

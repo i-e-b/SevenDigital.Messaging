@@ -4,8 +4,14 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Logging
 {
+	/// <summary>
+	/// Messaging based logger
+	/// </summary>
 	public class Log
 	{
+		/// <summary>
+		/// Log a message to the warning queue
+		/// </summary>
 		public static void Warning(string message)
 		{
 			try

@@ -4,6 +4,10 @@ using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.MessageSending
 {
+	
+	/// <summary>
+	/// base implementation for a receiver node in messaging
+	/// </summary>
 	public class Node : INode
 	{
 
@@ -12,18 +16,27 @@ namespace SevenDigital.Messaging.MessageSending
 		IDestinationPoller destinationPoller;
 		string endpoint;
 
+		/// <summary>
+		/// Create a new basic receiver node. This should be created by the ObjectFactory
+		/// </summary>
 		public Node(IMessagingBase messagingBase, IDispatchController dispatchController)
 		{
 			this.messagingBase = messagingBase;
 			this.dispatchController = dispatchController;
 		}
 
+		/// <summary>
+		/// Set this node to listen on a messaging endpoint.
+		/// </summary>
 		public void SetEndpoint(IRoutingEndpoint targetEndpoint)
 		{
 			endpoint = targetEndpoint.ToString();
 			destinationPoller = dispatchController.CreatePoller(endpoint);
 		}
 
+		/// <summary>
+		/// Bind a message type/handler type pair to consume messages on this node
+		/// </summary>
 		public void SubscribeHandler<TMessage, THandler>()
 			where TMessage : class, IMessage
 			where THandler : IHandle<TMessage>
@@ -34,12 +47,18 @@ namespace SevenDigital.Messaging.MessageSending
 			destinationPoller.Start();
 		}
 
+		/// <summary>
+		/// Unbind a handler from all messages
+		/// </summary>
 		public void RemoveHandler<THandler>()
 		{
 			destinationPoller.RemoveHandler<THandler>();
 			if (destinationPoller.HandlerCount < 1) destinationPoller.Stop();
 		}
 
+		/// <summary>
+		/// Stop this node
+		/// </summary>
 		public void Dispose()
 		{
 			destinationPoller.Stop();

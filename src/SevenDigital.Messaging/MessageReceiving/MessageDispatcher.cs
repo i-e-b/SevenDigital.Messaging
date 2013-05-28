@@ -22,12 +22,18 @@ namespace SevenDigital.Messaging.MessageReceiving
 		readonly Dictionary<Type, HashSet<Type>> handlers; // message type => [handler types]
 		int runningHandlers;
 
+		/// <summary>
+		/// New dispatcher
+		/// </summary>
 		public MessageDispatcher(IWorkWrapper workWrapper)
 		{
 			this.workWrapper = workWrapper;
 			handlers = new Dictionary<Type, HashSet<Type>>();
 		}
 
+		/// <summary>
+		/// Try to fire actions for a message
+		/// </summary>
 		public void TryDispatch(IPendingMessage<object> pendingMessage)
 		{
 			var messageObject = pendingMessage.Message;
@@ -127,6 +133,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 			return handlers.Keys.Where(k => k.IsAssignableFrom(type)).SelectMany(k => handlers[k]);
 		}
 
+		/// <summary>
+		/// Add a handler/message binding
+		/// </summary>
 		public void AddHandler<TMessage, THandler>()
 			where TMessage : class, IMessage
 			where THandler : IHandle<TMessage>
@@ -141,6 +150,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 			}
 		}
 
+		/// <summary>
+		/// remove a handler for all messages
+		/// </summary>
 		public void RemoveHandler<T>()
 		{
 			foreach (var hashSet in handlers.Values)
@@ -149,13 +161,22 @@ namespace SevenDigital.Messaging.MessageReceiving
 			}
 		}
 
+		/// <summary>
+		/// Return count of handlers
+		/// </summary>
 		public int CountHandlers()
 		{
 			return handlers.Values.Sum(hs=>hs.Count);
 		}
 
+		/// <summary>
+		/// number of handlers currently running and handling messages
+		/// </summary>
 		public int HandlersInflight { get { return runningHandlers; } }
 
+		/// <summary>
+		/// List handlers for the given type
+		/// </summary>
 		public IEnumerable<Type> HandlersForType<T>() where T : class, IMessage
 		{
 			return handlers[typeof(T)]

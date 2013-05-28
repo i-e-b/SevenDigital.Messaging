@@ -6,24 +6,39 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending.Loopback
 {
+	/// <summary>
+	/// Node factory for loopback.
+	/// You don't need to create this yourself, use `Messaging.Receiver()` in loopback mode
+	/// </summary>
 	public class LoopbackNodeFactory : INodeFactory
 	{
 		readonly Dictionary<Type, List<Type>> listenerBindings;
 		readonly List<string> capturedEndpoints;
 
+		/// <summary>
+		/// Create a loopback factory.
+		/// </summary>
 		public LoopbackNodeFactory()
 		{
 			listenerBindings = new Dictionary<Type, List<Type>>();
 			capturedEndpoints = new List<string>();
 		}
-
+		
+		/// <summary>
+		/// List all handlers that have been registered on this node.
+		/// </summary>
 		public List<Type> ListenersFor<T>()
 		{
-		    var key = typeof (T);
-            return listenerBindings.ContainsKey(key) ? listenerBindings[key].ToList() : new List<Type>();
+			var key = typeof(T);
+			return listenerBindings.ContainsKey(key) ? listenerBindings[key].ToList() : new List<Type>();
 		}
 
-	    public IReceiverNode TakeFrom(Endpoint endpoint)
+		/// <summary>
+		/// Map handlers to a listener on a named endpoint.
+		/// All other listeners on this endpoint will compete for messages
+		/// (i.e. only one listener will get a given message)
+		/// </summary>
+		public IReceiverNode TakeFrom(Endpoint endpoint)
 		{
 			// In the real version, agents compete for incoming messages.
 			// In this test version, we only really bind the first listener for a given endpoint -- roughly the same effect!
@@ -41,11 +56,18 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			return capturedEndpoints;
 		}
 
+		/// <summary>
+		/// Map handlers to a listener on a unique endpoint.
+		/// All listeners mapped this way will receive all messages.
+		/// </summary>
 		public IReceiverNode Listen()
 		{
 			return new LoopbackReceiver(this);
 		}
 
+		/// <summary>
+		/// Bind a message to a handler
+		/// </summary>
 		public void Bind<TMessage, THandler>()
 		{
 			var msg = typeof(TMessage);
@@ -59,6 +81,9 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			listenerBindings[msg].Add(handler);
 		}
 
+		/// <summary>
+		/// Send a message to appropriate handlers
+		/// </summary>
 		public void Send<T>(T message) where T : IMessage
 		{
 			var hooks = ObjectFactory.GetAllInstances<IEventHook>();
@@ -105,19 +130,22 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			}
 		}
 
+		/// <summary>
+		/// Remove bindings for the given handler
+		/// </summary>
 		public void Unregister<T>()
 		{
-            lock (listenerBindings)
-            {
-	            foreach (var kvp in listenerBindings)
-	            {
-                    if ( kvp.Value.Any(t => t == typeof(T)) )
-                    {
-	                    var newList = kvp.Value.Where(t => t != typeof (T)).ToList();
-	                    listenerBindings[kvp.Key] = newList;
-                    }
-	            }
-            }
+			lock (listenerBindings)
+			{
+				foreach (var kvp in listenerBindings)
+				{
+					if (kvp.Value.Any(t => t == typeof(T)))
+					{
+						var newList = kvp.Value.Where(t => t != typeof(T)).ToList();
+						listenerBindings[kvp.Key] = newList;
+					}
+				}
+			}
 		}
 	}
 

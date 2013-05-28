@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.Routing
 	}
 
 	/// <summary>
-	/// Auto generator that produces unique names every time it is called
+	/// Auto generator that produces unique name for a given installation of a service
 	/// </summary>
 	public interface IUniqueEndpointGenerator : IEndpointGenerator {}
 }

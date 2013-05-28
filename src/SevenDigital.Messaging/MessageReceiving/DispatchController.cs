@@ -4,15 +4,24 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.MessageReceiving
 {
+	/// <summary>
+	/// Standard dispatch controller for messaging
+	/// </summary>
 	public class DispatchController:IDispatchController
 	{
 		readonly IList<IDestinationPoller> pollers;
 
+		/// <summary>
+		/// Create a dispatch controller
+		/// </summary>
 		public DispatchController()
 		{
 			pollers = new List<IDestinationPoller>();
 		}
 
+		/// <summary>
+		/// Create a poller for a given destination name
+		/// </summary>
 		public IDestinationPoller CreatePoller(string destinationName)
 		{
 			var poller = ObjectFactory.GetInstance<IDestinationPoller>();
@@ -21,6 +30,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 			return poller;
 		}
 
+		/// <summary>
+		/// Stop polling
+		/// </summary>
 		public void Shutdown()
 		{
 // ReSharper disable RedundantJumpStatement

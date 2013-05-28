@@ -4,10 +4,16 @@ using SignalHandling;
 
 namespace SevenDigital.Messaging
 {
+	/// <summary>
+	/// Utility for setting up the termination cooldown event handler
+	/// </summary>
 	public class Cooldown
 	{
 		static int calls;
 
+		/// <summary>
+		/// Activate cooldown capture for this process
+		/// </summary>
 		public static void Activate()
 		{
 			if (Interlocked.CompareExchange(ref calls, 1, 0) == 0)
