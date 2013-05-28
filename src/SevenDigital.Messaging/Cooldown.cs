@@ -19,7 +19,7 @@ namespace SevenDigital.Messaging
 		static void Instance_TerminateEvent(object sender, TerminateEventArgs args)
 		{
 			Console.WriteLine("Waiting for all handlers to exit");
-			new MessagingConfiguration().Shutdown();
+			Messaging.Control.Shutdown();
 			Console.WriteLine("All handlers done. Exiting");
 			Environment.Exit(0);
 		}
