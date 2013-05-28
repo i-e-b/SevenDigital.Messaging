@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DispatchSharp</id>
+    <version>0.0.1</version>
+    <title>DispatchSharp</title>
+    <authors>iainb</authors>
+    <owners>iainb</owners>
+    <projectUrl>https://github.com/i-e-b/DispatchSharp</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An experimental library to make multi-threaded dispatch code more testable.
+
+Models a job dispatch pattern and provides both threaded and non threaded implementations.</description>
+    <summary>An experimental library to make multi-threaded dispatch code more testable</summary>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>threading tdd</tags>
+  </metadata>
+</package>

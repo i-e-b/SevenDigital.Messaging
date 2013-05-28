@@ -1,5 +1,3 @@
-using SevenDigital.Messaging.MessageSending;
-
 namespace SevenDigital.Messaging
 {
 	public interface INodeFactory
