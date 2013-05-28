@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using NUnit.Framework;
-using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 {
@@ -12,16 +11,16 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		ISenderNode sender;
 
 		[SetUp]
-        public void SetUp()
-        {
+		public void SetUp()
+		{
 			Helper.SetupTestMessaging();
-			new MessagingConfiguration().ClearEventHooks();
-            nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-			sender = ObjectFactory.GetInstance<ISenderNode>();
-        }
+			Messaging.Events.ClearEventHooks();
+			nodeFactory = Messaging.Receiver();
+			sender = Messaging.Sender();
+		}
 
 		[Test]
-		public void should_be_able_to_send_and_receive_1000_messages_per_minute ()
+		public void should_be_able_to_send_and_receive_1000_messages_per_minute()
 		{
 			using (var listener = nodeFactory.TakeFrom("ping-pong-endpoint"))
 			{
@@ -31,7 +30,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 				sender.SendMessage(new PingMessage());
 
 				var result = PongHandler.Trigger.WaitOne(TimeSpan.FromSeconds(60));
-				Assert.True(result, "Only got "+(PongHandler.Count * 2)+" in a minute");
+				Assert.True(result, "Only got " + (PongHandler.Count * 2) + " in a minute");
 			}
 		}
 	}
@@ -63,7 +62,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		}
 	}
 
-	public class PingMessage:IPing
+	public class PingMessage : IPing
 	{
 		public PingMessage()
 		{
@@ -87,7 +86,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		}
 	}
 
-	public class PongMessage:IPong
+	public class PongMessage : IPong
 	{
 		public PongMessage()
 		{
@@ -96,11 +95,11 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		public Guid CorrelationId { get; set; }
 	}
 
-	public interface IPong:IMessage
+	public interface IPong : IMessage
 	{
 	}
 
-	public interface IPing:IMessage
+	public interface IPing : IMessage
 	{
 	}
 }

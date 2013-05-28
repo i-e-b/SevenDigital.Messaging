@@ -4,7 +4,6 @@ using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
@@ -22,9 +21,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Setup()
 		{
 			Helper.SetupTestMessaging();
-			ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
-			nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-			senderNode = ObjectFactory.GetInstance<ISenderNode>();
+			Messaging.Events.AddEventHook<ConsoleEventHook>();
+			nodeFactory = Messaging.Receiver();
+			senderNode = Messaging.Sender();
 		}
 
 		[Test]
@@ -45,6 +44,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { Messaging.Control.Shutdown(); }
 	}
 }

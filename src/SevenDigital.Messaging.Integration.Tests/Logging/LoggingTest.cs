@@ -9,14 +9,14 @@ namespace SevenDigital.Messaging.Integration.Tests.Logging
 	public class LoggingTest
 	{
 		[Test, Explicit]
-		public void Logging_works ()
+		public void Logging_works()
 		{
-			new MessagingConfiguration().WithDefaults();
+			Messaging.Configure.WithDefaults();
 			var mbase = ObjectFactory.GetInstance<IMessagingBase>();
 
-            while (mbase.GetMessage<ILogMessage>("WarningLog") != null)
-            {
-            }
+			while (mbase.GetMessage<ILogMessage>("WarningLog") != null)
+			{
+			}
 
 			Log.Warning("This is a warning message");
 

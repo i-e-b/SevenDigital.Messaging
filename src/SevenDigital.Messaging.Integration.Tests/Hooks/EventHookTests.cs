@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		Mock<IEventHook> mock_event_hook;
-	    private ISenderNode senderNode;
+		private ISenderNode senderNode;
 
 		[TestFixtureSetUp]
 		public void StartMessaging()
@@ -32,24 +32,24 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			mock_event_hook = new Mock<IEventHook>();
 
-			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));
+			ObjectFactory.Configure(map => map.For<IEventHook>().Use(mock_event_hook.Object));
 
-			node_factory = ObjectFactory.GetInstance<INodeFactory>();
-            senderNode = ObjectFactory.GetInstance<ISenderNode>();
+			node_factory = Messaging.Receiver();
+			senderNode = Messaging.Sender();
 		}
-        
+
 		[Test]
 		public void Sender_should_trigger_event_hook_with_message_when_sending()
 		{
 			var message = new GreenMessage();
-			
+
 			senderNode.SendMessage(message);
 
 			mock_event_hook.Verify(h => h.MessageSent(message));
 		}
-		
+
 		[Test]
-		public void Should_trigger_event_hook_with_message_when_receiving_a_message ()
+		public void Should_trigger_event_hook_with_message_when_receiving_a_message()
 		{
 			var message = new GreenMessage();
 			using (var receiverNode = node_factory.Listen())
@@ -60,7 +60,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				Assert.That(ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval));
 
-			} 
+			}
 			ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
 			lock (mock_event_hook)
 			{
@@ -87,7 +87,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
-		public void Every_handler_should_trigger_event_hook ()
+		public void Every_handler_should_trigger_event_hook()
 		{
 			using (var receiverNode = node_factory.Listen())
 			{
@@ -100,22 +100,22 @@ namespace SevenDigital.Messaging.Integration.Tests
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 				AnotherColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-				mock_event_hook.Verify(h=>h.MessageReceived(It.Is<IMessage>(im=> im.CorrelationId == message.CorrelationId)),
+				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IMessage>(im => im.CorrelationId == message.CorrelationId)),
 					Times.Exactly(2));
 			}
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { Messaging.Control.Shutdown(); }
 	}
 
-	public class GenericHandler:IHandle<IMessage>
+	public class GenericHandler : IHandle<IMessage>
 	{
-        public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
+		public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
 
-        public void Handle(IMessage message)
-        {
-            AutoResetEvent.Set();
-        }
+		public void Handle(IMessage message)
+		{
+			AutoResetEvent.Set();
+		}
 	}
 }

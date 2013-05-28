@@ -8,19 +8,19 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 {
-	[TestFixture, Explicit]
+	[TestFixture, Explicit, Ignore("This behaviour is going to be replaced")]
 	public class UnreachableEndpointTests
 	{
 		[SetUp]
 		public void Messaging_configured_to_point_at_an_unreachable_server()
 		{
-			new MessagingConfiguration().WithDefaults().WithMessagingServer("complete rubbish!");
+			Messaging.Configure.WithDefaults().SetMessagingServer("complete rubbish!");
 		}
 
 		[TearDown]
 		public void teardown()
 		{
-			new MessagingConfiguration().Shutdown();
+			Messaging.Control.Shutdown();
 			ObjectFactory.EjectAllInstancesOf<ISleepWrapper>();
 			ObjectFactory.EjectAllInstancesOf<IMessagingHost>();
 			ObjectFactory.EjectAllInstancesOf<IRabbitMqConnection>();
@@ -45,7 +45,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			}
 
 			var time = DateTime.Now - start;
-			Assert.That(countingWrapper.total, Is.GreaterThanOrEqualTo(60000));
+			Assert.That(time.TotalSeconds, Is.GreaterThanOrEqualTo(60));
 		}
 	}
 

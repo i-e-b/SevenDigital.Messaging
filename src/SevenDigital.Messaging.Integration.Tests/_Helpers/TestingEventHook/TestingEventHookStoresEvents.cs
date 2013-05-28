@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.Integration.Tests.TestingEventHook
 		[SetUp]
 		public void With_loopback_messaging_and_the_testing_event_hook_added ()
 		{
-			new MessagingConfiguration().WithLoopback();
+			Messaging.Configure.WithLoopbackMode();
 
 			subject = ObjectFactory.GetInstance<ITestEventHook>();
 			
@@ -31,8 +31,8 @@ namespace SevenDigital.Messaging.Integration.Tests.TestingEventHook
 			expected_received_messages = expected_sent_messages.Where(m => m is ILevelTwo).ToList();
 			expected_handler_exceptions = expected_sent_messages.OfType<ILevelThree>().Select(m=>m.TheException).ToList();
 
-			var listener = ObjectFactory.GetInstance<INodeFactory>().Listen();
-			var sender = ObjectFactory.GetInstance<ISenderNode>();
+			var listener = Messaging.Receiver().Listen();
+			var sender = Messaging.Sender();
 
 			// add handler for subset of messages
 			listener.Handle<ILevelTwo>().With<L2Handler>();

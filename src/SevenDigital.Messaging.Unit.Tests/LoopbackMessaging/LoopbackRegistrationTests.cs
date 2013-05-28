@@ -11,7 +11,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		{
 			Messaging.Configure.WithLoopbackMode();
 
-			ObjectFactory.GetInstance<INodeFactory>().Listen().Handle<IMessage>().With<AHandler>();
+			Messaging.Receiver().Listen().Handle<IMessage>().With<AHandler>();
 		}
 
 		[Test]

@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		private INodeFactory _nodeFactory;
 
 		[SetUp]
-		public void When_configuring_with_loopback_even_if_default_configuration_used_afterwards()
+		public void When_configuring_with_loopback_and_default_configuration_used_afterwards()
 		{
 			Messaging.Configure.WithLoopbackMode();
 
@@ -24,8 +24,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 
 			ResetHandlers();
 
-			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-			_senderNode = ObjectFactory.GetInstance<ISenderNode>();
+			_nodeFactory = Messaging.Receiver();
+			_senderNode = Messaging.Sender();
 		}
 
 		static void ResetHandlers()
