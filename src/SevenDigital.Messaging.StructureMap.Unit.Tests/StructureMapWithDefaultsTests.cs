@@ -99,12 +99,6 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
-		public void Should_have_sender_name_generator_instance()
-		{
-			Assert.That(ObjectFactory.GetInstance<ISenderEndpointGenerator>(), Is.InstanceOf<SenderEndpointGenerator>());
-		}
-
-		[Test]
 		public void Should_get_no_event_hook_implementations_by_default()
 		{
 			Assert.That(ObjectFactory.GetAllInstances<IEventHook>(), Is.Empty);

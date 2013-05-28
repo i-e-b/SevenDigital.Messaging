@@ -230,7 +230,6 @@ namespace SevenDigital.Messaging
 			{
 				map.For<IMessagingHost>().Use(() => new Host("localhost"));
 				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
-				map.For<ISenderEndpointGenerator>().Use<SenderEndpointGenerator>();
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IDestinationPoller>().Use<DestinationPoller>();
 				map.For<IMessageDispatcher>().Use<MessageDispatcher>();

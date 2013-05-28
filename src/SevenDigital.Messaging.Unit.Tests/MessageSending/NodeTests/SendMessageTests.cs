@@ -3,7 +3,6 @@ using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.MessageSending;
-using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 {
@@ -17,9 +16,6 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeTests
 		public void SetUp()
 		{
 			_messageDispatch = new Mock<IMessagingBase>();
-
-			var endpointGenerator = new Mock<ISenderEndpointGenerator>();
-			endpointGenerator.Setup(g => g.Generate()).Returns(new Endpoint("endpoint"));
 
 			_subject = new SenderNode(_messageDispatch.Object);
 		}
