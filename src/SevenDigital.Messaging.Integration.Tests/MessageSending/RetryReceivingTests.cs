@@ -30,9 +30,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void SetUp()
 		{
 			Helper.SetupTestMessaging();
-			ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
-			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-			_senderNode = ObjectFactory.GetInstance<ISenderNode>();
+			Messaging.Events.AddEventHook<ConsoleEventHook>();
+			_nodeFactory = Messaging.Receiver();
+			_senderNode = Messaging.Sender();
 		}
 
 		[Test]
@@ -75,7 +75,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { Messaging.Control.Shutdown(); }
 
 
 		[RetryMessage(typeof(IOException))]

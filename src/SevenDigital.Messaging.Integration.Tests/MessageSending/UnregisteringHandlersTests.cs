@@ -3,7 +3,6 @@ using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 {
@@ -20,37 +19,37 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		public void SetUp()
 		{
 			Helper.SetupTestMessaging();
-			ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
-			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-			_senderNode = ObjectFactory.GetInstance<ISenderNode>();
+			Messaging.Events.AddEventHook<ConsoleEventHook>();
+			_nodeFactory = Messaging.Receiver();
+			_senderNode = Messaging.Sender();
 		}
 
 		[Test]
-		public void can_deregister_a_handler_causing_no_further_messages_to_be_processed ()
+		public void can_deregister_a_handler_causing_no_further_messages_to_be_processed()
 		{
-            UnregisterSample.handledTimes = 0;
+			UnregisterSample.handledTimes = 0;
 			using (var receiverNode = _nodeFactory.Listen())
 			{
 				receiverNode.Handle<IColourMessage>().With<UnregisterSample>();
 				_senderNode.SendMessage(new RedMessage());
 
-                Thread.Sleep(250);
+				Thread.Sleep(250);
 				receiverNode.Unregister<UnregisterSample>();
-                Thread.Sleep(50);
+				Thread.Sleep(50);
 				_senderNode.SendMessage(new RedMessage());
 
-                Thread.Sleep(250);
+				Thread.Sleep(250);
 				Assert.That(UnregisterSample.handledTimes, Is.EqualTo(1));
-                
+
 				receiverNode.Handle<IColourMessage>().With<UnregisterSample>();
 				_senderNode.SendMessage(new RedMessage());
-                Thread.Sleep(250);
+				Thread.Sleep(250);
 				Assert.That(UnregisterSample.handledTimes, Is.EqualTo(2));
 			}
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { Messaging.Control.Shutdown(); }
 
 
 		public class UnregisterSample : IHandle<IColourMessage>
@@ -59,7 +58,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 
 			public void Handle(IColourMessage message)
 			{
-                Interlocked.Increment(ref handledTimes);
+				Interlocked.Increment(ref handledTimes);
 			}
 		}
 

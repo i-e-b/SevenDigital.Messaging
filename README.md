@@ -18,7 +18,7 @@ Getting Started: Path of least resistance
 
 Configure messaging:
 ```csharp
-new MessagingConfiguration().WithDefaults().WithMessagingServer("localhost");
+Messaging.Configure.WithDefaults().WithMessagingServer("localhost");
 ```
 
 Define a message:
@@ -46,24 +46,25 @@ public class MyHandler : IHandle<IExampleMessage> {
 Register handler with listener:
 ```csharp
 // Spawns sets of background threads to handle incoming messages
-var node = ObjectFactory.GetInstance<INodeFactory>().Listen();
-node.Handle<IExampleMessage>().With<MyHandler>();
-
-while (true) {Thread.Sleep(1000);}
-
-node.Dispose();
+using (var node = Messaging.Receiver().Listen()) {
+	node.Handle<IExampleMessage>().With<MyHandler>();
+	
+	while (true) {Thread.Sleep(1000);}
+	
+}
+Messaging.Control.Shutdown();
 ```
 
 Send some messages:
 ```csharp
-ObjectFactory.GetInstance<ISenderNode>().SendMessage(new MyExample{Hello = "World"});
+Messaging.Sender().SendMessage(new MyExample{Hello = "World"});
 ```
 
 Notes
 -----
-* Use ObjectFactory to get a new `INodeFactory` instance
+* Messaging.Receiver() to get a new `INodeFactory` instance (this uses StructureMap under the hood)
 * Creating listener nodes takes time and resources. Do it infrequently -- usually once at the start of your app.
-* Your handler will get `new()`'d for every message. Don't do heavy things in the handler!
+* Your handler will get `new()`'d for every message. Don't do anything complex in the handler constructor!
 * To listen to messages, `factory.Listener().Handle<IMyMessageInterface>().With<MyHandlerType>()`
 * Each listener can handle any number of message => handler pairs, and a message can have more than one handler (they all fire in parallel)
 

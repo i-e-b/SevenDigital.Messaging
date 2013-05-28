@@ -3,7 +3,6 @@ using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
@@ -11,10 +10,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 	public class FailingEventHookTests
 	{
 		INodeFactory node_factory;
-	    private ISenderNode senderNode;
+		private ISenderNode senderNode;
 
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
-		
+
 		[TestFixtureSetUp]
 		public void StartMessaging()
 		{
@@ -24,14 +23,14 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			node_factory = ObjectFactory.GetInstance<INodeFactory>();
-            senderNode = ObjectFactory.GetInstance<ISenderNode>();
+			node_factory = Messaging.Receiver();
+			senderNode = Messaging.Sender();
 		}
 
 		[Test]
 		public void Should_trigger_all_event_hooks_with_message_when_sending_and_receiving_a_message()
 		{
-			new MessagingConfiguration()
+			Messaging.Events
 				.AddEventHook<FailingHook>()
 				.AddEventHook<SucceedingHook>();
 
@@ -40,7 +39,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var message = new GreenMessage();
 
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-				
+
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
@@ -51,7 +50,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { Messaging.Control.Shutdown(); }
 	}
 
 

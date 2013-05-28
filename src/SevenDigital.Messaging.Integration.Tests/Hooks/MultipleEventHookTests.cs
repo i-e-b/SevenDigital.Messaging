@@ -3,7 +3,6 @@ using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
@@ -11,11 +10,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 	public class MultipleEventHookTests
 	{
 		INodeFactory node_factory;
-	    private ISenderNode senderNode;
+		private ISenderNode senderNode;
 
-	    protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
+		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
-		
+
 		[TestFixtureSetUp]
 		public void StartMessaging()
 		{
@@ -25,14 +24,14 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			node_factory = ObjectFactory.GetInstance<INodeFactory>();
-            senderNode = ObjectFactory.GetInstance<ISenderNode>();
+			node_factory = Messaging.Receiver();
+			senderNode = Messaging.Sender();
 		}
 
 		[Test]
 		public void Should_trigger_all_event_hooks_with_message_when_sending_and_receiving_a_message()
 		{
-			new MessagingConfiguration()
+			Messaging.Events
 				.AddEventHook<WaitingHookOne>()
 				.AddEventHook<WaitingHookTwo>();
 
@@ -41,7 +40,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var message = new GreenMessage();
 
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-				
+
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -54,9 +53,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
-		public void Should_not_trigger_any_event_hooks_when_hooks_have_been_cleared ()
+		public void Should_not_trigger_any_event_hooks_when_hooks_have_been_cleared()
 		{
-			new MessagingConfiguration().ClearEventHooks();
+			Messaging.Events.ClearEventHooks();
 
 			using (var receiverNode = node_factory.Listen())
 			{
@@ -75,7 +74,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { Messaging.Control.Shutdown(); }
 
 		public class WaitingHookOne : IEventHook
 		{
@@ -92,7 +91,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				ReceivedEvent.Set();
 			}
 
-			public void HandlerFailed(IMessage message, Type handler, Exception ex){}
+			public void HandlerFailed(IMessage message, Type handler, Exception ex) { }
 		}
 		public class WaitingHookTwo : IEventHook
 		{
@@ -108,7 +107,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				ReceivedEvent.Set();
 			}
-			public void HandlerFailed(IMessage message, Type handler, Exception ex){}
+			public void HandlerFailed(IMessage message, Type handler, Exception ex) { }
 		}
 	}
 }

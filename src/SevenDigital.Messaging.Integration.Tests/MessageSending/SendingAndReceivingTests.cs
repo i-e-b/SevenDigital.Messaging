@@ -7,23 +7,23 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
-    [TestFixture]
-    public class SendingAndReceivingTests
-    {
-        INodeFactory _nodeFactory;
-        private ISenderNode _senderNode;
+	[TestFixture]
+	public class SendingAndReceivingTests
+	{
+		INodeFactory _nodeFactory;
+		private ISenderNode _senderNode;
 
-        protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(20); } }
-        protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
+		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(20); } }
+		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
-        [SetUp]
-        public void SetUp()
-        {
+		[SetUp]
+		public void SetUp()
+		{
 			Helper.SetupTestMessaging();
-            ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
-            _nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-            _senderNode = ObjectFactory.GetInstance<ISenderNode>();
-        }
+			ObjectFactory.Configure(map => map.For<IEventHook>().Use<ConsoleEventHook>());
+			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
+			_senderNode = ObjectFactory.GetInstance<ISenderNode>();
+		}
 
 		[Test]
 		public void Handler_should_react_for_all_message_types_it_is_handling()
@@ -45,139 +45,139 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 		}
 
-	    [Test]
-        public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
-        {
-            using (var receiverNode = _nodeFactory.Listen())
-            {
-                receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
+		[Test]
+		public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
+		{
+			using (var receiverNode = _nodeFactory.Listen())
+			{
+				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
 
-                _senderNode.SendMessage(new RedMessage());
+				_senderNode.SendMessage(new RedMessage());
 
-                var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
-                Assert.That(colourSignal, Is.True);
-            }
-        }
+				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				Assert.That(colourSignal, Is.True);
+			}
+		}
 
-        [Test]
-        public void Handler_should_react_when_a_registered_message_type_is_received_for_named_endpoint()
-        {
-            using (var receiverNode = _nodeFactory.TakeFrom(new Endpoint("registered-message-endpoint")))
-            {
-                receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
+		[Test]
+		public void Handler_should_react_when_a_registered_message_type_is_received_for_named_endpoint()
+		{
+			using (var receiverNode = _nodeFactory.TakeFrom(new Endpoint("registered-message-endpoint")))
+			{
+				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-                _senderNode.SendMessage(new RedMessage());
-                var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				_senderNode.SendMessage(new RedMessage());
+				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-                Assert.That(colourSignal, Is.True);
+				Assert.That(colourSignal, Is.True);
 
-            }
-        }
+			}
+		}
 
-        [Test]
-        public void Handler_should_get_message_with_proper_correlation_id()
-        {
-            using (var receiverNode = _nodeFactory.Listen())
-            {
-                var message = new GreenWhiteMessage();
+		[Test]
+		public void Handler_should_get_message_with_proper_correlation_id()
+		{
+			using (var receiverNode = _nodeFactory.Listen())
+			{
+				var message = new GreenWhiteMessage();
 				TwoColourMessageHandler.Prepare();
-                receiverNode.Handle<ITwoColoursMessage>().With<TwoColourMessageHandler>();
+				receiverNode.Handle<ITwoColoursMessage>().With<TwoColourMessageHandler>();
 
 
-                _senderNode.SendMessage(message);
-                var colourSignal = TwoColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+				_senderNode.SendMessage(message);
+				var colourSignal = TwoColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
-                Assert.That(colourSignal, Is.True, "Did not get message!");
-                Assert.That(TwoColourMessageHandler.ReceivedMessage.CorrelationId, Is.EqualTo(message.CorrelationId));
-            }
-        }
+				Assert.That(colourSignal, Is.True, "Did not get message!");
+				Assert.That(TwoColourMessageHandler.ReceivedMessage.CorrelationId, Is.EqualTo(message.CorrelationId));
+			}
+		}
 
-        [Test]
-        public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_unnamed_endpoint()
-        {
-            using (var receiverNode = _nodeFactory.Listen())
-            {
-                receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
+		[Test]
+		public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_unnamed_endpoint()
+		{
+			using (var receiverNode = _nodeFactory.Listen())
+			{
+				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-                _senderNode.SendMessage(new JokerMessage());
-                var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+				_senderNode.SendMessage(new JokerMessage());
+				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
-                Assert.That(colourSignal, Is.False);
+				Assert.That(colourSignal, Is.False);
 
-            }
-        }
+			}
+		}
 
-        [Test]
-        public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_named_endpoint()
-        {
+		[Test]
+		public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_named_endpoint()
+		{
 			ColourMessageHandler.AutoResetEvent.Reset();
-            using (var receiverNode = _nodeFactory.TakeFrom(new Endpoint("unregistered-message-endpoint")))
-            {
-                receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
+			using (var receiverNode = _nodeFactory.TakeFrom(new Endpoint("unregistered-message-endpoint")))
+			{
+				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-                _senderNode.SendMessage(new JokerMessage());
-                var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+				_senderNode.SendMessage(new JokerMessage());
+				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
-                Assert.That(colourSignal, Is.False);
+				Assert.That(colourSignal, Is.False);
 
-            }
-        }
+			}
+		}
 
-        [Test]
-        public void Only_one_handler_should_fire_when_competing_for_an_endpoint()
-        {
-            using (var namedReceiverNode1 = _nodeFactory.TakeFrom(new Endpoint("shared-endpoint")))
-            using (var namedReceiverNode2 = _nodeFactory.TakeFrom(new Endpoint("shared-endpoint")))
-            {
-                namedReceiverNode1.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
-                namedReceiverNode2.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
+		[Test]
+		public void Only_one_handler_should_fire_when_competing_for_an_endpoint()
+		{
+			using (var namedReceiverNode1 = _nodeFactory.TakeFrom(new Endpoint("shared-endpoint")))
+			using (var namedReceiverNode2 = _nodeFactory.TakeFrom(new Endpoint("shared-endpoint")))
+			{
+				namedReceiverNode1.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
+				namedReceiverNode2.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
-                _senderNode.SendMessage(new BatmanMessage());
-                var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
-                var villanSignal = VillainMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+				_senderNode.SendMessage(new BatmanMessage());
+				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+				var villanSignal = VillainMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
-                Assert.That(superheroSignal || villanSignal, Is.True);
-                Assert.That(superheroSignal && villanSignal, Is.False);
+				Assert.That(superheroSignal || villanSignal, Is.True);
+				Assert.That(superheroSignal && villanSignal, Is.False);
 
-            }
-        }
+			}
+		}
 
-        [Test]
-        public void Should_use_all_registered_handlers_when_a_message_is_received()
-        {
-            using (var receiverNode = _nodeFactory.Listen())
-            {
-                receiverNode.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
-                receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
+		[Test]
+		public void Should_use_all_registered_handlers_when_a_message_is_received()
+		{
+			using (var receiverNode = _nodeFactory.Listen())
+			{
+				receiverNode.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
+				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
-                _senderNode.SendMessage(new JokerMessage());
-                var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
-                var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				_senderNode.SendMessage(new JokerMessage());
+				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-                Assert.That(superheroSignal, Is.True);
-                Assert.That(villainSignal, Is.True);
+				Assert.That(superheroSignal, Is.True);
+				Assert.That(villainSignal, Is.True);
 
-            }
-        }
+			}
+		}
 
-        [Test]
-        public void Handler_which_sends_a_new_message_should_get_that_message_handled()
-        {
-            using (var receiverNode = _nodeFactory.Listen())
-            {
-                receiverNode.Handle<IColourMessage>().With<ChainHandler>();
-                receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
+		[Test]
+		public void Handler_which_sends_a_new_message_should_get_that_message_handled()
+		{
+			using (var receiverNode = _nodeFactory.Listen())
+			{
+				receiverNode.Handle<IColourMessage>().With<ChainHandler>();
+				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
-                _senderNode.SendMessage(new GreenMessage());
-                var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				_senderNode.SendMessage(new GreenMessage());
+				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-                Assert.That(villainSignal, Is.True);
-            }
-        }
+				Assert.That(villainSignal, Is.True);
+			}
+		}
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { Messaging.Control.Shutdown(); }
 
-    }
+	}
 }

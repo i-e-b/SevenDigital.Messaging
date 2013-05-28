@@ -9,11 +9,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class PurgingQueues
 	{
-        INodeFactory _nodeFactory;
-        private ISenderNode _senderNode;
-		
-	    protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
-        protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
+		INodeFactory _nodeFactory;
+		private ISenderNode _senderNode;
+
+		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
+		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		[TestFixtureSetUp]
 		public void StartMessaging()
@@ -21,32 +21,33 @@ namespace SevenDigital.Messaging.Integration.Tests
 			Helper.SetupTestMessaging();
 		}
 
-        [SetUp]
-        public void SetUp()
-        {
-            _nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
-            _senderNode = ObjectFactory.GetInstance<ISenderNode>();
+		[SetUp]
+		public void SetUp()
+		{
+			_nodeFactory = Messaging.Receiver();
+			_senderNode = Messaging.Sender();
 
-			using (var l = _nodeFactory.Listen()){
+			using (var l = _nodeFactory.Listen())
+			{
 				l.Handle<IColourMessage>().With<ColourMessageHandler>();
 			}
 			_senderNode.SendMessage(new GreenMessage());
-        }
+		}
 
 		[Test]
 		public void Should_not_get_messages_waiting_on_queue_when_starting_a_new_listener()
 		{
 			ColourMessageHandler.AutoResetEvent.Reset();
 			using (var receiverNode = _nodeFactory.Listen())
-            {
-                receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
+			{
+				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
-                var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
-                Assert.That(colourSignal, Is.False);
-            }
+				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+				Assert.That(colourSignal, Is.False);
+			}
 		}
 
 		[TestFixtureTearDown]
-		public void Stop() { new MessagingConfiguration().Shutdown(); }
+		public void Stop() { Messaging.Control.Shutdown(); }
 	}
 }

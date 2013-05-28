@@ -17,8 +17,8 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		public void SetUp()
 		{
 			Helper.SetupTestMessagingWithoutPurging();
-			new MessagingConfiguration().ClearEventHooks();
-			_nodeFactory = ObjectFactory.GetInstance<INodeFactory>();
+			Messaging.Events.ClearEventHooks();
+			_nodeFactory = Messaging.Receiver();
 		}
 
 		[Test]
