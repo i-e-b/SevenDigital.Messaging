@@ -18,7 +18,7 @@ Getting Started: Path of least resistance
 
 Configure messaging:
 ```csharp
-MessagingSystem.Configure.WithDefaults().WithMessagingServer("localhost");
+MessagingSystem.Configure.WithDefaults();
 ```
 
 Define a message:
