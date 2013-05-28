@@ -5,13 +5,22 @@ using System.Reflection;
 
 namespace SevenDigital.Messaging.Routing
 {
+	/// <summary>
+	/// Utilities for naming endpoints
+	/// </summary>
 	public static class Naming
 	{
+		/// <summary>
+		/// Best effort name for the current running assembly
+		/// </summary>
 		public static string GoodAssemblyName()
 		{
 			return ( Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly()).GetName().Name;
 		}
 
+		/// <summary>
+		/// Best effort at reading the host machine's MAC address
+		/// </summary>
 		public static string GetMacAddress()
 		{
 			const int minMacAddrLength = 12;
@@ -28,6 +37,9 @@ namespace SevenDigital.Messaging.Routing
 			return macAddress;
 		}
 
+		/// <summary>
+		/// The current host machine name, with only alpha-numeric characters
+		/// </summary>
 		public static string MachineName ()
 		{
 			var sb = new StringBuilder ();

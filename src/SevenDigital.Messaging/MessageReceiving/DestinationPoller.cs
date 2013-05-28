@@ -25,6 +25,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 		internal static volatile int TaskLimit = 4;
 		readonly HashSet<Type> _boundMessageTypes;
 
+		/// <summary>
+		/// Create a poller
+		/// </summary>
 		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageDispatcher dispatcher)
 		{
 			_boundMessageTypes = new HashSet<Type>();
@@ -33,12 +36,18 @@ namespace SevenDigital.Messaging.MessageReceiving
 			this.dispatcher = dispatcher;
 		}
 
+		/// <summary>
+		/// Set target destinaton
+		/// </summary>
 		public void SetDestinationToWatch(string targetDestination)
 		{
 			destination = targetDestination;
 		}
 
-		public void PollingMethod()
+		/// <summary>
+		/// Inner polling method called by runner thread
+		/// </summary>
+		void PollingMethod()
 		{
 			while (running)
 			{
@@ -86,6 +95,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 			}
 		}
 
+		/// <summary>
+		/// Start polling
+		/// </summary>
 		public void Start()
 		{
 			lock (this)
@@ -101,7 +113,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 			}
 		}
 
-		public bool TryStartRunning()
+		bool TryStartRunning()
 		{
 			var original = Interlocked.CompareExchange(ref runningExch, -1, 0);
 			if (original == 0)
@@ -112,12 +124,15 @@ namespace SevenDigital.Messaging.MessageReceiving
 			return false;
 		}
 
-		public void StopRunning()
+		void StopRunning()
 		{
 			running = false;
 			runningExch = 0;
 		}
 
+		/// <summary>
+		/// Stop polling
+		/// </summary>
 		public void Stop()
 		{
 			StopPollingThread();
@@ -144,6 +159,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 			}
 		}
 
+		/// <summary>
+		/// Add a message/handler binding
+		/// </summary>
 		public void AddHandler<TMessage, THandler>()
 			where TMessage : class, IMessage
 			where THandler : IHandle<TMessage>
@@ -160,11 +178,17 @@ namespace SevenDigital.Messaging.MessageReceiving
 			}
 		}
 
+		/// <summary>
+		/// Remove a handler from all message bindings
+		/// </summary>
 		public void RemoveHandler<THandler>()
 		{
 			dispatcher.RemoveHandler<THandler>();
 		}
 
+		/// <summary>
+		/// Count of handlers bound
+		/// </summary>
 		public int HandlerCount
 		{
 			get

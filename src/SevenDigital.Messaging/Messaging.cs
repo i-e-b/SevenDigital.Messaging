@@ -29,9 +29,9 @@ namespace SevenDigital.Messaging
 		public static readonly IMessagingEventOptions Events = new SDM_Events();
 
 		/// <summary>
-		/// Options for setting test modes and inspecting test data
+		/// Options for inspecting test data
 		/// </summary>
-		public static readonly IMessagingTestOptions Testing = new SDM_Testing();
+		public static readonly IMessagingLoopbackInformation Testing = new SDM_Testing();
 
 		/// <summary>
 		/// Runtime controls for the messaging system
@@ -80,7 +80,9 @@ namespace SevenDigital.Messaging
 		}
 	}
 
-
+	/// <summary>
+	/// Control methods for a running messaging system
+	/// </summary>
 	public interface IMessagingControl
 	{
 		/// <summary>
@@ -101,7 +103,10 @@ namespace SevenDigital.Messaging
 		void Pause();
 	}
 
-	public interface IMessagingTestOptions
+	/// <summary>
+	/// Messaging system loopback mode information
+	/// </summary>
+	public interface IMessagingLoopbackInformation
 	{
 		/// <summary>
 		/// Return a set of all events (send, received, errors) since loopback mode was configured
@@ -114,12 +119,25 @@ namespace SevenDigital.Messaging
 		IList<Type> LoopbackListenersForMessage<T>();
 	}
 
+	/// <summary>
+	/// Event hook options
+	/// </summary>
 	public interface IMessagingEventOptions
 	{
+		/// <summary>
+		/// Remove all event hooks
+		/// </summary>
 		IMessagingEventOptions ClearEventHooks();
+
+		/// <summary>
+		/// Add an event hook.
+		/// </summary>
 		IMessagingEventOptions AddEventHook<T>() where T : IEventHook;
 	}
 
+	/// <summary>
+	/// Initial configuration options for messaging
+	/// </summary>
 	public interface IMessagingConfigure
 	{
 		/// <summary>
@@ -138,6 +156,9 @@ namespace SevenDigital.Messaging
 		void WithLoopbackMode();
 	}
 
+	/// <summary>
+	/// Optional configuration for messaging
+	/// </summary>
 	public interface IMessagingConfigureOptions
 	{
 		/// <summary>
@@ -198,7 +219,7 @@ namespace SevenDigital.Messaging
 		}
 	}
 
-	class SDM_Testing : IMessagingTestOptions
+	class SDM_Testing : IMessagingLoopbackInformation
 	{
 		public ITestEventHook LoopbackEvents()
 		{

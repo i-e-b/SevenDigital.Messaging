@@ -6,7 +6,14 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// </summary>
 	public interface IDispatchController
 	{
+		/// <summary>
+		/// Create a poller for a given destination name
+		/// </summary>
 		IDestinationPoller CreatePoller(string destinationName);
+
+		/// <summary>
+		/// Stop polling
+		/// </summary>
 		void Shutdown();
 	}
 }
