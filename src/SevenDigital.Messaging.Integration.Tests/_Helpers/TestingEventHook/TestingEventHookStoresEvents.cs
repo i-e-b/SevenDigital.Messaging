@@ -19,6 +19,7 @@ namespace SevenDigital.Messaging.Integration.Tests.TestingEventHook
 		public void With_loopback_messaging_and_the_testing_event_hook_added ()
 		{
 			Messaging.Configure.WithLoopbackMode();
+			Messaging.Testing.LoopbackEvents().Reset();
 
 			subject = ObjectFactory.GetInstance<ITestEventHook>();
 			
