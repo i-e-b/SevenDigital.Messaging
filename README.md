@@ -55,6 +55,16 @@ using (var node = MessagingSystem.Receiver().Listen()) {
 MessagingSystem.Control.Shutdown();
 ```
 
+Register for load balanced: (if the named queue doesn't exist, it will be created automatically)
+```csharp
+using (var node = MessagingSystem.Receiver().TakeFrom("MessageQueueName")) {
+	node.Handle<IExampleMessage>().With<MyHandler>();
+	
+.
+.
+.
+```
+
 Send some messages:
 ```csharp
 MessagingSystem.Sender().SendMessage(new MyExample{Hello = "World"});
