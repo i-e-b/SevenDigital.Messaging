@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 	[TestFixture]
 	public class UnregisteringHandlersTests
 	{
-		INodeFactory _nodeFactory;
+		IReceiver _receiver;
 		private ISenderNode _senderNode;
 
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(20); } }
@@ -20,7 +20,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		{
 			Helper.SetupTestMessaging();
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
-			_nodeFactory = MessagingSystem.Receiver();
+			_receiver = MessagingSystem.Receiver();
 			_senderNode = MessagingSystem.Sender();
 		}
 
@@ -28,7 +28,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		public void can_deregister_a_handler_causing_no_further_messages_to_be_processed()
 		{
 			UnregisterSample.handledTimes = 0;
-			using (var receiverNode = _nodeFactory.Listen())
+			using (var receiverNode = _receiver.Listen())
 			{
 				receiverNode.Handle<IColourMessage>().With<UnregisterSample>();
 				_senderNode.SendMessage(new RedMessage());

@@ -6,7 +6,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// Standard node factory for messaging.
 	/// You don't need to create this yourself, use `Messaging.Receiver()`
 	/// </summary>
-	public class NodeFactory : INodeFactory
+	public class Receiver : IReceiver
 	{
 		private readonly IEndpointGenerator _uniqueEndPointGenerator;
 
@@ -14,7 +14,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// Create a new node factory.
 		/// You don't need to create this yourself, use `Messaging.Receiver()`
 		/// </summary>
-		public NodeFactory(IUniqueEndpointGenerator uniqueEndPointGenerator)
+		public Receiver(IUniqueEndpointGenerator uniqueEndPointGenerator)
 		{
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
 		}

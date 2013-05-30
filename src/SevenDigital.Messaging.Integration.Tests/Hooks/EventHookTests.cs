@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class EventHookTests
 	{
-		INodeFactory node_factory;
+		IReceiver node_factory;
 
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }

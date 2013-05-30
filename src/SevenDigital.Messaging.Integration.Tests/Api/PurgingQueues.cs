@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class PurgingQueues
 	{
-		INodeFactory _nodeFactory;
+		IReceiver _receiver;
 		private ISenderNode _senderNode;
 
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
@@ -24,10 +24,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			_nodeFactory = MessagingSystem.Receiver();
+			_receiver = MessagingSystem.Receiver();
 			_senderNode = MessagingSystem.Sender();
 
-			using (var l = _nodeFactory.Listen())
+			using (var l = _receiver.Listen())
 			{
 				l.Handle<IColourMessage>().With<ColourMessageHandler>();
 			}
@@ -38,7 +38,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Should_not_get_messages_waiting_on_queue_when_starting_a_new_listener()
 		{
 			ColourMessageHandler.AutoResetEvent.Reset();
-			using (var receiverNode = _nodeFactory.Listen())
+			using (var receiverNode = _receiver.Listen())
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 

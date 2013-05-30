@@ -3,7 +3,7 @@ namespace SevenDigital.Messaging
 	/// <summary>
 	/// A receiver node source that can produce competitive or co-operative consumers
 	/// </summary>
-	public interface INodeFactory
+	public interface IReceiver
 	{
 		/// <summary>
 		/// Map handlers to a listener on a named endpoint.

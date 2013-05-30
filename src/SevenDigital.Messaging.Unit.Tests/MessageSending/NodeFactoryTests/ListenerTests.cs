@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 	[TestFixture]
 	public class ListenerTests
 	{
-		INodeFactory _subject;
+		IReceiver _subject;
 		Mock<IUniqueEndpointGenerator> _uniqueEndPointGenerator;
 		IReceiverNode _result;
 		Endpoint _uniqueEndpoint;
@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 			mockNode = new Mock<INode>();
 			ObjectFactory.Configure(map=>map.For<INode>().Use(mockNode.Object));
 			_uniqueEndPointGenerator = new Mock<IUniqueEndpointGenerator>();
-			_subject = new NodeFactory(_uniqueEndPointGenerator.Object);
+			_subject = new Receiver(_uniqueEndPointGenerator.Object);
 			_uniqueEndpoint = new Endpoint("some wordz");
 			_uniqueEndPointGenerator.Setup(x => x.Generate()).Returns(_uniqueEndpoint);
 

@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class MessageSerialisationTests
 	{
-		INodeFactory node_factory;
+		IReceiver node_factory;
 
 		protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
