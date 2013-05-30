@@ -8,7 +8,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// <summary>
 	/// base implementation for a receiver node in messaging
 	/// </summary>
-	public class Node : INode
+	public class Node //: INode
 	{
 		readonly IMessagingBase messagingBase;
 		readonly IDispatchController dispatchController;

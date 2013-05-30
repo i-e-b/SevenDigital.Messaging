@@ -5,7 +5,7 @@ using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
-{
+{/*
 	[TestFixture]
 	public class CompeteForTests
 	{
@@ -32,5 +32,5 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending.NodeFactoryTests
 		{
 			Assert.That(_result, Is.EqualTo(new ReceiverNode(_endpoint)));
 		}
-	}
+	}*/
 }

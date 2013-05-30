@@ -1,6 +1,5 @@
 using System;
 using SevenDigital.Messaging.Routing;
-using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
 {
@@ -11,7 +10,6 @@ namespace SevenDigital.Messaging.MessageSending
 	public class ReceiverNode : IReceiverNode
 	{
 		readonly IRoutingEndpoint endpoint;
-		readonly INode node;
 
 		/// <summary>
 		/// Create a new message receiver node. You do not need to create this yourself. Use `Messaging.Receiver()`
@@ -19,8 +17,6 @@ namespace SevenDigital.Messaging.MessageSending
 		public ReceiverNode(IRoutingEndpoint endpoint)
 		{
 			this.endpoint = endpoint;
-			node = ObjectFactory.GetInstance<INode>();
-			node.SetEndpoint(endpoint);
 		}
 
 		/// <summary>
@@ -31,7 +27,7 @@ namespace SevenDigital.Messaging.MessageSending
 		public IMessageBinding<T> Handle<T>() where T : class, IMessage
 		{
 			if (!typeof(T).IsInterface) throw new ArgumentException("Handler type must be an interface that implements IMessage");
-			return new HandlerTriggering<T>(node);
+			return new HandlerTriggering<T>();
 		}
 
 		/// <summary>
@@ -45,7 +41,8 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <typeparam name="T">Type of hander previously bound with `Handle&lt;T&gt;`</typeparam>
 		public void Unregister<T>()
 		{
-			node.RemoveHandler<T>();
+			throw new NotImplementedException("Needs to be connected to incoming dispatcher");
+			//node.RemoveHandler<T>();
 		}
 
 		#region Equality members
@@ -76,7 +73,6 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void Dispose()
 		{
-			node.Dispose();
 		}
 #pragma warning restore 1591
 

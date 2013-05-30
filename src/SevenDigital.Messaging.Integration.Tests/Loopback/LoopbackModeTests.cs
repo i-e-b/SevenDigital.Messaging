@@ -19,7 +19,7 @@ namespace SevenDigital.Messaging.Integration.Tests.Loopback
 			}
 			
 			ObjectFactory.EjectAllInstancesOf<IReceiver>();
-			ObjectFactory.EjectAllInstancesOf<INode>();
+			//ObjectFactory.EjectAllInstancesOf<INode>();
 			ObjectFactory.EjectAllInstancesOf<ITestEventHook>();
 		}
 	}

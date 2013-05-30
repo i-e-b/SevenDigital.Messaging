@@ -1,3 +1,5 @@
+using System;
+
 namespace SevenDigital.Messaging.MessageSending
 {
 	/// <summary>
@@ -6,15 +8,12 @@ namespace SevenDigital.Messaging.MessageSending
 	/// <typeparam name="TMessage">Message type to bind</typeparam>
 	public class HandlerTriggering<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
 	{
-		readonly INode listenerNode;
-
 		/// <summary>
 		/// Create a new binding. You should no call this yourself.
 		/// Use `Messaging.Receiver().Handle&lt;TMessage&gt;().With&lt;THandler&gt;()`
 		/// </summary>
-		public HandlerTriggering(INode listenerNode)
+		public HandlerTriggering()
 		{
-			this.listenerNode = listenerNode;
 		}
 
 		/// <summary>
@@ -24,7 +23,8 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			listenerNode.SubscribeHandler<TMessage, THandler>();
+			//listenerNode.SubscribeHandler<TMessage, THandler>();
+			throw new NotImplementedException("Needs to be connected to incoming dispatcher");
 		}
 	}
 }
