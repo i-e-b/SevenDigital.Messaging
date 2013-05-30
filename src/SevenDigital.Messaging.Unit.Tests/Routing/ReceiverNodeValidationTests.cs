@@ -7,7 +7,7 @@ using SevenDigital.Messaging.Unit.Tests._Helpers;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.Routing
-{
+{/*
 	[TestFixture]
 	public class ReceiverNodeValidationTests
 	{
@@ -28,5 +28,5 @@ namespace SevenDigital.Messaging.Unit.Tests.Routing
 		{
 			public Guid CorrelationId { get; set; }
 		}
-	}
+	}*/
 }

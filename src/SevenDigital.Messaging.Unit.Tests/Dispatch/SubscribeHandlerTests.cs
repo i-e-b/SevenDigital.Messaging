@@ -6,7 +6,7 @@ using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Unit.Tests.LoopbackMessaging;
 
 namespace SevenDigital.Messaging.Unit.Tests.Dispatch
-{
+{/*
 	[TestFixture]
 	public class SubscribeHandlerTests
 	{
@@ -49,10 +49,10 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			//dispatchController.Verify(m=>m.Start());
 		}
 
-		/*[Test]
+		[Test]
 		public void Should_make_sure_destination_poller_is_watching_target_destination ()
 		{
 			dispatchController.Verify(m=>m.CreatePoller(destinationName));
-		}*/
-	}
+		}
+	}*/
 }

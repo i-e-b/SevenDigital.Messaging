@@ -70,14 +70,14 @@
     <Compile Include="EventHooks\ITestEventHook.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />
     <Compile Include="Logging\LogMessage.cs" />
-    <Compile Include="MessageSending\IntegrationTestNode.cs" />
+    <Compile Include="MessageSending\HandlerAction.cs" />
+    <Compile Include="__Abandoned__\IntegrationTestNode.cs" />
     <Compile Include="MessageSending\IMessageBinding.cs" />
     <Compile Include="IReceiverNode.cs" />
-    <Compile Include="MessageSending\INode.cs" />
     <Compile Include="MessageSending\Loopback\DummyBinder.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackBinding.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackReceiver.cs" />
-    <Compile Include="MessageSending\Node.cs" />
+    <Compile Include="__Abandoned__\Node.cs" />
     <Compile Include="MessagingSystem.cs" />
     <Compile Include="MessagingConfiguration.cs" />
     <Compile Include="Endpoint.cs" />
@@ -101,9 +101,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ThreadingAndDispatch\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

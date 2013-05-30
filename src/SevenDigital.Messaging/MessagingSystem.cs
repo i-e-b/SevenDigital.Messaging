@@ -259,7 +259,7 @@ namespace SevenDigital.Messaging
 
 				map.For<IWorkWrapper>().Use<WorkWrapper>();
 				map.For<ISleepWrapper>().Use<SleepWrapper>();
-				map.For<INode>().Use<Node>();
+				//map.For<INode>().Use<Node>();
 
 				map.For<IDispatchController>().Singleton().Use<DispatchController>();
 				map.For<IReceiver>().Singleton().Use<Receiver>();
@@ -277,7 +277,7 @@ namespace SevenDigital.Messaging
 
 			new MessagingBaseConfiguration().WithDefaults();
 			ObjectFactory.EjectAllInstancesOf<IReceiver>();
-			ObjectFactory.EjectAllInstancesOf<INode>();
+			//ObjectFactory.EjectAllInstancesOf<INode>();
 
 			var factory = new LoopbackReceiver();
 			ObjectFactory.Configure(map =>
@@ -318,8 +318,8 @@ namespace SevenDigital.Messaging
 
 		public void SetIntegrationTestMode()
 		{
-			ObjectFactory.EjectAllInstancesOf<INode>();
-			ObjectFactory.Configure(map => map.For<INode>().Use<IntegrationTestNode>());
+			//ObjectFactory.EjectAllInstancesOf<INode>();
+			//ObjectFactory.Configure(map => map.For<INode>().Use<IntegrationTestNode>());
 		}
 	}
 

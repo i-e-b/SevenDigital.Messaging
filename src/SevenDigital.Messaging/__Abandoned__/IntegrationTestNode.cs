@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// Integration test node.
 	/// You don't need to create this yourself, use `Messaging.Receiver()` in integration test mode
 	/// </summary>
-	public class IntegrationTestNode : INode
+	public class IntegrationTestNode //: INode
 	{
 		readonly IMessageRouter messageRouter;
 		Node baseNode;
