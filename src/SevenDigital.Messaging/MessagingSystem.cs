@@ -14,7 +14,7 @@ namespace SevenDigital.Messaging
 {
 	/// <summary>
 	/// Messaging configuration and control.
-	/// You should call at least one basic configuration option to get a valid messaging system.
+	/// You should call at least one basic 'Configure' option to get a valid messaging system.
 	/// </summary>
 	public static class MessagingSystem
 	{
@@ -80,6 +80,7 @@ namespace SevenDigital.Messaging
 		}
 	}
 
+	#region Config interfaces
 	/// <summary>
 	/// Control methods for a running messaging system
 	/// </summary>
@@ -187,6 +188,7 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		void SetIntegrationTestMode();
 	}
+	#endregion
 
 	class SDM_Control : IMessagingControl
 	{

@@ -13,17 +13,17 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		INode subject;
 		Mock<IMessagingBase> messagingBase;
 		Mock<IDispatchController> dispatchController;
-		Mock<IDestinationPoller> destinationPoller;
+		//Mock<IDestinationPoller> destinationPoller;
 		const string destinationName = "woop";
 
 		[SetUp]
 		public void Subscribing_a_handler_with_a_message_dispatcher ()
 		{
 			messagingBase = new Mock<IMessagingBase>();
-			destinationPoller = new Mock<IDestinationPoller>();
+			//destinationPoller = new Mock<IDestinationPoller>();
 			dispatchController = new Mock<IDispatchController>();
 
-			dispatchController.Setup(m=>m.CreatePoller(destinationName)).Returns(destinationPoller.Object);
+			//dispatchController.Setup(m=>m.CreatePoller(destinationName)).Returns(destinationPoller.Object);
 
 			subject = new Node(messagingBase.Object, dispatchController.Object);
 			subject.SetEndpoint(new Endpoint(destinationName));
@@ -40,19 +40,19 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void Should_add_type_and_action_to_poller ()
 		{
-			destinationPoller.Verify(m=>m.AddHandler<IDummyMessage, DummyHandler>());
+			dispatchController.Verify(m=>m.AddHandler<IDummyMessage, DummyHandler>(destinationName));
 		}
 
 		[Test]
 		public void Should_ensure_destination_poller_is_started ()
 		{
-			destinationPoller.Verify(m=>m.Start());
+			//dispatchController.Verify(m=>m.Start());
 		}
 
-		[Test]
+		/*[Test]
 		public void Should_make_sure_destination_poller_is_watching_target_destination ()
 		{
 			dispatchController.Verify(m=>m.CreatePoller(destinationName));
-		}
+		}*/
 	}
 }

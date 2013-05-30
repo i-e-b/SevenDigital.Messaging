@@ -15,7 +15,7 @@ namespace SevenDigital.Messaging
 	/// <summary>
 	/// Configuration helper for structure map and SevenDigital.Messaging
 	/// </summary>
-	[Obsolete("MessagingConfiguration is deprecated. Please use the 'Messaging' static class", /* is considered an error: */false)]
+	[Obsolete("MessagingConfiguration is deprecated. Please use the 'MessagingSystem' static class", /* is considered an error: */false)]
 	public class MessagingConfiguration
 	{
 		/// <summary>
