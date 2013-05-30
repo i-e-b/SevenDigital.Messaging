@@ -67,14 +67,12 @@
   <ItemGroup>
     <Compile Include="Dispatch\DestinationMessagePollingTests.cs" />
     <Compile Include="Dispatch\DestinationPollingCooldownTests.cs" />
-    <Compile Include="Dispatch\DispatchControllerTests.cs" />
     <Compile Include="Dispatch\MessageDispatcherTests.cs" />
     <Compile Include="Dispatch\SubscribeHandlerTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackConfigurationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackNodeFactoryTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackStabilityTests.cs" />
-    <Compile Include="MessageSending\NodeTests\NodePollingTests.cs" />
     <Compile Include="Routing\ReceiverNodeValidationTests.cs" />
     <Compile Include="Routing\UniqueEndpointGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

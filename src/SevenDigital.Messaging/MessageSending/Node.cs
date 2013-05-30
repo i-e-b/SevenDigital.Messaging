@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		readonly IMessagingBase messagingBase;
 		readonly IDispatchController dispatchController;
-		IDestinationPoller destinationPoller;
+		//IDestinationPoller destinationPoller;
 		string endpoint;
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace SevenDigital.Messaging.MessageSending
 		public void SetEndpoint(IRoutingEndpoint targetEndpoint)
 		{
 			endpoint = targetEndpoint.ToString();
-			destinationPoller = dispatchController.CreatePoller(endpoint);
+			//destinationPoller = dispatchController.CreatePoller(endpoint);
 		}
 
 		/// <summary>
@@ -42,9 +42,10 @@ namespace SevenDigital.Messaging.MessageSending
 			where THandler : IHandle<TMessage>
 		{
 			messagingBase.CreateDestination<TMessage>(endpoint);
-			destinationPoller.SetDestinationToWatch(endpoint);
+			dispatchController.AddHandler<TMessage, THandler>(endpoint);
+			/*destinationPoller.SetDestinationToWatch(endpoint);
 			destinationPoller.AddHandler<TMessage, THandler>();
-			destinationPoller.Start();
+			destinationPoller.Start();*/
 		}
 
 		/// <summary>
@@ -52,8 +53,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void RemoveHandler<THandler>()
 		{
-			destinationPoller.RemoveHandler<THandler>();
-			if (destinationPoller.HandlerCount < 1) destinationPoller.Stop();
+			dispatchController.RemoveHandler<THandler>(endpoint);
 		}
 
 		/// <summary>
@@ -61,7 +61,6 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void Dispose()
 		{
-			destinationPoller.Stop();
 		}
 
 	}

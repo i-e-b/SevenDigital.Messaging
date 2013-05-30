@@ -8,9 +8,15 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// <summary>
 		/// does nothing
 		/// </summary>
-		public IDestinationPoller CreatePoller(string destinationName)
+		public void AddHandler<TMessage, THandler>(string destinationName) where TMessage : class, IMessage where THandler : IHandle<TMessage>
 		{
-			return null;
+		}
+		
+		/// <summary>
+		/// does nothing
+		/// </summary>
+		public void RemoveHandler<T>(string destinationName)
+		{
 		}
 
 		/// <summary>

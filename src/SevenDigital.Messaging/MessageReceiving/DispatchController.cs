@@ -9,25 +9,37 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// </summary>
 	public class DispatchController:IDispatchController
 	{
-		readonly IList<IDestinationPoller> pollers;
+		readonly IDictionary<string, IDestinationPoller> pollers;
 
 		/// <summary>
 		/// Create a dispatch controller
 		/// </summary>
 		public DispatchController()
 		{
-			pollers = new List<IDestinationPoller>();
+			pollers = new Dictionary<string, IDestinationPoller>();
 		}
 
-		/// <summary>
-		/// Create a poller for a given destination name
-		/// </summary>
-		public IDestinationPoller CreatePoller(string destinationName)
+		public void AddHandler<TMessage, THandler>(string destinationName) where TMessage : class, IMessage where THandler : IHandle<TMessage>
 		{
-			var poller = ObjectFactory.GetInstance<IDestinationPoller>();
-			poller.SetDestinationToWatch(destinationName);
-			pollers.Add(poller);
-			return poller;
+			if (!pollers.ContainsKey(destinationName))
+			{
+				pollers.Add(destinationName, ObjectFactory.GetInstance<IDestinationPoller>());
+				pollers[destinationName].SetDestinationToWatch(destinationName);
+			}
+			
+			var poller = pollers[destinationName];
+			poller.AddHandler<TMessage, THandler>();
+			poller.Start();
+		}
+
+		public void RemoveHandler<T>(string destinationName)
+		{
+			if (!pollers.ContainsKey(destinationName)) return;
+
+			var poller = pollers[destinationName];
+			
+			poller.RemoveHandler<T>();
+			if (poller.HandlerCount < 1) poller.Stop();
 		}
 
 		/// <summary>
@@ -36,7 +48,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		public void Shutdown()
 		{
 // ReSharper disable RedundantJumpStatement
-			foreach(var poller in pollers.ToArray())
+			foreach(var poller in pollers.Values.ToArray())
 			{
 				try { poller.Stop(); } catch { continue; }
 			}
