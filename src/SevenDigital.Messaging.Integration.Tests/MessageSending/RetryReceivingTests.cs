@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class RetryReceivingTests
 	{
-		INodeFactory _nodeFactory;
+		IReceiver _receiver;
 		ISenderNode _senderNode;
 
 		protected TimeSpan LongInterval
@@ -31,7 +31,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			Helper.SetupTestMessaging();
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
-			_nodeFactory = MessagingSystem.Receiver();
+			_receiver = MessagingSystem.Receiver();
 			_senderNode = MessagingSystem.Sender();
 		}
 
@@ -40,7 +40,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			ExceptionSample.handledTimes = 0;
 			ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
-			using (var receiverNode = _nodeFactory.Listen())
+			using (var receiverNode = _receiver.Listen())
 			{
 				receiverNode.Handle<IColourMessage>().With<ExceptionSample>();
 
@@ -58,7 +58,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
 			var hook = new TestEventHook();
 			ObjectFactory.Configure(map => map.For<IEventHook>().Use(hook));
-			using (var receiverNode = _nodeFactory.Listen())
+			using (var receiverNode = _receiver.Listen())
 			{
 				receiverNode.Handle<IColourMessage>().With<ExceptionSample>();
 

@@ -10,7 +10,6 @@ namespace SevenDigital.Messaging.MessageSending
 	/// </summary>
 	public class Node : INode
 	{
-
 		readonly IMessagingBase messagingBase;
 		readonly IDispatchController dispatchController;
 		//IDestinationPoller destinationPoller;
@@ -31,7 +30,6 @@ namespace SevenDigital.Messaging.MessageSending
 		public void SetEndpoint(IRoutingEndpoint targetEndpoint)
 		{
 			endpoint = targetEndpoint.ToString();
-			//destinationPoller = dispatchController.CreatePoller(endpoint);
 		}
 
 		/// <summary>
@@ -43,9 +41,6 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			messagingBase.CreateDestination<TMessage>(endpoint);
 			dispatchController.AddHandler<TMessage, THandler>(endpoint);
-			/*destinationPoller.SetDestinationToWatch(endpoint);
-			destinationPoller.AddHandler<TMessage, THandler>();
-			destinationPoller.Start();*/
 		}
 
 		/// <summary>

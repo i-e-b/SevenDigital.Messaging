@@ -65,11 +65,9 @@ namespace SevenDigital.Messaging.MessageSending
 			where TMessage : class, IMessage
 			where THandler : IHandle<TMessage>
 		{
-			// ReSharper disable EmptyGeneralCatchClause
-			try { messageRouter.Purge(endpoint.ToString()); }
-			catch { }
+			messageRouter.AddDestination(endpoint.ToString());
+			messageRouter.Purge(endpoint.ToString()); 
 			baseNode.SubscribeHandler<TMessage, THandler>();
-			// ReSharper restore EmptyGeneralCatchClause
 		}
 
 		/// <summary>

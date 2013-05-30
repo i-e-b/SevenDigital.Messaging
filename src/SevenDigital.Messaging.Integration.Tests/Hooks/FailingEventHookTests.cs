@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class FailingEventHookTests
 	{
-		INodeFactory node_factory;
+		IReceiver node_factory;
 		private ISenderNode senderNode;
 
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }

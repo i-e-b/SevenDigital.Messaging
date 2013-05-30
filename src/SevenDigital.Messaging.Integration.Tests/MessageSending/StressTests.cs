@@ -7,7 +7,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 	[TestFixture]
 	public class StressTests
 	{
-		INodeFactory nodeFactory;
+		IReceiver _receiver;
 		ISenderNode sender;
 
 		[SetUp]
@@ -15,14 +15,14 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		{
 			Helper.SetupTestMessaging();
 			MessagingSystem.Events.ClearEventHooks();
-			nodeFactory = MessagingSystem.Receiver();
+			_receiver = MessagingSystem.Receiver();
 			sender = MessagingSystem.Sender();
 		}
 
 		[Test]
 		public void should_be_able_to_send_and_receive_1000_messages_per_minute()
 		{
-			using (var listener = nodeFactory.TakeFrom("ping-pong-endpoint"))
+			using (var listener = _receiver.TakeFrom("ping-pong-endpoint"))
 			{
 				listener.Handle<IPing>().With<PingHandler>();
 				listener.Handle<IPong>().With<PongHandler>();

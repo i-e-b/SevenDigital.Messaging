@@ -5,16 +5,16 @@
 	/// </summary>
 	public class LoopbackSender : ISenderNode
 	{
-		readonly LoopbackNodeFactory loopbackNodeFactory;
+		readonly LoopbackReceiver _loopbackReceiver;
 
 		/// <summary>
 		/// Create a loopback node.
 		/// You shouldn't create this yourself.
 		/// Use `Messaging.Sender()` in loopback mode
 		/// </summary>
-		public LoopbackSender(LoopbackNodeFactory loopbackNodeFactory)
+		public LoopbackSender(LoopbackReceiver _loopbackReceiver)
 		{
-			this.loopbackNodeFactory = loopbackNodeFactory;
+			this._loopbackReceiver = _loopbackReceiver;
 		}
 
 		/// <summary>
@@ -23,25 +23,25 @@
 		/// <param name="message">Message to be send. This must be a serialisable type</param>
 		public void SendMessage<T>(T message) where T : class, IMessage
 		{
-			loopbackNodeFactory.Send(message);
+			_loopbackReceiver.Send(message);
 		}
 	}
 
 	/// <summary>
 	/// Loopback receiver node
 	/// </summary>
-	public class LoopbackReceiver : IReceiverNode
+	public class LoopbackReceiverNode : IReceiverNode
 	{
-		readonly LoopbackNodeFactory loopbackNodeFactory;
+		readonly LoopbackReceiver _loopbackReceiver;
 		
 		/// <summary>
 		/// Create a loopback node.
 		/// You shouldn't create this yourself.
 		/// Use `Messaging.Receiver()` in loopback mode
 		/// </summary>
-		public LoopbackReceiver(LoopbackNodeFactory loopbackNodeFactory)
+		public LoopbackReceiverNode(LoopbackReceiver _loopbackReceiver)
 		{
-			this.loopbackNodeFactory = loopbackNodeFactory;
+			this._loopbackReceiver = _loopbackReceiver;
 		}
 
 		/// <summary>
@@ -56,7 +56,7 @@
 		/// <returns>A message binding, use this to specify the handler type</returns>
 		public IMessageBinding<T> Handle<T>() where T : class, IMessage
 		{
-			return new LoopbackBinder<T>(loopbackNodeFactory);
+			return new LoopbackBinder<T>(_loopbackReceiver);
 		}
 
 		/// <summary>
@@ -70,7 +70,7 @@
 		/// <typeparam name="T">Type of hander previously bound with `Handle&lt;T&gt;`</typeparam>
 		public void Unregister<T>()
 		{
-			loopbackNodeFactory.Unregister<T>();
+			_loopbackReceiver.Unregister<T>();
 		}
 	}
 
@@ -79,16 +79,16 @@
 	/// </summary>
 	public class LoopbackBinder<T> : IMessageBinding<T> where T : class, IMessage
 	{
-		readonly LoopbackNodeFactory loopbackNodeFactory;
+		readonly LoopbackReceiver _loopbackReceiver;
 		
 		/// <summary>
 		/// Create a loopback binder.
 		/// You shouldn't create this yourself.
 		/// Use `Messaging.Receiver().Handle&lt;TMessage&gt;().With&lt;THandler&gt;()` in loopback mode
 		/// </summary>
-		public LoopbackBinder(LoopbackNodeFactory loopbackNodeFactory)
+		public LoopbackBinder(LoopbackReceiver _loopbackReceiver)
 		{
-			this.loopbackNodeFactory = loopbackNodeFactory;
+			this._loopbackReceiver = _loopbackReceiver;
 		}
 
 		/// <summary>
@@ -98,7 +98,7 @@
 		/// </summary>
 		public void With<THandler>() where THandler : IHandle<T>
 		{
-			loopbackNodeFactory.Bind<T, THandler>();
+			_loopbackReceiver.Bind<T, THandler>();
 		}
 	}
 }

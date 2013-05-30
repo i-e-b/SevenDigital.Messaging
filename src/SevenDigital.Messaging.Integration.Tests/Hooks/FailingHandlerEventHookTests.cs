@@ -11,7 +11,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class FailingHandlerEventHookTests
 	{
-		INodeFactory node_factory;
+		IReceiver node_factory;
 		
 		protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
@@ -31,7 +31,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));
 
-			node_factory = ObjectFactory.GetInstance<INodeFactory>();
+			node_factory = ObjectFactory.GetInstance<IReceiver>();
 		}
 		
 		[Test]

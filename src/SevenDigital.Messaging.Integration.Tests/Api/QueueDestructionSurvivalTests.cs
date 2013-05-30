@@ -10,7 +10,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	[TestFixture]
 	public class QueueDestructionSurvivalTests
 	{
-		INodeFactory nodeFactory;
+		IReceiver _receiver;
 		ISenderNode senderNode;
 
 		const string TestQueue = "survival_test_endpoint";
@@ -22,14 +22,14 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			Helper.SetupTestMessaging();
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
-			nodeFactory = MessagingSystem.Receiver();
+			_receiver = MessagingSystem.Receiver();
 			senderNode = MessagingSystem.Sender();
 		}
 
 		[Test]
 		public void Listener_endpoint_should_survive_queue_destruction()
 		{
-			using (var receiverNode = nodeFactory.TakeFrom(new Endpoint(TestQueue)))
+			using (var receiverNode = _receiver.TakeFrom(new Endpoint(TestQueue)))
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 

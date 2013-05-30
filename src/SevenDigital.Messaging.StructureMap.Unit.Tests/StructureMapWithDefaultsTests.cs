@@ -119,7 +119,7 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		{
 			var factory = MessagingSystem.Receiver();
 			Assert.That(factory, Is.Not.Null);
-			Assert.That(factory, Is.InstanceOf<NodeFactory>());
+			Assert.That(factory, Is.InstanceOf<IReceiver>());
 		}
 
 		[Test]

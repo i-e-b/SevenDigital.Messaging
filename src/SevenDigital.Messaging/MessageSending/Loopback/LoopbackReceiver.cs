@@ -10,7 +10,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 	/// Node factory for loopback.
 	/// You don't need to create this yourself, use `Messaging.Receiver()` in loopback mode
 	/// </summary>
-	public class LoopbackNodeFactory : INodeFactory
+	public class LoopbackReceiver : IReceiver
 	{
 		readonly Dictionary<Type, List<Type>> listenerBindings;
 		readonly List<string> capturedEndpoints;
@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 		/// <summary>
 		/// Create a loopback factory.
 		/// </summary>
-		public LoopbackNodeFactory()
+		public LoopbackReceiver()
 		{
 			listenerBindings = new Dictionary<Type, List<Type>>();
 			capturedEndpoints = new List<string>();
@@ -45,7 +45,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 			if (capturedEndpoints.Contains(endpoint.ToString())) return new DummyReceiver();
 
 			capturedEndpoints.Add(endpoint.ToString());
-			return new LoopbackReceiver(this);
+			return new LoopbackReceiverNode(this);
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 		/// </summary>
 		public IReceiverNode Listen()
 		{
-			return new LoopbackReceiver(this);
+			return new LoopbackReceiverNode(this);
 		}
 
 		/// <summary>

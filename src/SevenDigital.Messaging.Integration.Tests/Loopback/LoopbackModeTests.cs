@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.Integration.Tests.Loopback
 				listener.Handle<IMessage>().With<IntegrationHandler>();
 			}
 			
-			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
+			ObjectFactory.EjectAllInstancesOf<IReceiver>();
 			ObjectFactory.EjectAllInstancesOf<INode>();
 			ObjectFactory.EjectAllInstancesOf<ITestEventHook>();
 		}

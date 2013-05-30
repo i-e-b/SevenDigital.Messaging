@@ -42,12 +42,12 @@ namespace SevenDigital.Messaging
 		/// Return a factory for setting up message handlers.
 		/// You must configure messaging before calling.
 		/// </summary>
-		public static INodeFactory Receiver()
+		public static IReceiver Receiver()
 		{
 			if (!UsingLoopbackMode() && !IsConfigured())
 				throw new InvalidOperationException("Receiver can't be provided: Messaging has not been configured. Try `Messaging.Configure.WithDefaults()`");
 
-			return ObjectFactory.GetInstance<INodeFactory>();
+			return ObjectFactory.GetInstance<IReceiver>();
 		}
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		internal static bool UsingLoopbackMode()
 		{
-			return ObjectFactory.GetAllInstances<INodeFactory>().Any(n => n is LoopbackNodeFactory);
+			return ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is LoopbackReceiver);
 		}
 		
 		/// <summary>
@@ -233,7 +233,7 @@ namespace SevenDigital.Messaging
 
 		public IList<Type> LoopbackListenersForMessage<T>()
 		{
-			var lb = ObjectFactory.GetInstance<INodeFactory>() as LoopbackNodeFactory;
+			var lb = ObjectFactory.GetInstance<IReceiver>() as LoopbackReceiver;
 			if (lb == null) throw new Exception("Loopback lister list is not available: Loopback mode has not be set. Try `Messaging.Configure.WithLoopbackMode()` before your service starts.");
 			return lb.ListenersFor<T>();
 		}
@@ -262,7 +262,7 @@ namespace SevenDigital.Messaging
 				map.For<INode>().Use<Node>();
 
 				map.For<IDispatchController>().Singleton().Use<DispatchController>();
-				map.For<INodeFactory>().Singleton().Use<NodeFactory>();
+				map.For<IReceiver>().Singleton().Use<Receiver>();
 				map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
 
@@ -276,14 +276,14 @@ namespace SevenDigital.Messaging
 				throw new InvalidOperationException("Messaging system has already been configured. You should set up loopback mode first.");
 
 			new MessagingBaseConfiguration().WithDefaults();
-			ObjectFactory.EjectAllInstancesOf<INodeFactory>();
+			ObjectFactory.EjectAllInstancesOf<IReceiver>();
 			ObjectFactory.EjectAllInstancesOf<INode>();
 
-			var factory = new LoopbackNodeFactory();
+			var factory = new LoopbackReceiver();
 			ObjectFactory.Configure(map =>
 			{
-				map.For<INodeFactory>().Singleton().Use(factory);
-				map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackNodeFactory>().Is(factory);
+				map.For<IReceiver>().Singleton().Use(factory);
+				map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackReceiver>().Is(factory);
 				map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
 				map.For<IDispatchController>().Singleton().Use<LoopbackDispatchController>();
 			});

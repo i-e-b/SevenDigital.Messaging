@@ -26,9 +26,9 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[Test]
 		public void Should_get_node_factory_implementation()
 		{
-			var factory = ObjectFactory.GetInstance<INodeFactory>();
+			var factory = ObjectFactory.GetInstance<IReceiver>();
 			Assert.That(factory, Is.Not.Null);
-			Assert.That(factory, Is.InstanceOf<LoopbackNodeFactory>());
+			Assert.That(factory, Is.InstanceOf<LoopbackReceiver>());
 		}
 
 		[Test]

@@ -11,14 +11,14 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 	[TestFixture]
 	public class PartiallyAvailableContracts
 	{
-		INodeFactory _nodeFactory;
+		IReceiver _receiver;
 
 		[SetUp]
 		public void SetUp()
 		{
 			Helper.SetupTestMessagingWithoutPurging();
 			MessagingSystem.Events.ClearEventHooks();
-			_nodeFactory = MessagingSystem.Receiver();
+			_receiver = MessagingSystem.Receiver();
 		}
 
 		[Test]
@@ -26,7 +26,7 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		{
 			var cid = Guid.Parse("05c90feb5c1041799fc0d26dda5fd1c6");
 
-			using (var listener = _nodeFactory.TakeFrom("TestListener.Integration.edgecases"))
+			using (var listener = _receiver.TakeFrom("TestListener.Integration.edgecases"))
 			{
 
 				// Simulate sending a message with an unavailable type
@@ -46,7 +46,7 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		{
 			var cid = Guid.Parse("05c90feb5c1041799fc0d26dda5fd1c6");
 
-			using (var listener = _nodeFactory.TakeFrom("TestListener.Integration.edgecases"))
+			using (var listener = _receiver.TakeFrom("TestListener.Integration.edgecases"))
 			{
 
 				// Simulate sending a message with an unavailable type
