@@ -17,7 +17,6 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessagingBase _messagingBase;
 		readonly ISleepWrapper _sleeper;
 		readonly HashSet<Type> _boundMessageTypes;
-		readonly object _lockObject;
 		IPendingMessage<object> _mostRecentMessage;
 
 		/// <summary>
@@ -28,7 +27,6 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <param name="sleeper">Sleeper to rate limit polling</param>
 		public RabbitMqPollingNode(IRoutingEndpoint endpoint, IMessagingBase messagingBase, ISleepWrapper sleeper)
 		{
-			_lockObject = new object();
 			_endpoint = endpoint.ToString();
 			_messagingBase = messagingBase;
 			_sleeper = sleeper;
@@ -49,15 +47,12 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public IWorkQueueItem<IPendingMessage<object>> TryDequeue()
 		{
-			lock (_lockObject)
-			{
-				var msg = _mostRecentMessage ?? EnsureQueuesAndPollForMessage();
-				_mostRecentMessage = null;
-				return 
-					msg == null
-					? new WorkQueueItem<IPendingMessage<object>>()
-					: new WorkQueueItem<IPendingMessage<object>>(msg, m => m.Finish(), m => m.Cancel());
-			}
+			var msg = _mostRecentMessage ?? SleepingGetMessage();
+			_mostRecentMessage = null;
+			return
+				msg == null
+				? new WorkQueueItem<IPendingMessage<object>>()
+				: new WorkQueueItem<IPendingMessage<object>>(msg, m => m.Finish(), m => m.Cancel());
 		}
 
 		/// <summary>
@@ -85,11 +80,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public bool BlockUntilReady()
 		{
-			lock (_lockObject)
-			{
-				_mostRecentMessage = SleepingGetMessage();
-				return _mostRecentMessage != null;
-			}
+			return false;
 		}
 		
 		IPendingMessage<object> SleepingGetMessage()
