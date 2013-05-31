@@ -207,8 +207,15 @@ namespace SevenDigital.Messaging
 				connection.Dispose();
 				ObjectFactory.EjectAllInstancesOf<IChannelAction>();
 			}
+
+			ObjectFactory.EjectAllInstancesOf<IMessagingHost>();
+			ObjectFactory.EjectAllInstancesOf<IRabbitMqConnection>();
+			ObjectFactory.EjectAllInstancesOf<IUniqueEndpointGenerator>();
+			ObjectFactory.EjectAllInstancesOf<ISleepWrapper>();
+			ObjectFactory.EjectAllInstancesOf<IReceiver>();
+			ObjectFactory.EjectAllInstancesOf<ISenderNode>();
 		}
-		
+
 		public void SetConcurrentHandlers(int max)
 		{
 			if (max < 1) throw new ArgumentException("Concurrent handlers must be at least 1", "max");
