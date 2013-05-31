@@ -43,12 +43,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				senderNode.SendMessage(message);
 
-				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
-				Assert.That(WaitingHookOne.SentEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get sent event");
-				Assert.That(WaitingHookOne.ReceivedEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get received event");
-				Assert.That(WaitingHookTwo.SentEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get sent event");
-				Assert.That(WaitingHookTwo.ReceivedEvent.WaitOne(LongInterval), Is.True, "Hook one didn't get received event");
+				Assert.That(WaitingHookOne.SentEvent.WaitOne(ShortInterval), Is.True, "Hook one didn't get sent event");
+				Assert.That(WaitingHookOne.ReceivedEvent.WaitOne(ShortInterval), Is.True, "Hook one didn't get received event");
+				Assert.That(WaitingHookTwo.SentEvent.WaitOne(ShortInterval), Is.True, "Hook one didn't get sent event");
+				Assert.That(WaitingHookTwo.ReceivedEvent.WaitOne(ShortInterval), Is.True, "Hook one didn't get received event");
 			}
 		}
 

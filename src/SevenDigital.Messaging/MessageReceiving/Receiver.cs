@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
 
@@ -16,6 +17,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly ISleepWrapper _sleeper;
 		readonly IMessagingBase _messageBase;
 		readonly IMessageHandler _handler;
+		readonly IMessageRouter _messageRouter;
 		readonly List<IReceiverNode> _registeredNodes;
 		readonly object _lockObject;
 
@@ -27,14 +29,17 @@ namespace SevenDigital.Messaging.MessageSending
 			IUniqueEndpointGenerator uniqueEndPointGenerator,
 			ISleepWrapper sleeper,
 			IMessagingBase messageBase,
-			IMessageHandler handler)
+			IMessageHandler handler,
+			IMessageRouter messageRouter)
 		{
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
 			_sleeper = sleeper;
 			_messageBase = messageBase;
 			_handler = handler;
+			_messageRouter = messageRouter;
 			_lockObject = new object();
 			_registeredNodes = new List<IReceiverNode>();
+			PurgeOnConnect = false;
 		}
 
 		/// <summary>
@@ -46,6 +51,10 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			lock (_lockObject)
 			{
+				if (PurgeOnConnect)
+				{
+					_messageRouter.Purge(endpoint.ToString());
+				}
 				var node = new ReceiverNode(this, endpoint, _handler, _messageBase, _sleeper);
 				_registeredNodes.Add(node);
 				return node;
@@ -58,12 +67,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public IReceiverNode Listen()
 		{
-			lock (_lockObject)
-			{
-				var node = new ReceiverNode(this, _uniqueEndPointGenerator.Generate(), _handler, _messageBase, _sleeper);
-				_registeredNodes.Add(node);
-				return node;
-			}
+			return TakeFrom(_uniqueEndPointGenerator.Generate());
 		}
 
 		/// <summary>
@@ -106,6 +110,8 @@ namespace SevenDigital.Messaging.MessageSending
 				}
 			}
 		}
+
+		public bool PurgeOnConnect { get; set; }
 
 		/// <summary>
 		/// Shutdown all nodes.

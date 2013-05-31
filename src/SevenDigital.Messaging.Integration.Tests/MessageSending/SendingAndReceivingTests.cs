@@ -18,8 +18,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			//Helper.SetupTestMessaging();
-			MessagingSystem.Configure.WithDefaults();
+			Helper.SetupTestMessaging();
 
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
 			_receiver = MessagingSystem.Receiver();

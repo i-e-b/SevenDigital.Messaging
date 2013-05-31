@@ -35,11 +35,18 @@ namespace SevenDigital.Messaging.MessageSending
 			_boundMessageTypes = new HashSet<Type>();
 		}
 
+		/// <summary>
+		/// Not currently implemented. Will throw an exception.
+		/// </summary>
+		/// <remarks>This might be useful at some point to inject test messages?</remarks>
 		public void Enqueue(IPendingMessage<object> work)
 		{
 			throw new InvalidOperationException("This queue self populates and doesn't currently support direct injection.");
 		}
 
+		/// <summary>
+		/// Try and get an item from this queue. Success is encoded in the WQI result 'HasItem' 
+		/// </summary>
 		public IWorkQueueItem<IPendingMessage<object>> TryDequeue()
 		{
 			lock (_lockObject)
@@ -85,7 +92,6 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 		}
 		
-		
 		IPendingMessage<object> SleepingGetMessage()
 		{
 			IPendingMessage<object> message = EnsureQueuesAndPollForMessage();
@@ -101,7 +107,6 @@ namespace SevenDigital.Messaging.MessageSending
 
 			return message;
 		}
-
 
 		IPendingMessage<IMessage> EnsureQueuesAndPollForMessage()
 		{

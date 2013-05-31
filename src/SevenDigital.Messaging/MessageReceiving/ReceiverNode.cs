@@ -41,7 +41,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 			_receivingDispatcher = new Dispatch<IPendingMessage<object>>( 
 				_rabbitMqPollingNode,
-				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver", 1)
+				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver")
 				);
 
 			_receivingDispatcher.AddConsumer(HandleIncomingMessage);
