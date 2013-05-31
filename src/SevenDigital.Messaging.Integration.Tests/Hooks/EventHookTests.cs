@@ -4,7 +4,6 @@ using Moq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
-using SevenDigital.Messaging.MessageReceiving;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests

@@ -74,7 +74,6 @@
     <Compile Include="MessageSending\Loopback\LoopbackBinding.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackReceiver.cs" />
     <Compile Include="MessagingSystem.cs" />
-    <Compile Include="MessagingConfiguration.cs" />
     <Compile Include="Endpoint.cs" />
     <Compile Include="RetryMessageAttribute.cs" />
     <Compile Include="Routing\Host.cs" />
