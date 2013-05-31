@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		string destination;
 		readonly IMessagingBase messagingBase;
 		readonly ISleepWrapper sleeper;
-		readonly IMessageDispatcher dispatcher;
+		readonly IMessageHandler handler;
 		Thread pollingThread;
 		int runningExch;
 		volatile bool running;
@@ -28,12 +28,12 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// <summary>
 		/// Create a poller
 		/// </summary>
-		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageDispatcher dispatcher)
+		public DestinationPoller(IMessagingBase messagingBase, ISleepWrapper sleeper, IMessageHandler handler)
 		{
 			_boundMessageTypes = new HashSet<Type>();
 			this.messagingBase = messagingBase;
 			this.sleeper = sleeper;
-			this.dispatcher = dispatcher;
+			this.handler = handler;
 		}
 
 		/// <summary>
@@ -52,10 +52,10 @@ namespace SevenDigital.Messaging.MessageReceiving
 			while (running)
 			{
 				IPendingMessage<object> message = null;
-				if (dispatcher.HandlersInflight < TaskLimit) message = GetMessageRobust();
+				if (handler.HandlersInflight < TaskLimit) message = GetMessageRobust();
 				if (message != null)
 				{
-					dispatcher.TryDispatch(message);
+					handler.TryHandle(message);
 					sleeper.Reset();
 				}
 				else
@@ -142,7 +142,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		void WaitForHandlersToFinish()
 		{
 			sleeper.Reset();
-			while (dispatcher.HandlersInflight > 0)
+			while (handler.HandlersInflight > 0)
 			{
 				sleeper.SleepMore();
 			}
@@ -167,7 +167,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 			where THandler : IHandle<TMessage>
 		{
 			AddMessageType(typeof(TMessage));
-			dispatcher.AddHandler<TMessage, THandler>();
+			handler.AddHandler<TMessage, THandler>();
 		}
 
 		void AddMessageType(Type type)
@@ -183,7 +183,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void RemoveHandler<THandler>()
 		{
-			dispatcher.RemoveHandler<THandler>();
+			handler.RemoveHandler<THandler>();
 		}
 
 		/// <summary>
@@ -193,7 +193,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		{
 			get
 			{
-				return dispatcher.CountHandlers();
+				return handler.CountHandlers();
 			}
 		}
 	}

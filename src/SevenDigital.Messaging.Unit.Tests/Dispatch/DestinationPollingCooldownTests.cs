@@ -15,7 +15,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		IDestinationPoller subject;
 		IMessagingBase messagingBase;
 		ISleepWrapper sleepWrapper;
-		IMessageDispatcher dispatcher;
+		IMessageHandler handler;
 
 		[SetUp]
 		public void A_destination_poller_with_a_dispatcher ()
@@ -23,9 +23,9 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			messagingBase = Substitute.For<IMessagingBase>();
 			sleepWrapper = Substitute.For<ISleepWrapper>();
 
-			dispatcher = new FakeDispatcher(2, 1, 0, 0, 0, 0);
+			handler = new FakeHandler(2, 1, 0, 0, 0, 0);
 
-			subject = new DestinationPoller(messagingBase, sleepWrapper, dispatcher);
+			subject = new DestinationPoller(messagingBase, sleepWrapper, handler);
 		}
 
 		[Test]
@@ -33,7 +33,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			subject.Stop();
 
-			Assert.That(((FakeDispatcher)dispatcher).HandlersInflightCalls,
+			Assert.That(((FakeHandler)handler).HandlersInflightCalls,
 				Is.EqualTo(3));
 		}
 
@@ -45,15 +45,15 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			sleepWrapper.Received(2).SleepMore();
 		}
 
-		public class FakeDispatcher : IMessageDispatcher
+		public class FakeHandler : IMessageHandler
 		{
-			public FakeDispatcher(params int[] returnValues)
+			public FakeHandler(params int[] returnValues)
 			{
                 HandlersInflightCalls = 0;
 				_returnValues = new Stack<int>();
                 foreach (var i in returnValues.Reverse()) _returnValues.Push(i);
 			}
-			public void TryDispatch(IPendingMessage<object> pendingMessage) { }
+			public void TryHandle(IPendingMessage<object> pendingMessage) { }
 
             public int HandlersInflightCalls;
 			readonly Stack<int> _returnValues;

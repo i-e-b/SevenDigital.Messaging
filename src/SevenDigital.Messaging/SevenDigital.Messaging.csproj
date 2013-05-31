@@ -63,8 +63,8 @@
     <Compile Include="MessageReceiving\DispatchController.cs" />
     <Compile Include="MessageReceiving\IDestinationPoller.cs" />
     <Compile Include="MessageReceiving\IDispatchController.cs" />
-    <Compile Include="MessageReceiving\IMessageDispatcher.cs" />
-    <Compile Include="MessageReceiving\MessageDispatcher.cs" />
+    <Compile Include="MessageReceiving\IMessageHandler.cs" />
+    <Compile Include="MessageReceiving\MessageHandler.cs" />
     <Compile Include="MessageReceiving\SleepWrapper.cs" />
     <Compile Include="MessageReceiving\WorkWrapper.cs" />
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IHandle.cs" />
     <Compile Include="IReceiver.cs" />
-    <Compile Include="MessageSending\HandlerTriggering.cs" />
+    <Compile Include="MessageSending\MessageBinder.cs" />
     <Compile Include="MessageSending\ReceiverNode.cs" />
     <Compile Include="MessageSending\Receiver.cs" />
     <Compile Include="MessageSending\SenderNode.cs" />

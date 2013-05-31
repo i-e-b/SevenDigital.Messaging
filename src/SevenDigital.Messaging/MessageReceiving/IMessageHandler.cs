@@ -1,3 +1,4 @@
+using System;
 using SevenDigital.Messaging.Base;
 
 namespace SevenDigital.Messaging.MessageReceiving
@@ -9,29 +10,24 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// TryDispatch starts a handler instance and passes it
 	/// an incoming message.
 	/// </summary>
-	public interface IMessageDispatcher
+	public interface IMessageHandler
 	{
 		/// <summary>
 		/// Try to fire actions for a message
 		/// </summary>
-		void TryDispatch(IPendingMessage<object> pendingMessage);
-
-		/// <summary>
-		/// number of handlers currently running and handling messages
-		/// </summary>
-		int HandlersInflight { get; }
+		void TryHandle(IPendingMessage<object> pendingMessage);
 
 		/// <summary>
 		/// Add a handler/message binding
 		/// </summary>
-		void AddHandler<TMessage, THandler>()
-			where TMessage : class, IMessage
-			where THandler : IHandle<TMessage>;
+		void AddHandler(Type messageType, Type handlerType);
+			//where TMessage : class, IMessage
+			//where THandler : IHandle<TMessage>;
 
 		/// <summary>
 		/// remove a handler for all messages
 		/// </summary>
-		void RemoveHandler<T>();
+		void RemoveHandler(Type handlerType);
 
 		/// <summary>
 		/// Return count of handlers

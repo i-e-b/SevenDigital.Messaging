@@ -36,7 +36,7 @@ namespace SevenDigital.Messaging
 				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 				map.For<IDestinationPoller>().Use<DestinationPoller>();
-				map.For<IMessageDispatcher>().Use<MessageDispatcher>();
+				map.For<IMessageHandler>().Use<MessageHandler>();
 
 				map.For<IWorkWrapper>().Use<WorkWrapper>();
 				map.For<ISleepWrapper>().Use<SleepWrapper>();
