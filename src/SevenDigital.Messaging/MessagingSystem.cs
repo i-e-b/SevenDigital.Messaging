@@ -76,7 +76,8 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		internal static bool IsConfigured()
 		{
-			return ObjectFactory.GetAllInstances<IDispatchController>().Any(n => n is DispatchController);
+			//return ObjectFactory.GetAllInstances<IDispatchController>().Any(n => n is DispatchController);
+			return false;
 		}
 	}
 
@@ -194,12 +195,12 @@ namespace SevenDigital.Messaging
 	{
 		public void Shutdown()
 		{
-			var controller = ObjectFactory.TryGetInstance<IDispatchController>();
+			/*var controller = ObjectFactory.TryGetInstance<IDispatchController>();
 			if (controller != null)
 			{
 				controller.Shutdown();
 				ObjectFactory.EjectAllInstancesOf<IDispatchController>();
-			}
+			}*/
 
 			var connection = ObjectFactory.TryGetInstance<IChannelAction>();
 			if (connection != null)
@@ -212,12 +213,12 @@ namespace SevenDigital.Messaging
 		public void SetConcurrentHandlers(int max)
 		{
 			if (max < 1) throw new ArgumentException("Concurrent handlers must be at least 1", "max");
-			DestinationPoller.TaskLimit = max;
+			//DestinationPoller.TaskLimit = max;
 		}
 
 		public void Pause()
 		{
-			DestinationPoller.TaskLimit = 0;
+			//DestinationPoller.TaskLimit = 0;
 		}
 	}
 
@@ -254,14 +255,14 @@ namespace SevenDigital.Messaging
 				map.For<IMessagingHost>().Use(() => new Host("localhost"));
 				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
 				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
-				map.For<IDestinationPoller>().Use<DestinationPoller>();
+				//map.For<IDestinationPoller>().Use<DestinationPoller>();
 				map.For<IMessageHandler>().Use<MessageHandler>();
 
-				map.For<IWorkWrapper>().Use<WorkWrapper>();
+				//map.For<IWorkWrapper>().Use<WorkWrapper>();
 				map.For<ISleepWrapper>().Use<SleepWrapper>();
 				//map.For<INode>().Use<Node>();
 
-				map.For<IDispatchController>().Singleton().Use<DispatchController>();
+				//map.For<IDispatchController>().Singleton().Use<DispatchController>();
 				map.For<IReceiver>().Singleton().Use<Receiver>();
 				map.For<ISenderNode>().Singleton().Use<SenderNode>();
 			});
@@ -285,7 +286,7 @@ namespace SevenDigital.Messaging
 				map.For<IReceiver>().Singleton().Use(factory);
 				map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackReceiver>().Is(factory);
 				map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
-				map.For<IDispatchController>().Singleton().Use<LoopbackDispatchController>();
+				//map.For<IDispatchController>().Singleton().Use<LoopbackDispatchController>();
 			});
 
 

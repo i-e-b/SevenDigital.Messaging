@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
 using StructureMap;

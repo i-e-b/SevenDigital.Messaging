@@ -12,7 +12,6 @@ namespace SevenDigital.Messaging.MessageSending
 	public class IntegrationTestNode //: INode
 	{
 		readonly IMessageRouter messageRouter;
-		Node baseNode;
 		IRoutingEndpoint endpoint;
 
 		/// <summary>
@@ -21,7 +20,6 @@ namespace SevenDigital.Messaging.MessageSending
 		public IntegrationTestNode(IMessageRouter messageRouter)
 		{
 			this.messageRouter = messageRouter;
-			baseNode = ObjectFactory.GetInstance<Node>();
 		}
 
 		/// <summary>
@@ -32,9 +30,6 @@ namespace SevenDigital.Messaging.MessageSending
 			lock (this)
 			{
 				Console.WriteLine("Cleaning node");
-				if (baseNode == null) return;
-				baseNode.Dispose();
-				baseNode = null;
 
 				// allow removal of any integration test routes, plus all the specific tests in the 
 				// messaging framework itself
@@ -55,7 +50,6 @@ namespace SevenDigital.Messaging.MessageSending
 		public void SetEndpoint(IRoutingEndpoint targetEndpoint)
 		{
 			endpoint = targetEndpoint;
-			baseNode.SetEndpoint(endpoint);
 		}
 
 		/// <summary>
@@ -67,7 +61,6 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			messageRouter.AddDestination(endpoint.ToString());
 			messageRouter.Purge(endpoint.ToString()); 
-			baseNode.SubscribeHandler<TMessage, THandler>();
 		}
 
 		/// <summary>
@@ -75,7 +68,6 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void RemoveHandler<T>()
 		{
-			baseNode.RemoveHandler<T>();
 		}
 	}
 }

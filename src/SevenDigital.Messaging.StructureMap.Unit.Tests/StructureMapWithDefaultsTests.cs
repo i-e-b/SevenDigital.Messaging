@@ -31,32 +31,6 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
-		public void Should_have_thread_pool_wrapper()
-		{
-			Assert.That(ObjectFactory.GetInstance<IWorkWrapper>(), Is.InstanceOf<WorkWrapper>());
-		}
-
-		[Test]
-		public void Should_have_destination_poller()
-		{
-			var instance1 = ObjectFactory.GetInstance<IDestinationPoller>();
-			var instance2 = ObjectFactory.GetInstance<IDestinationPoller>();
-
-			Assert.That(instance1, Is.InstanceOf<DestinationPoller>());
-			Assert.That(instance1, Is.Not.SameAs(instance2));
-		}
-
-		[Test]
-		public void Should_have_singleton_dispatch_controller()
-		{
-			var instance1 = ObjectFactory.GetInstance<IDispatchController>();
-			var instance2 = ObjectFactory.GetInstance<IDispatchController>();
-
-			Assert.That(instance1, Is.InstanceOf<DispatchController>());
-			Assert.That(instance1, Is.SameAs(instance2));
-		}
-
-		[Test]
 		public void Should_configure_messaging_base()
 		{
 			Assert.That(ObjectFactory.GetInstance<IMessagingBase>(), Is.Not.Null);

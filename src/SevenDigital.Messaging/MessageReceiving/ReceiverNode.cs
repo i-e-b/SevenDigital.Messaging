@@ -1,6 +1,5 @@
 using System;
 using DispatchSharp;
-using DispatchSharp.QueueTypes;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.MessageReceiving;
@@ -12,22 +11,33 @@ namespace SevenDigital.Messaging.MessageSending
 	/// Standard receiver node for Messaging.
 	/// You do not need to create this yourself. Use `Messaging.Receiver()`
 	/// </summary>
+	/// <remarks>
+	/// The receiver node binds a rabbit work queue to a message handler.
+	/// When the user binds a message type to a handler, this gets added to the
+	/// handler and the rabbit work queue.
+	/// </remarks>
 	public class ReceiverNode : IReceiverNode, IBindingHost
 	{
-		readonly IRoutingEndpoint endpoint;
+		readonly IRoutingEndpoint _endpoint;
 		readonly IDispatch<IPendingMessage<object>> _receivingDispatcher;
 		readonly IMessageHandler _handler; // message type => [handler types]
+		readonly RabbitMqPollingNode _rabbitMqPollingNode;
 
 		/// <summary>
 		/// Create a new message receiver node. You do not need to create this yourself. Use `Messaging.Receiver()`
 		/// </summary>
-		public ReceiverNode(IRoutingEndpoint endpoint, IMessageHandler handler)
+		public ReceiverNode(
+			IRoutingEndpoint endpoint,
+			IMessageHandler handler,
+			IMessagingBase messagingBase,
+			ISleepWrapper sleeper)
 		{
-			this.endpoint = endpoint;
+			_endpoint = endpoint;
 			_handler = handler;
+			_rabbitMqPollingNode = new RabbitMqPollingNode(endpoint, messagingBase, sleeper);
 
 			_receivingDispatcher = new Dispatch<IPendingMessage<object>>( 
-				new InMemoryWorkQueue<IPendingMessage<object>>(), // should be RMQ polling queue
+				_rabbitMqPollingNode,
 				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver", 1)
 				);
 
@@ -49,7 +59,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <summary>
 		/// Gets the name of the destination queue used by messaging
 		/// </summary>
-		public string DestinationName { get { return endpoint.ToString(); } }
+		public string DestinationName { get { return _endpoint.ToString(); } }
 
 		/// <summary>
 		/// Remove a handler from all message bindings. The handler will no longer be called.
@@ -67,6 +77,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <param name="handlerType">Handler that should be created and called</param>
 		public void BindHandler(Type messageType, Type handlerType)
 		{
+			_rabbitMqPollingNode.AddMessageType(messageType);
 			_handler.AddHandler(messageType, handlerType);
 		}
 
@@ -87,7 +98,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return Equals(other.endpoint, endpoint);
+			return Equals(other._endpoint, _endpoint);
 		}
 
 		public override bool Equals(object obj)
@@ -102,7 +113,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			unchecked
 			{
-				return (endpoint != null ? endpoint.GetHashCode() : 0);
+				return (_endpoint != null ? _endpoint.GetHashCode() : 0);
 			}
 		}
 #pragma warning restore 1591
