@@ -18,7 +18,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			Helper.SetupTestMessaging();
+			//Helper.SetupTestMessaging();
+			MessagingSystem.Configure.WithDefaults();
 
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
 			_receiver = MessagingSystem.Receiver();
@@ -36,10 +37,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 				receiverNode.Handle<ITwoColoursMessage>().With<AllColourMessagesHandler>();
 
 				_sender.SendMessage(new RedMessage());
-				var signal1 = AllColourMessagesHandler.AutoResetEventForColourMessage.WaitOne(ShortInterval);
+				var signal1 = AllColourMessagesHandler.AutoResetEventForColourMessage.WaitOne(LongInterval);
 				_sender.SendMessage(new GreenWhiteMessage());
 
-				var signal2 = AllColourMessagesHandler.AutoResetEventForTwoColourMessage.WaitOne(ShortInterval);
+				var signal2 = AllColourMessagesHandler.AutoResetEventForTwoColourMessage.WaitOne(LongInterval);
 				Assert.That(signal1, Is.True);
 				Assert.That(signal2, Is.True);
 			}
