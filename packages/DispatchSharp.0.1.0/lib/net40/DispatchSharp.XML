@@ -1,0 +1,360 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DispatchSharp</name>
+    </assembly>
+    <members>
+        <member name="T:DispatchSharp.Internal.IWaitHandle">
+            <summary>
+            Contract for a wait signal
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Internal.IWaitHandle.WaitOne">
+            <summary>
+            Wait for signal to be Set
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Internal.IWaitHandle.Set">
+            <summary>
+            Set signal, unblocking all waiting threads
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Internal.IWaitHandle.Reset">
+            <summary>
+            Reset thread, causing any waiting threads to block
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Internal.IWaitHandle.IsSet">
+            <summary>
+            Returns true if WaitOne will return immediately.
+            Returns false if WaitOne would block.
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.Internal.Default">
+            <summary>
+            Defaults used internally
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.Internal.Default.ThreadCount">
+            <summary>
+            Default number of threads to pool on this machine.
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.IWorkQueueItem`1">
+            <summary>
+            Contract for a work queue item that has been dequeued
+            </summary>
+            <typeparam name="T">Type of contained item</typeparam>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueueItem`1.Finish">
+            <summary>
+            Call this to permanently remove an item from the queue
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueueItem`1.Cancel">
+            <summary>
+            Call this to cancel the dequeue and return item to work queue.
+            There is no guarantee where the item will be returned (head, end or somewhere in the middle)
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.IWorkQueueItem`1.HasItem">
+            <summary>
+            Has an item been dequeued?
+            If false, Item will be default value (i.e. null)
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.IWorkQueueItem`1.Item">
+            <summary>
+            Queue item if one was available
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.QueueTypes.WorkQueueItem`1">
+            <summary>
+            A default work queue item wrapper
+            </summary>
+            <typeparam name="T">Type of the underlying queue item</typeparam>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.WorkQueueItem`1.#ctor">
+            <summary>
+            Create an empty item (represents an unsucessful dequeue)
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.WorkQueueItem`1.#ctor(`0,System.Action{`0},System.Action{`0})">
+            <summary>
+            Create a populated item with optional finish and cancel items
+            </summary>
+            <param name="item">Item dequeued</param>
+            <param name="finish">Finish action (may be null)</param>
+            <param name="cancel">Cancel action (may be null)</param>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.WorkQueueItem`1.Finish">
+            <summary>
+            Call this to permanently remove an item from the queue
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.WorkQueueItem`1.Cancel">
+            <summary>
+            Call this to cancel the dequeue and return item to work queue.
+            There is no guarantee where the item will be returned (head, end or somewhere in the middle)
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.QueueTypes.WorkQueueItem`1.HasItem">
+            <summary>
+            Has an item been dequeued?
+            If false, Item will be default value (i.e. null)
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.QueueTypes.WorkQueueItem`1.Item">
+            <summary>
+            Queue item if one was available
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.WorkerPools.DirectWorkerPool`1">
+            <summary>
+            Single threaded on-demand pool for integration testing
+            WARNING: this pool with continue to work if the queue is kept populated
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.IWorkerPool`1">
+            <summary>
+            Contract for a set of workers that can run actions against
+            work queue items.
+            </summary>
+            <typeparam name="T">Type of items on the work queue</typeparam>
+        </member>
+        <member name="M:DispatchSharp.IWorkerPool`1.SetSource(DispatchSharp.IDispatch{`0},DispatchSharp.IWorkQueue{`0})">
+            <summary>
+            Set source queue and managing dispatcher
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkerPool`1.Start">
+            <summary>
+            Start processing queue items as they become available
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkerPool`1.Stop">
+            <summary>
+            Stop processing incoming queue items.
+            Current work should be finished or cancelled before returning.
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkerPool`1.WorkersInflight">
+            <summary>
+            Current number of workers running actions against queue items
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.DirectWorkerPool`1.#ctor">
+            <summary>
+            Create a new direct worker pool
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.DirectWorkerPool`1.SetSource(DispatchSharp.IDispatch{`0},DispatchSharp.IWorkQueue{`0})">
+            <summary>
+            Set source queue and managing dispatcher
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.DirectWorkerPool`1.Start">
+            <summary>
+            Start processing queue items as they become available
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.DirectWorkerPool`1.Stop">
+            <summary>
+            Stop processing once work queue is exhausted.
+            WARNING: this pool with continue to work if the queue is kept populated
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.DirectWorkerPool`1.WorkersInflight">
+            <summary>
+            Current number of workers running actions against queue items
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.Dispatch`1">
+            <summary>
+            Default dispatcher
+            </summary>
+            <typeparam name="T">Type of work item to be processed</typeparam>
+        </member>
+        <member name="T:DispatchSharp.IDispatch`1">
+            <summary>
+            Dispatcher co-ordinated a worker pool with a work item queue,
+            and keeps track of actions to be taken with work items.
+            </summary>
+            <typeparam name="T">Type of work items to be processed</typeparam>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.CurrentInflight">
+            <summary> Snapshot of number of work items being processed </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.AddConsumer(System.Action{`0})">
+            <summary> Add an action to take when work is processed </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.AddWork(`0)">
+            <summary> Add a work item to process </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.AllConsumers">
+            <summary> All consumers added to this dispatcher </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.OnExceptions(System.Exception)">
+            <summary> Trigger to call when a consumer throws an exception </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.Start">
+            <summary> Start consuming work and continue until stopped </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.Stop">
+            <summary> Stop consuming work and return when all in-progress work is complete </summary>
+        </member>
+        <member name="P:DispatchSharp.IDispatch`1.MaximumInflight">
+            <summary> Maximum number of work items being processed at any one time </summary>
+        </member>
+        <member name="E:DispatchSharp.IDispatch`1.Exceptions">
+            <summary> Event triggered when a consumer throws an exception </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.CreateDefaultMultithreaded(System.String)">
+            <summary>
+            Create a dispatcher with defaults for processing non-persistent items
+            using all the CPU cores on the local machine
+            </summary>
+            <param name="name">Name of the dispatcher (useful for debugging)</param>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.#ctor(DispatchSharp.IWorkQueue{`0},DispatchSharp.IWorkerPool{`0})">
+            <summary>
+            Create a dispatcher with a specific queue and worker pool
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.CurrentInflight">
+            <summary> Snapshot of number of work items being processed </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.AddConsumer(System.Action{`0})">
+            <summary> Add an action to take when work is processed </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.AddWork(`0)">
+            <summary> Add a work item to process </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.AllConsumers">
+            <summary> All consumers added to this dispatcher </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.OnExceptions(System.Exception)">
+            <summary> Trigger to call when a consumer throws an exception </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.Start">
+            <summary> Start consuming work and continue until stopped </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.Stop">
+            <summary> Stop consuming work and return when all in-progress work is complete </summary>
+        </member>
+        <member name="P:DispatchSharp.Dispatch`1.MaximumInflight">
+            <summary> Maximum number of work items being processed at any one time </summary>
+        </member>
+        <member name="E:DispatchSharp.Dispatch`1.Exceptions">
+            <summary> Event triggered when a consumer throws an exception </summary>
+        </member>
+        <member name="T:DispatchSharp.ExceptionEventArgs">
+            <summary>
+            Arguments for events triggered by uncaught exceptions
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.ExceptionEventArgs.SourceException">
+            <summary>
+            Triggering exception
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.IWorkQueue`1">
+            <summary>
+            Contract for an ordered queue of work to be acted upon.
+            All implementations should be thread-safe.
+            </summary>
+            <typeparam name="T">Type of item to be stored</typeparam>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueue`1.Enqueue(`0)">
+            <summary> Add an item to the queue </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueue`1.TryDequeue">
+            <summary> Try and get an item from this queue. Success is encoded in the WQI result 'HasItem' </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueue`1.Length">
+            <summary> Approximate snapshot length </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueue`1.BlockUntilReady">
+            <summary>
+            Advisory method: block if the queue is waiting to be populated.
+            Should return true when items are available.
+            Implementations may return false if polling and no items are available.
+            Implementations are free to return immediately.
+            Implementations are free to return true even if no items are available.
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.QueueTypes.InMemoryWorkQueue`1">
+            <summary>
+            A non-persistent lock-based worker queue.
+            </summary>
+            <typeparam name="T">Type of items to be stored</typeparam>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.InMemoryWorkQueue`1.#ctor">
+            <summary>
+            Create a new empty worker queue
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.InMemoryWorkQueue`1.Enqueue(`0)">
+            <summary> Add an item to the queue </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.InMemoryWorkQueue`1.TryDequeue">
+            <summary> Try and get an item from this queue. Success is encoded in the IWorkQueueItem result 'HasItem' </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.InMemoryWorkQueue`1.Length">
+            <summary> Current queue length </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.InMemoryWorkQueue`1.BlockUntilReady">
+            <summary>
+            Blocks the current thread until an item is available on the queue.
+            Will block indefinitely. Does not guarantee an item will be dequeued successfully.
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.WorkerPools.ThreadedWorkerPool`1">
+            <summary>
+            Worker pool that delegates work to happen on a set number of worker threads.
+            Does not consume any more items than there are free workers.
+            Strictly obeys inflight limit from dispatcher.
+            </summary>
+            <typeparam name="T">Type of item on the work queue</typeparam>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.#ctor(System.String,System.Int32)">
+            <summary>
+            Create a worker pool with a specific number of threads. 
+            </summary>
+            <param name="name">Name of this worker pool (useful during debugging)</param>
+            <param name="threadCount">Number of threads to pool</param>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.#ctor(System.String)">
+            <summary>
+            Create a worker pool with a thread per logical cpu core. 
+            </summary>
+            <param name="name">Name of this worker pool (useful during debugging)</param>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.SetSource(DispatchSharp.IDispatch{`0},DispatchSharp.IWorkQueue{`0})">
+            <summary>
+            Set source queue and managing dispatcher
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.Start">
+            <summary>
+            Start processing queue items as they become available
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.Stop">
+            <summary>
+            Stop processing incoming queue items.
+            Current work should be finished or cancelled before returning.
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.WorkersInflight">
+            <summary>
+            Current number of workers running actions against queue items
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.PoolSize">
+            <summary>
+            Returns number of worker threads in use
+            </summary>
+        </member>
+    </members>
+</doc>

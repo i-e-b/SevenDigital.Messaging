@@ -1,4 +1,7 @@
 using System;
+using DispatchSharp;
+using DispatchSharp.QueueTypes;
+using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
 using StructureMap;
@@ -12,13 +15,26 @@ namespace SevenDigital.Messaging.MessageSending
 	public class SenderNode : ISenderNode
 	{
 		readonly IMessagingBase messagingBase;
+		readonly IDispatch<IMessage> _sendingDispatcher;
 
 		/// <summary>
 		/// Create a new message sending node. You do not need to create this yourself. Use `Messaging.Sender()`
 		/// </summary>
 		public SenderNode(IMessagingBase messagingBase)
 		{
+			_sendingDispatcher = new Dispatch<IMessage>( 
+				new InMemoryWorkQueue<IMessage>(), // later, replace with Persistent Disk Queue
+				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", 1)
+				);
+
+			_sendingDispatcher.AddConsumer(SendWaitingMessage);
 			this.messagingBase = messagingBase;
+		}
+
+		void SendWaitingMessage(IMessage message)
+		{
+			TryFireHooks(message);
+			messagingBase.SendMessage(message);
 		}
 
 		/// <summary>
@@ -27,11 +43,10 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <param name="message">Message to be send. This must be a serialisable type</param>
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			TryFireHooks(message);
-			TrySendMessage(message);
+			_sendingDispatcher.AddWork(message);
 		}
 
-		static void TryFireHooks<T>(T message) where T : class, IMessage
+		static void TryFireHooks(IMessage message)
 		{
 			var hooks = ObjectFactory.GetAllInstances<IEventHook>();
 			foreach (var hook in hooks)
@@ -45,12 +60,6 @@ namespace SevenDigital.Messaging.MessageSending
 					Log.Warning("An event hook failed during send " + ex.GetType() + "; " + ex.Message);
 				}
 			}
-		}
-
-		void TrySendMessage<T>(T message) where T : class, IMessage
-		{
-			messagingBase.SendMessage(message);
-				
 		}
 	}
 }
