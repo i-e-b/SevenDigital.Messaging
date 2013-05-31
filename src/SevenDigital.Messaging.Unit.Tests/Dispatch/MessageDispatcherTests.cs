@@ -8,44 +8,44 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 	[TestFixture]
 	public class MessageDispatcherTests
 	{
-		IMessageDispatcher subject;
-		IWorkWrapper mockWork;
+		IMessageHandler subject;
 
 		[SetUp]
 		public void A_message_dispatcher ()
 		{
-			mockWork = new FakeWork();
-			subject = new MessageDispatcher(mockWork);
+			subject = new MessageHandler();
 		}
 
 		[Test]
 		public void When_adding_handler_should_have_that_handler_registered ()
 		{
-			subject.AddHandler<ITestMessage, TestMessageHandler>();
-			Assert.That(((MessageDispatcher)subject).HandlersForType<ITestMessage>(), 
+			subject.AddHandler(typeof(ITestMessage), typeof(TestMessageHandler));
+
+			Assert.That(((MessageHandler)subject).HandlersForType<ITestMessage>(), 
 				Is.EquivalentTo( new [] { typeof(TestMessageHandler) } ));
 		}
 
 		[Test]
 		public void When_adding_more_than_one_handler_of_a_given_type_should_have_all_registered ()
 		{
-			subject.AddHandler<ITestMessage, TestMessageHandler>();
-			subject.AddHandler<ITestMessage, AnotherTestMessageHandler>();
-			Assert.That(((MessageDispatcher)subject).HandlersForType<ITestMessage>(), 
+			subject.AddHandler(typeof(ITestMessage), typeof(TestMessageHandler));
+			subject.AddHandler(typeof(ITestMessage), typeof(AnotherTestMessageHandler));
+
+			Assert.That(((MessageHandler)subject).HandlersForType<ITestMessage>(), 
 				Is.EquivalentTo( new [] {typeof(TestMessageHandler), typeof(AnotherTestMessageHandler)} ));
 		}
 
 		[Test]
 		public void When_adding_different_types_of_handler_they_should_not_be_registered_together ()
 		{
-			subject.AddHandler<ITestMessage, TestMessageHandler>();
-			subject.AddHandler<ITestMessage, AnotherTestMessageHandler>();
-			subject.AddHandler<IDifferentTypeMessage, DifferentTestMessageHandler>();
+			subject.AddHandler(typeof(ITestMessage), typeof(TestMessageHandler));
+			subject.AddHandler(typeof(ITestMessage), typeof(AnotherTestMessageHandler));
+			subject.AddHandler(typeof(IDifferentTypeMessage), typeof(DifferentTestMessageHandler));
 
-			Assert.That(((MessageDispatcher)subject).HandlersForType<ITestMessage>(), 
+			Assert.That(((MessageHandler)subject).HandlersForType<ITestMessage>(), 
 				Is.EquivalentTo( new [] {typeof(TestMessageHandler), typeof(AnotherTestMessageHandler)} ));
 
-			Assert.That(((MessageDispatcher)subject).HandlersForType<IDifferentTypeMessage>(), 
+			Assert.That(((MessageHandler)subject).HandlersForType<IDifferentTypeMessage>(), 
 				Is.EquivalentTo( new [] {typeof(DifferentTestMessageHandler)} ));
 		}
 
@@ -53,11 +53,12 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		public void When_dispatching_a_message_should_send_all_matching_handlers_to_thread_pool ()
 		{
 			TestMessageHandler.Hits = AnotherTestMessageHandler.Hits = DifferentTestMessageHandler.Hits = 0;
-			subject.AddHandler<ITestMessage, TestMessageHandler>();
-			subject.AddHandler<ITestMessage, AnotherTestMessageHandler>();
-			subject.AddHandler<IDifferentTypeMessage, DifferentTestMessageHandler>();
 
-			subject.TryDispatch(Wrap(new FakeMessage()));
+			subject.AddHandler(typeof(ITestMessage), typeof(TestMessageHandler));
+			subject.AddHandler(typeof(ITestMessage), typeof(AnotherTestMessageHandler));
+			subject.AddHandler(typeof(IDifferentTypeMessage), typeof(DifferentTestMessageHandler));
+
+			subject.TryHandle(Wrap(new FakeMessage()));
 
 			Assert.That(TestMessageHandler.Hits, Is.EqualTo(1));
 			Assert.That(AnotherTestMessageHandler.Hits, Is.EqualTo(1));
@@ -68,11 +69,12 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		public void When_dispatching_a_super_class_message_should_send_all_matching_handlers_to_thread_pool ()
 		{
 			TestMessageHandler.Hits = AnotherTestMessageHandler.Hits = DifferentTestMessageHandler.Hits = 0;
-			subject.AddHandler<ITestMessage, TestMessageHandler>();
-			subject.AddHandler<ITestMessage, AnotherTestMessageHandler>();
-			subject.AddHandler<IDifferentTypeMessage, DifferentTestMessageHandler>();
+			
+			subject.AddHandler(typeof(ITestMessage), typeof(TestMessageHandler));
+			subject.AddHandler(typeof(ITestMessage), typeof(AnotherTestMessageHandler));
+			subject.AddHandler(typeof(IDifferentTypeMessage), typeof(DifferentTestMessageHandler));
 
-			subject.TryDispatch(Wrap(new SuperMessage()));
+			subject.TryHandle(Wrap(new SuperMessage()));
 			
 			Assert.That(TestMessageHandler.Hits, Is.EqualTo(1));
 			Assert.That(AnotherTestMessageHandler.Hits, Is.EqualTo(1));
@@ -82,7 +84,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		[Test]
 		public void If_a_handler_fails_AND_an_event_hook_fails_when_reporting_it_then_should_finish_or_cancel_the_message ()
 		{
-			subject.AddHandler<ITestMessage, FailingMessageHandler>();
+			subject.AddHandler(typeof(ITestMessage), typeof(FailingMessageHandler));
 
 			int cancelCount = 0;
 			int finishCount = 0;
@@ -91,8 +93,8 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 				Cancel = () => { cancelCount++; },
                 Finish = () => { finishCount++; }
 			};
-			subject.TryDispatch(pendingMessage);
-			subject.TryDispatch(pendingMessage);
+			subject.TryHandle(pendingMessage);
+			subject.TryHandle(pendingMessage);
 
 			Assert.That(finishCount, Is.EqualTo(1));
 			Assert.That(cancelCount, Is.EqualTo(1));

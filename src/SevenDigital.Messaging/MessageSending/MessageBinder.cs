@@ -1,19 +1,19 @@
-using System;
-
 namespace SevenDigital.Messaging.MessageSending
 {
 	/// <summary>
 	/// Standard handler binding for messaging
 	/// </summary>
 	/// <typeparam name="TMessage">Message type to bind</typeparam>
-	public class HandlerTriggering<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
+	public class MessageBinder<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
 	{
+		readonly IBindingHost _host;
+
 		/// <summary>
-		/// Create a new binding. You should no call this yourself.
-		/// Use `Messaging.Receiver().Handle&lt;TMessage&gt;().With&lt;THandler&gt;()`
+		/// create a handler binding api point
 		/// </summary>
-		public HandlerTriggering()
+		public MessageBinder(IBindingHost host)
 		{
+			_host = host;
 		}
 
 		/// <summary>
@@ -23,8 +23,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void With<THandler>() where THandler : IHandle<TMessage>
 		{
-			//listenerNode.SubscribeHandler<TMessage, THandler>();
-			throw new NotImplementedException("Needs to be connected to incoming dispatcher");
+			_host.BindHandler(typeof(TMessage), typeof(THandler));
 		}
 	}
 }

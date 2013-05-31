@@ -16,25 +16,22 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// It uses a Work Wrapper to trigger handling of 
 	/// incoming messages.
 	/// </summary>
-	public class MessageDispatcher : IMessageDispatcher
+	public class MessageHandler : IMessageHandler
 	{
-		readonly IWorkWrapper workWrapper;
 		readonly Dictionary<Type, HashSet<Type>> handlers; // message type => [handler types]
-		int runningHandlers;
 
 		/// <summary>
 		/// New dispatcher
 		/// </summary>
-		public MessageDispatcher(IWorkWrapper workWrapper)
+		public MessageHandler()
 		{
-			this.workWrapper = workWrapper;
 			handlers = new Dictionary<Type, HashSet<Type>>();
 		}
 
 		/// <summary>
 		/// Try to fire actions for a message
 		/// </summary>
-		public void TryDispatch(IPendingMessage<object> pendingMessage)
+		public void TryHandle(IPendingMessage<object> pendingMessage)
 		{
 			var messageObject = pendingMessage.Message;
 			var type = messageObject.GetType().DirectlyImplementedInterfaces().Single();
@@ -48,14 +45,13 @@ namespace SevenDigital.Messaging.MessageReceiving
 				return;
 			}
 
-			workWrapper.Do(() => HandleMessageWithInstancesOfHandlers(pendingMessage, matchingHandlers, messageObject));
+			HandleMessageWithInstancesOfHandlers(pendingMessage, matchingHandlers, messageObject);
 		}
 
 		void HandleMessageWithInstancesOfHandlers(IPendingMessage<object> pendingMessage, IEnumerable<Type> matchingHandlers, object messageObject)
 		{
 			foreach (var handler in matchingHandlers)
 			{
-				Interlocked.Increment(ref runningHandlers);
 				var hooks = ObjectFactory.GetAllInstances<IEventHook>();
 
 				try
@@ -81,10 +77,6 @@ namespace SevenDigital.Messaging.MessageReceiving
 						Log.Warning("Firing handler failed hooks didn't succeed: " + exinner.Message);
 					}
 					return;
-				}
-				finally
-				{
-					Interlocked.Decrement(ref runningHandlers);
 				}
 			}
 			pendingMessage.Finish();
@@ -136,28 +128,26 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// <summary>
 		/// Add a handler/message binding
 		/// </summary>
-		public void AddHandler<TMessage, THandler>()
-			where TMessage : class, IMessage
-			where THandler : IHandle<TMessage>
+		public void AddHandler(Type messageType, Type handlerType)
 		{
 			lock (handlers)
 			{
-				if (!handlers.ContainsKey(typeof(TMessage)))
+				if (!handlers.ContainsKey(messageType))
 				{
-					handlers.Add(typeof(TMessage), new HashSet<Type> { typeof(THandler) });
+					handlers.Add(messageType, new HashSet<Type> { handlerType });
 				}
-				handlers[typeof(TMessage)].Add(typeof(THandler));
+				handlers[messageType].Add(handlerType);
 			}
 		}
 
 		/// <summary>
 		/// remove a handler for all messages
 		/// </summary>
-		public void RemoveHandler<T>()
+		public void RemoveHandler(Type handlerType)
 		{
 			foreach (var hashSet in handlers.Values)
 			{
-				hashSet.Remove(typeof(T));
+				hashSet.Remove(handlerType);
 			}
 		}
 
@@ -168,11 +158,6 @@ namespace SevenDigital.Messaging.MessageReceiving
 		{
 			return handlers.Values.Sum(hs=>hs.Count);
 		}
-
-		/// <summary>
-		/// number of handlers currently running and handling messages
-		/// </summary>
-		public int HandlersInflight { get { return runningHandlers; } }
 
 		/// <summary>
 		/// List handlers for the given type

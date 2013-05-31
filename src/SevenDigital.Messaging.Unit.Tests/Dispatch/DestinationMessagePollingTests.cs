@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		IDestinationPoller subject;
 		Mock<IMessagingBase> messagingBase;
 		Mock<ISleepWrapper> sleeper;
-		Mock<IMessageDispatcher> dispatcher;
+		Mock<IMessageHandler> dispatcher;
 		string destinationName;
 
 		[SetUp]
@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 		{
 			messagingBase = new Mock<IMessagingBase>();
 			sleeper = new Mock<ISleepWrapper>();
-			dispatcher = new Mock<IMessageDispatcher>();
+			dispatcher = new Mock<IMessageHandler>();
 			destinationName = "a-destination";
 
 			subject = new DestinationPoller(messagingBase.Object, sleeper.Object, dispatcher.Object);
@@ -94,7 +94,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Dispatch
 			subject.Start();
 			Thread.Sleep(100);
 			subject.Stop();
-			dispatcher.Verify(m=>m.TryDispatch(fakeMsg));
+			dispatcher.Verify(m=>m.TryHandle(fakeMsg));
 		}
 
 		[Test]
