@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
@@ -8,23 +10,31 @@ namespace SevenDigital.Messaging.MessageSending
 	/// Standard node factory for messaging.
 	/// You don't need to create this yourself, use `Messaging.Receiver()`
 	/// </summary>
-	public class Receiver : IReceiver
+	public class Receiver : IReceiver, IReceiverControl, IDisposable
 	{
-		readonly IEndpointGenerator _uniqueEndPointGenerator;
+		readonly IUniqueEndpointGenerator _uniqueEndPointGenerator;
 		readonly ISleepWrapper _sleeper;
 		readonly IMessagingBase _messageBase;
 		readonly IMessageHandler _handler;
+		readonly List<IReceiverNode> _registeredNodes;
+		readonly object _lockObject;
 
 		/// <summary>
 		/// Create a new node factory.
 		/// You don't need to create this yourself, use `Messaging.Receiver()`
 		/// </summary>
-		public Receiver(IUniqueEndpointGenerator uniqueEndPointGenerator, ISleepWrapper sleeper, IMessagingBase messageBase, IMessageHandler handler)
+		public Receiver(
+			IUniqueEndpointGenerator uniqueEndPointGenerator,
+			ISleepWrapper sleeper,
+			IMessagingBase messageBase,
+			IMessageHandler handler)
 		{
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
 			_sleeper = sleeper;
 			_messageBase = messageBase;
 			_handler = handler;
+			_lockObject = new object();
+			_registeredNodes = new List<IReceiverNode>();
 		}
 
 		/// <summary>
@@ -34,7 +44,12 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public IReceiverNode TakeFrom(Endpoint endpoint)
 		{
-			return new ReceiverNode(endpoint, _handler, _messageBase, _sleeper);
+			lock (_lockObject)
+			{
+				var node = new ReceiverNode(this, endpoint, _handler, _messageBase, _sleeper);
+				_registeredNodes.Add(node);
+				return node;
+			}
 		}
 
 		/// <summary>
@@ -43,7 +58,61 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public IReceiverNode Listen()
 		{
-			return new ReceiverNode(_uniqueEndPointGenerator.Generate(), _handler, _messageBase, _sleeper);
+			lock (_lockObject)
+			{
+				var node = new ReceiverNode(this, _uniqueEndPointGenerator.Generate(), _handler, _messageBase, _sleeper);
+				_registeredNodes.Add(node);
+				return node;
+			}
+		}
+
+		/// <summary>
+		/// Close all receiver nodes that have been created
+		/// </summary>
+		public void Shutdown()
+		{
+			lock (_lockObject)
+			{
+				foreach (var node in _registeredNodes)
+				{
+					node.Dispose();
+				}
+				_registeredNodes.Clear();
+			}
+		}
+
+		/// <summary>
+		/// Unregister a node from the shutdown list
+		/// </summary>
+		public void Remove(IReceiverNode node)
+		{
+			lock (_lockObject)
+			{
+				if (_registeredNodes.Contains(node))
+					_registeredNodes.RemoveAll(n=> Equals(n, node));
+			}
+		}
+
+		/// <summary>
+		/// Set maximum concurrent handlers per receiver node
+		/// </summary>
+		public void SetConcurrentHandlers(int max)
+		{
+			lock (_lockObject)
+			{
+				foreach (var node in _registeredNodes)
+				{
+					node.SetConcurrentHandlers(max);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Shutdown all nodes.
+		/// </summary>
+		public void Dispose()
+		{
+			Shutdown();
 		}
 	}
 }

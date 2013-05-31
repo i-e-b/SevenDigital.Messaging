@@ -17,5 +17,24 @@ namespace SevenDigital.Messaging
 		/// All listeners mapped this way will receive all messages.
 		/// </summary>
 		IReceiverNode Listen();
+
+	}
+
+	public interface IReceiverControl
+	{
+		/// <summary>
+		/// Close all receiver nodes that have been created
+		/// </summary>
+		void Shutdown();
+
+		/// <summary>
+		/// Unregister a node from the shutdown list
+		/// </summary>
+		void Remove(IReceiverNode node);
+
+		/// <summary>
+		/// Set maximum concurrent handlers per receiver node
+		/// </summary>
+		void SetConcurrentHandlers(int max);
 	}
 }
