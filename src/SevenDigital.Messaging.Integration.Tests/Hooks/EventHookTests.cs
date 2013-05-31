@@ -61,7 +61,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Assert.That(ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval));
 
 			}
-			ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
+			//ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
 			lock (mock_event_hook)
 			{
 				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
@@ -79,7 +79,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				GenericHandler.AutoResetEvent.WaitOne(LongInterval);
 			}
-			ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
+			//ObjectFactory.GetInstance<IDestinationPoller>().Stop(); // Moq isn't thread safe!
 			lock (mock_event_hook)
 			{
 				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));

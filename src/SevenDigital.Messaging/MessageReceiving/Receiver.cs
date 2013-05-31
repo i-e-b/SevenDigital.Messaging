@@ -1,3 +1,5 @@
+using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.MessageSending
@@ -8,15 +10,21 @@ namespace SevenDigital.Messaging.MessageSending
 	/// </summary>
 	public class Receiver : IReceiver
 	{
-		private readonly IEndpointGenerator _uniqueEndPointGenerator;
+		readonly IEndpointGenerator _uniqueEndPointGenerator;
+		readonly ISleepWrapper _sleeper;
+		readonly IMessagingBase _messageBase;
+		readonly IMessageHandler _handler;
 
 		/// <summary>
 		/// Create a new node factory.
 		/// You don't need to create this yourself, use `Messaging.Receiver()`
 		/// </summary>
-		public Receiver(IUniqueEndpointGenerator uniqueEndPointGenerator)
+		public Receiver(IUniqueEndpointGenerator uniqueEndPointGenerator, ISleepWrapper sleeper, IMessagingBase messageBase, IMessageHandler handler)
 		{
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
+			_sleeper = sleeper;
+			_messageBase = messageBase;
+			_handler = handler;
 		}
 
 		/// <summary>
@@ -26,7 +34,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public IReceiverNode TakeFrom(Endpoint endpoint)
 		{
-			return new ReceiverNode(endpoint);
+			return new ReceiverNode(endpoint, _handler, _messageBase, _sleeper);
 		}
 
 		/// <summary>
@@ -35,7 +43,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public IReceiverNode Listen()
 		{
-			return new ReceiverNode(_uniqueEndPointGenerator.Generate());
+			return new ReceiverNode(_uniqueEndPointGenerator.Generate(), _handler, _messageBase, _sleeper);
 		}
 	}
 }
