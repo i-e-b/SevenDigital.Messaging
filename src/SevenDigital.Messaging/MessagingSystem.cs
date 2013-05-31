@@ -317,8 +317,13 @@ namespace SevenDigital.Messaging
 
 		public void SetIntegrationTestMode()
 		{
-			//ObjectFactory.EjectAllInstancesOf<INode>();
-			//ObjectFactory.Configure(map => map.For<INode>().Use<IntegrationTestNode>());
+			if (MessagingSystem.UsingLoopbackMode()) 
+				throw new Exception("Integration test mode can not be used in loopback mode");
+			var controller = ObjectFactory.TryGetInstance<IReceiver>() as IReceiverControl;
+			if (controller == null)
+				throw new Exception("Messaging is not configured");
+
+			controller.PurgeOnConnect = true;
 		}
 	}
 

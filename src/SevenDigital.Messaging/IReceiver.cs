@@ -36,5 +36,11 @@ namespace SevenDigital.Messaging
 		/// Set maximum concurrent handlers per receiver node
 		/// </summary>
 		void SetConcurrentHandlers(int max);
+
+		/// <summary>
+		/// Set purging policy. If true, all waiting messages are DELETED when a handler is registered.
+		/// This setting is meant for integration tests.
+		/// </summary>
+		bool PurgeOnConnect { get; set; }
 	}
 }

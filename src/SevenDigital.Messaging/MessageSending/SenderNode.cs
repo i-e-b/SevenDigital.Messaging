@@ -14,7 +14,8 @@ namespace SevenDigital.Messaging.MessageSending
 	/// </summary>
 	public class SenderNode : ISenderNode, IDisposable
 	{
-		readonly IMessagingBase messagingBase;
+		const int SingleThreaded = 1;
+		readonly IMessagingBase _messagingBase;
 		readonly IDispatch<IMessage> _sendingDispatcher;
 
 		/// <summary>
@@ -22,22 +23,14 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public SenderNode(IMessagingBase messagingBase)
 		{
+			_messagingBase = messagingBase;
 			_sendingDispatcher = new Dispatch<IMessage>( 
 				new InMemoryWorkQueue<IMessage>(), // later, replace with Persistent Disk Queue
-				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", 1)
+				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
 				);
 
 			_sendingDispatcher.AddConsumer(SendWaitingMessage);
 			_sendingDispatcher.Start();
-			this.messagingBase = messagingBase;
-		}
-
-		void SendWaitingMessage(IMessage message)
-		{
-			Console.WriteLine("Sending " + message.GetType());
-			TryFireHooks(message);
-			messagingBase.SendMessage(message);
-			Console.WriteLine("Sent " + message.GetType());
 		}
 
 		/// <summary>
@@ -46,8 +39,13 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <param name="message">Message to be send. This must be a serialisable type</param>
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			Console.WriteLine("Registered to send "+message.GetType());
 			_sendingDispatcher.AddWork(message);
+		}
+
+		void SendWaitingMessage(IMessage message)
+		{
+			TryFireHooks(message);
+			_messagingBase.SendMessage(message);
 		}
 
 		static void TryFireHooks(IMessage message)
