@@ -1,5 +1,4 @@
 using System;
-using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging
 {
@@ -26,6 +25,24 @@ namespace SevenDigital.Messaging
 		/// <typeparam name="T">Type of hander previously bound with `Handle&lt;T&gt;`</typeparam>
 		void Unregister<T>();
 
+		/// <summary>
+		/// Set maximum number of concurrent handlers on this node
+		/// </summary>
+		void SetConcurrentHandlers(int max);
+	}
+	
+	/// <summary>
+	/// A message binder, used to bind handlers to message types in a receiver node
+	/// </summary>
+	/// <typeparam name="TMessage">Message type to be bound</typeparam>
+	public interface IMessageBinding<TMessage> where TMessage : class, IMessage
+	{
+		/// <summary>
+		/// Bind this handler to receive the selected message type.
+		/// The handler may receive any number of messages immediately after calling this method
+		/// until unbound or messaging is paused or shutdown.
+		/// </summary>
+		void With<THandler>() where THandler : IHandle<TMessage>;
 	}
 
 	/// <summary>

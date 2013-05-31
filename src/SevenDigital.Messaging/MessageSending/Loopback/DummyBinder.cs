@@ -27,6 +27,11 @@ namespace SevenDigital.Messaging.MessageSending.Loopback
 		/// Does nothing.
 		/// </summary>
 		public void Unregister<T>() { }
+		
+		/// <summary>
+		/// Does nothing.
+		/// </summary>
+		public void SetConcurrentHandlers(int max) { }
 	}
 	
 	/// <summary>

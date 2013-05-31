@@ -72,6 +72,13 @@
 		{
 			_loopbackReceiver.Unregister<T>();
 		}
+
+		/// <summary>
+		/// Set maximum number of concurrent handlers on this node
+		/// </summary>
+		public void SetConcurrentHandlers(int max)
+		{
+		}
 	}
 
 	/// <summary>

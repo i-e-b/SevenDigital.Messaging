@@ -68,7 +68,6 @@
     <Compile Include="MessageSending\HandlerAction.cs" />
     <Compile Include="MessageReceiving\RabbitMqPollingNode.cs" />
     <Compile Include="__Abandoned__\IntegrationTestNode.cs" />
-    <Compile Include="MessageReceiving\IMessageBinding.cs" />
     <Compile Include="IReceiverNode.cs" />
     <Compile Include="MessageSending\Loopback\DummyBinder.cs" />
     <Compile Include="MessageSending\Loopback\LoopbackBinding.cs" />
@@ -77,7 +76,7 @@
     <Compile Include="Endpoint.cs" />
     <Compile Include="RetryMessageAttribute.cs" />
     <Compile Include="Routing\Host.cs" />
-    <Compile Include="Routing\IEndpointGenerator.cs" />
+    <Compile Include="Routing\IUniqueEndpointGenerator.cs" />
     <Compile Include="Routing\IMessagingHost.cs" />
     <Compile Include="Routing\IRoutingEndpoint.cs" />
     <Compile Include="Routing\Naming.cs" />

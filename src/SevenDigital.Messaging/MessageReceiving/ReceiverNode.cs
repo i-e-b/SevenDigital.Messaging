@@ -18,6 +18,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// </remarks>
 	public class ReceiverNode : IReceiverNode, IBindingHost
 	{
+		readonly IReceiverControl _parent;
 		readonly IRoutingEndpoint _endpoint;
 		readonly IDispatch<IPendingMessage<object>> _receivingDispatcher;
 		readonly IMessageHandler _handler; // message type => [handler types]
@@ -27,11 +28,13 @@ namespace SevenDigital.Messaging.MessageSending
 		/// Create a new message receiver node. You do not need to create this yourself. Use `Messaging.Receiver()`
 		/// </summary>
 		public ReceiverNode(
+			IReceiverControl parent,
 			IRoutingEndpoint endpoint,
 			IMessageHandler handler,
 			IMessagingBase messagingBase,
 			ISleepWrapper sleeper)
 		{
+			_parent = parent;
 			_endpoint = endpoint;
 			_handler = handler;
 			_rabbitMqPollingNode = new RabbitMqPollingNode(endpoint, messagingBase, sleeper);
@@ -71,6 +74,14 @@ namespace SevenDigital.Messaging.MessageSending
 		}
 
 		/// <summary>
+		/// Set maximum number of concurrent handlers on this node
+		/// </summary>
+		public void SetConcurrentHandlers(int max)
+		{
+			_receivingDispatcher.MaximumInflight = max;
+		}
+
+		/// <summary>
 		/// Bind a message to a handler (non-exclusively)
 		/// </summary>
 		/// <param name="messageType">Type of incoming message</param>
@@ -88,6 +99,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void Dispose()
 		{
+			_parent.Remove(this);
 			_receivingDispatcher.Stop();
 		}
 
