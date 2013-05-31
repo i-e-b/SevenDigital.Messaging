@@ -45,6 +45,7 @@ namespace SevenDigital.Messaging.MessageSending
 			lock (_lockObject)
 			{
 				var msg = _mostRecentMessage ?? EnsureQueuesAndPollForMessage();
+				_mostRecentMessage = null;
 				return 
 					msg == null
 					? new WorkQueueItem<IPendingMessage<object>>()
