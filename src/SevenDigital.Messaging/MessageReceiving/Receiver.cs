@@ -23,9 +23,9 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly ISleepWrapper _sleeper;
 		readonly IMessagingBase _messageBase;
 		readonly IMessageHandler _handler;
-		readonly IMessageRouter _messageRouter;
 		readonly IRabbitMqConnection _rmqc;
 		readonly List<IReceiverNode> _registeredNodes;
+		readonly IMessageRouter _messageRouter;
 		readonly object _lockObject;
 
 		/// <summary>
@@ -40,11 +40,11 @@ namespace SevenDigital.Messaging.MessageSending
 			IMessageRouter messageRouter,
 			IRabbitMqConnection rmqc)
 		{
+			_messageRouter = messageRouter;
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
 			_sleeper = sleeper;
 			_messageBase = messageBase;
 			_handler = handler;
-			_messageRouter = messageRouter;
 			_rmqc = rmqc;
 			_lockObject = new object();
 			_registeredNodes = new List<IReceiverNode>();
@@ -69,8 +69,8 @@ namespace SevenDigital.Messaging.MessageSending
 
 		void PurgeEndpoint(Endpoint endpoint)
 		{
-			_rmqc.WithChannel(channel => channel.QueuePurge(endpoint.ToString()));
-			//_messageRouter.Purge(endpoint.ToString());
+			//_rmqc.WithChannel(channel => channel.QueuePurge(endpoint.ToString()));
+			_messageRouter.Purge(endpoint.ToString());
 		}
 
 		/// <summary>

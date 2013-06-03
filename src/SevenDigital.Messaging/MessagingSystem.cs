@@ -250,12 +250,13 @@ namespace SevenDigital.Messaging
 			EjectAndDispose<IReceiverControl>();
 			EjectAndDispose<IChannelAction>();
 
-			ObjectFactory.EjectAllInstancesOf<IMessagingHost>();
-			ObjectFactory.EjectAllInstancesOf<IRabbitMqConnection>();
-			ObjectFactory.EjectAllInstancesOf<IUniqueEndpointGenerator>();
-			ObjectFactory.EjectAllInstancesOf<ISleepWrapper>();
-			ObjectFactory.EjectAllInstancesOf<IReceiver>();
-			ObjectFactory.EjectAllInstancesOf<ISenderNode>();
+			EjectAndDispose<IMessagingHost>();
+			EjectAndDispose<IRabbitMqConnection>();
+			EjectAndDispose<IUniqueEndpointGenerator>();
+			EjectAndDispose<ISleepWrapper>();
+			EjectAndDispose<IReceiver>();
+			EjectAndDispose<ISenderNode>();
+			EjectAndDispose<IEventHook>();
 		}
 
 		void EjectAndDispose<T>()

@@ -90,10 +90,13 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			_rabbitMqPollingNode.AddMessageType(messageType);
 			_handler.AddHandler(messageType, handlerType);
+
+			Console.WriteLine("Currently listening to "+_rabbitMqPollingNode.CurrentTypes());
 		}
 
 		void HandleIncomingMessage(IPendingMessage<object> incoming)
 		{
+			Console.WriteLine("Message incoming: " + incoming.Message.GetType());
 			_handler.TryHandle(incoming);
 		}
 

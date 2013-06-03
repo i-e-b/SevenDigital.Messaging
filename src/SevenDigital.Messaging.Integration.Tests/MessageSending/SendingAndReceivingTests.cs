@@ -20,13 +20,14 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			Helper.SetupTestMessaging();
 
+			MessagingSystem.Events.ClearEventHooks();
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
 			_receiver = MessagingSystem.Receiver();
 			_sender = MessagingSystem.Sender();
 		}
 
 		[Test]
-		public void Handler_should_react_for_all_message_types_it_is_handling()
+		public void zHandler_should_react_for_all_message_types_it_is_handling()
 		{
 			using (var receiverNode = _receiver.Listen())
 			{
@@ -105,7 +106,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
 				Assert.That(colourSignal, Is.False);
-
 			}
 		}
 
@@ -121,7 +121,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
 				Assert.That(colourSignal, Is.False);
-
 			}
 		}
 
@@ -140,7 +139,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				Assert.That(superheroSignal || villanSignal, Is.True);
 				Assert.That(superheroSignal && villanSignal, Is.False);
-
 			}
 		}
 
@@ -158,7 +156,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				Assert.That(superheroSignal, Is.True);
 				Assert.That(villainSignal, Is.True);
-
 			}
 		}
 
@@ -172,6 +169,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				// bug: Current problem in new threading:
 				// two messages are being sent, but only one is being picked up.
+				// 1) I think the existing handlers are not being unbound correctly on node disposal
+				// 2) The bindings are being set correctly, but 2nd message never comes in.
 
 				_sender.SendMessage(new GreenMessage());
 
