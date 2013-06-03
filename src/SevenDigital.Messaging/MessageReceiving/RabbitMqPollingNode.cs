@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessagingBase _messagingBase;
 		readonly ISleepWrapper _sleeper;
 		readonly HashSet<Type> _boundMessageTypes;
-		IPendingMessage<object> _mostRecentMessage;
+		//IPendingMessage<object> _mostRecentMessage;
 
 		/// <summary>
 		/// Create a work item queue that will try to pull items from a named RabbitMQ endpoint
@@ -48,8 +48,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public IWorkQueueItem<IPendingMessage<object>> TryDequeue()
 		{
-			var msg = _mostRecentMessage ?? SleepingGetMessage();
-			_mostRecentMessage = null;
+			var msg = SleepingGetMessage();
 			return
 				msg == null
 				? new WorkQueueItem<IPendingMessage<object>>()
@@ -65,6 +64,7 @@ namespace SevenDigital.Messaging.MessageSending
 			lock (_boundMessageTypes)
 			{
 				_boundMessageTypes.Add(type);
+				TryRebuildQueues();
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public int Length()
 		{
-			return (_mostRecentMessage != null) ? 1 : 0;
+			return 0;
 		}
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public string CurrentTypes ()
 		{
-			return string.Join (", ", _boundMessageTypes.Select(m => m.ToString));
+			return string.Join (", ", _boundMessageTypes);
 		}
 
 		IPendingMessage<object> SleepingGetMessage()
