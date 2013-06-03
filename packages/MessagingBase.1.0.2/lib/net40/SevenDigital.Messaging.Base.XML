@@ -1,0 +1,731 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SevenDigital.Messaging.Base</name>
+    </assembly>
+    <members>
+        <member name="T:SevenDigital.Messaging.Base.EnumerableExtensions">
+            <summary>
+            Extensions for IEnumerable&lt;T&gt;
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.EnumerableExtensions.HasSingle``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns true if enumerable has exactly one item, false otherwise.
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RateLimitedAction">
+            <summary>
+            Helper to perform actions that should not be repeated often
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RateLimitedAction.Of(System.Action)">
+            <summary>
+            Set action to perform.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RateLimitedAction.YoungerThan(System.TimeSpan)">
+            <summary>
+            Perform the action if not performed within the given age.
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.TypeExtensions">
+            <summary>
+            Extension methods for reading the interfaces defined in types
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.TypeExtensions.DirectlyImplementedInterfaces(System.Type)">
+            <summary>
+            Return the list of interfaces explicitly defined by the type of the object;
+            Does not return subinterfaces.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.TypeExtensions.DirectlyImplementedInterfaces``1(``0)">
+            <summary>
+            Return the list of interfaces explicitly defined by the type of the object;
+            Does not return subinterfaces.
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.IMessagingBase">
+            <summary>
+            Core messaging functions
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.IMessagingBase.CreateDestination``1(System.String)">
+            <summary>
+            Ensure a destination exists, and bind it to the exchanges for the given type
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.IMessagingBase.CreateDestination(System.Type,System.String)">
+            <summary>
+            Ensure a destination exists, and bind it to the exchanges for the given type
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.IMessagingBase.SendMessage(System.Object)">
+            <summary>
+            Send a message to all bound destinations.
+            Returns serialised form of the message object.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.IMessagingBase.GetMessage``1(System.String)">
+            <summary>
+            Poll for a waiting message. Returns default(T) if no message.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.IMessagingBase.TryStartMessage``1(System.String)">
+            <summary>
+            Try to start handling a waiting message.
+            The message may be acknowledged or cancelled to finish reception.
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.IPendingMessage`1">
+            <summary>
+            Represents a message received from RabbitMq.
+            May be acknowledged or cancelled.
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.IPendingMessage`1.Message">
+            <summary>Message on queue</summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.IPendingMessage`1.Cancel">
+            <summary>Action to cancel and return message to queue</summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.IPendingMessage`1.Finish">
+            <summary>Action to complete message and remove from queue</summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.MessagingBase">
+            <summary>
+            Default messaging base.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.#ctor(SevenDigital.Messaging.Base.Routing.ITypeRouter,SevenDigital.Messaging.Base.Routing.IMessageRouter,SevenDigital.Messaging.Base.Serialisation.IMessageSerialiser)">
+            <summary>
+            Create with `ObjectFactory.GetInstance&lt;IMessagingBase&gt;()`
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.ContractTypeName(System.Object)">
+            <summary>
+            Get the contract name of an object instance
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.ContractTypeName(System.Type)">
+            <summary>
+            Get the contract name of a type
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.CreateDestination``1(System.String)">
+            <summary>
+            Ensure a destination exists, and bind it to the exchanges for the given type
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.CreateDestination(System.Type,System.String)">
+            <summary>
+            Ensure a destination exists, and bind it to the exchanges for the given type
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.SendMessage(System.Object)">
+            <summary>
+            Send a message to all bound destinations.
+            Returns serialised form of the message object.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.GetMessage``1(System.String)">
+            <summary>
+            Poll for a waiting message. Returns default(T) if no message.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.TryStartMessage``1(System.String)">
+            <summary>
+            Try to start handling a waiting message.
+            The message may be acknowledged or cancelled to finish reception.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.ResetCaches">
+            <summary>
+            Ensure that routes and connections are rebuild on next SendMessage or CreateDestination.
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.MessagingBaseConfiguration">
+            <summary>
+            Configuration options for messaging base
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBaseConfiguration.WithDefaults">
+            <summary>
+            Configure all default mappings in structure map.
+            You must also call a `WithConnection...` method to get a
+            working system.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBaseConfiguration.WithConnection(SevenDigital.Messaging.Base.RabbitMq.IRabbitMqConnection)">
+            <summary>
+            Configure long and short term connections to use the specified connection details
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBaseConfiguration.WithConnectionFromAppConfig">
+            <summary>
+            Use details contained in .Net configuration key `Messaging.Host` for connections
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBaseConfiguration.WithRabbitManagementFromAppConfig">
+            <summary>
+            Use details contained in .Net configuration keys `Messaging.Host`, `ApiUsername` and `ApiPassword` for connections
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBaseConfiguration.WithRabbitManagement(System.String,System.String,System.String,System.String)">
+            <summary>
+            Use a specific rabbit management node
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.PendingMessage`1">
+            <summary>
+            A received message instance
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.PendingMessage`1.Message">
+            <summary>Message on queue</summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.PendingMessage`1.Cancel">
+            <summary>Action to cancel and return message to queue</summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.PendingMessage`1.Finish">
+            <summary>Action to complete message and remove from queue</summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.IChannelAction">
+            <summary>
+            Wrapper for actions that communicate with a RabbitMQ cluster.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.IChannelAction.WithChannel(System.Action{RabbitMQ.Client.IModel})">
+            <summary>
+            Perform an action against the RMQ cluster, returning no data
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.IChannelAction.GetWithChannel``1(System.Func{RabbitMQ.Client.IModel,``0})">
+            <summary>
+            Perform an action against the RMQ cluster, returning data
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.IRabbitMqConnection">
+            <summary>
+            Connection provider for RabbitMq
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.IRabbitMqConnection.ConnectionFactory">
+            <summary>
+            Return a connection factory.
+            Use this to connect to the RMQ cluster.
+            ALWAYS dispose your connections.
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.IRabbitMqConnection.Host">
+            <summary>
+            Rabbit MQ Cluster host name uri fragment
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.IRabbitMqConnection.VirtualHost">
+            <summary>
+            Target virtual host
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.ILongTermConnection">
+            <summary>
+            Long-term connection to an RMQ cluster.
+            This provider should be used when polling.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.ILongTermConnection.Reset">
+            <summary>
+            Close any existing connections.
+            Connections will be re-opened if an action is requested.
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.LongTermRabbitConnection">
+            <summary>
+            Default long-term connection to an RMQ cluster.
+            This provider should be used when polling.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.LongTermRabbitConnection.#ctor(SevenDigital.Messaging.Base.RabbitMq.IRabbitMqConnection)">
+            <summary>
+            Prepare a long term connection with a connection provider.
+            Call `MessagingBaseConfiguration` and request IChannelAction
+            </summary>
+            <param name="rabbitMqConnection"></param>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.LongTermRabbitConnection.Finalize">
+            <summary>
+            Close any existing connections and dispose of unmanaged resources
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.LongTermRabbitConnection.Dispose">
+            <summary>
+            Close any existing connections and dispose of unmanaged resources
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.LongTermRabbitConnection.Reset">
+            <summary>
+            Close any existing connections.
+            Connections will be re-opened if an action is requested.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.LongTermRabbitConnection.WithChannel(System.Action{RabbitMQ.Client.IModel})">
+            <summary>
+            Perform an action against the RMQ cluster, returning no data
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.LongTermRabbitConnection.GetWithChannel``1(System.Func{RabbitMQ.Client.IModel,``0})">
+            <summary>
+            Perform an action against the RMQ cluster, returning data
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqConnection">
+            <summary>
+            Default short-term connection.
+            This class opens and closes a connection per request, and
+            should not be used for polling.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqConnection.#ctor(System.String,System.String)">
+            <summary>
+            Prepare a connection provider
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqConnection.ConnectionFactory">
+            <summary>
+            Return a connection factory.
+            Use this to connect to the RMQ cluster.
+            ALWAYS dispose your connections.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqConnection.WithChannel(System.Action{RabbitMQ.Client.IModel})">
+            <summary>
+            Perform an action against the RMQ cluster, returning no data
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqConnection.GetWithChannel``1(System.Func{RabbitMQ.Client.IModel,``0})">
+            <summary>
+            Perform an action against the RMQ cluster, returning data
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqConnection.Dispose">
+            <summary>
+            No action.
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.RabbitMqConnection.Host">
+            <summary>
+            Rabbit MQ Cluster host name uri fragment
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.RabbitMqConnection.VirtualHost">
+            <summary>
+            Target virtual host
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Routing.IMessageRouter">
+            <summary>
+            Basic actions to drive a RabbitMQ cluster
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.AddSource(System.String)">
+            <summary>
+            Add a new node to which messages can be sent.
+            This node send messages over links that share a routing key.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.AddBroadcastSource(System.String)">
+            <summary>
+            Add a new node to which messages can be sent.
+            This node sends messages to all its links
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.AddDestination(System.String)">
+            <summary>
+            Add a new node where messages can be picked up
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.Link(System.String,System.String)">
+            <summary>
+            Create a link between a source node and a destination node by a routing key
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.RouteSources(System.String,System.String)">
+            <summary>
+            Route a message between two sources.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.Send(System.String,System.String)">
+            <summary>
+            SendMesssage a message to an established source (will be routed to destinations by key)
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.Get(System.String,System.UInt64@)">
+            <summary>
+            Get a message from a destination. This does not remove the message from the queue.
+            If a message is returned, it will not be available for another get unless
+            you use 'Finish' to complete a message and remove from the queue, or 'Cancel'
+            to release the message back to the queue.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.Finish(System.UInt64)">
+            <summary>
+            Finish a message retrieved by 'Get'.
+            This will remove the message from the queue
+            </summary>
+            <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.GetAndFinish(System.String)">
+            <summary>
+            Get a message from a destination, removing it from the queue
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.Purge(System.String)">
+            <summary>
+            Delete all waiting messages from a given destination
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.Cancel(System.UInt64)">
+            <summary>
+            Cancel a 'Get' by it's tag. The message will remain on the queue and become available for another 'Get'
+            </summary>
+            <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Serialisation.ContractStack">
+            <summary>
+            Helper class to read the contract stack from incoming JSON messages
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.ContractStack.FirstKnownType(System.String)">
+            <summary>
+            Return the type object for the first contract available in the calling assembly,
+            as read from the supplied JSON message.
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Serialisation.IMessageSerialiser">
+            <summary>
+            Contract for message serialisation
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.IMessageSerialiser.Serialise(System.Object)">
+            <summary>Return a JSON string representing a source object</summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.IMessageSerialiser.Deserialise``1(System.String)">
+            <summary>Return an object of a known type based on it's JSON representation</summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.IMessageSerialiser.DeserialiseByStack(System.String)">
+            <summary>Return an object of an unknown type based on it's claimed hierarchy</summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRabbitMqQuery">
+            <summary>
+            Interface to the RabbitMQ management API
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRabbitMqQuery.ListDestinations">
+            <summary>
+            List all Destination queue in the given virtual host.
+            Equivalent to /api/queues/vhost
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRabbitMqQuery.ListNodes">
+            <summary>
+            List all nodes attached to the cluster.
+            Equivalent to /api/nodes
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRabbitMqQuery.ListSources">
+            <summary>
+            List all Source exchanges in the given virtual host
+            Equivalent to /api/exchanges/vhost
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRabbitMqQuery.HostUri">
+            <summary>
+            RabbitMQ cluster's management uri
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRabbitMqQuery.VirtualHost">
+            <summary>
+            Virtual host to use, where applicable
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRabbitMqQuery.Credentials">
+            <summary>
+            Log-in credentials for RabbitMQ management API
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Routing.ITypeRouter">
+            <summary>
+            Building contract-type routing tree
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.ITypeRouter.BuildRoutes(System.Type)">
+            <summary>
+            Build all dependant types into the messaging server
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RMQueue">
+            <summary>
+            Message as returned by RabbitMQ management API.
+            See http://www.rabbitmq.com/management.html
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRMQueue">
+            <summary>
+            Message as returned by RabbitMQ management API.
+            See http://www.rabbitmq.com/management.html
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Formatting">
+            <summary>
+            Helper for formatting file sizes
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Formatting.ReadableFileSize(System.Double,System.Int32)">
+            <summary>
+            Render a size in byte to a human readable string.
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRMExchange">
+            <summary>
+            Message as returned by RabbitMQ management API.
+            See http://www.rabbitmq.com/management.html
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRMNode">
+            <summary>
+            Message as returned by RabbitMQ management API.
+            See http://www.rabbitmq.com/management.html
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRMNode.AnyAlarms">
+            <summary>
+            Returns true if there are any problems that
+            will prevent messages from being received or delivered.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRMNode.FreeMemPercent">
+            <summary>
+            Human readable free memory on the node
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.IRMNode.FreeDisk">
+            <summary>
+            Human readable free disk space on the node
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Serialisation.InterfaceStack">
+            <summary>
+            Helper class for reading the definition stack of interfaces.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.InterfaceStack.Of(System.Object)">
+            <summary>
+            Return a string implementation of 
+            </summary>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Serialisation.MessageSerialiser">
+            <summary>
+            Default serialiser for message objects.
+            Uses ServiceStack.Text
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.MessageSerialiser.Serialise(System.Object)">
+            <summary>Return a JSON string representing a source object</summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.MessageSerialiser.Deserialise``1(System.String)">
+            <summary>Return an object of a known type based on it's JSON representation</summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.MessageSerialiser.DeserialiseByStack(System.String)">
+            <summary>Return an object of an unknown type based on it's claimed hierarchy</summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.MessageSerialiser.WrapperTypeFor``1">
+            <summary>
+            Returns an instatiable class that implements the given interface class
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.MessageSerialiser.WrapperTypeFor(System.Type)">
+            <summary>
+            Returns an instatiable class that implements the given interface class
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery">
+            <summary>
+            Deafult RMQ query
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery.#ctor(System.Uri,System.Net.NetworkCredential)">
+            <summary>
+            Use `MessagingBaseConfiguration` and get an IRabbitMqQuery from ObjectFactory.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Use `MessagingBaseConfiguration` and get an IRabbitMqQuery from ObjectFactory.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery.ListDestinations">
+            <summary>
+            List all Destination queue in the given virtual host.
+            Equivalent to /api/queues/vhost
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery.ListNodes">
+            <summary>
+            List all nodes attached to the cluster.
+            Equivalent to /api/nodes
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery.ListSources">
+            <summary>
+            List all Source exchanges in the given virtual host
+            Equivalent to /api/exchanges/vhost
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery.HostUri">
+            <summary>
+            RabbitMQ cluster's management uri
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery.VirtualHost">
+            <summary>
+            Virtual host to use, where applicable
+            </summary>
+        </member>
+        <member name="P:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RabbitMqQuery.Credentials">
+            <summary>
+            Log-in credentials for RabbitMQ management API
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RMExchange">
+            <summary>
+            Message as returned by RabbitMQ management API.
+            See http://www.rabbitmq.com/management.html
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RMNode">
+            <summary>
+            Message as returned by RabbitMQ management API.
+            See http://www.rabbitmq.com/management.html
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RMNode.AnyAlarms">
+            <summary>
+            Returns true if there are any problems that
+            will prevent messages from being received or delivered.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RMNode.FreeMemPercent">
+            <summary>
+            Human readable free memory on the node
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement.RMNode.FreeDisk">
+            <summary>
+            Human readable free disk space on the node
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Routing.RabbitRouter">
+            <summary>
+            Very simple synchronous message routing over RabbitMq
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.#ctor(SevenDigital.Messaging.Base.RabbitMq.IChannelAction)">
+            <summary>
+            Create a new router from config settings
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.RemoveRouting(System.Func{System.String,System.Boolean})">
+            <summary>
+            Deletes all queues and exchanges created or used by this Router.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.AddSource(System.String)">
+            <summary>
+            Add a new node to which messages can be sent.
+            This node send messages over links that share a routing key.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.AddBroadcastSource(System.String)">
+            <summary>
+            Add a new node to which messages can be sent.
+            This node sends messages to all its links
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.AddDestination(System.String)">
+            <summary>
+            Add a new node where messages can be picked up
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.Link(System.String,System.String)">
+            <summary>
+            Create a link between a source node and a destination node by a routing key
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.RouteSources(System.String,System.String)">
+            <summary>
+            Route a message between two sources.
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.Send(System.String,System.String)">
+            <summary>
+            Send a message to an established source (will be routed to destinations by key)
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.Get(System.String,System.UInt64@)">
+            <summary>
+            Get a message from a destination. This removes the message from the destination
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.Finish(System.UInt64)">
+            <summary>
+            Finish a message retrieved by 'Get'.
+            This will remove the message from the queue
+            </summary>
+            <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.GetAndFinish(System.String)">
+            <summary>
+            Get a message from a destination, removing it from the queue
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.Purge(System.String)">
+            <summary>
+            Delete all waiting messages from a given destination
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.Cancel(System.UInt64)">
+            <summary>
+            Cancel a 'Get' by it's tag. The message will remain on the queue and become available for another 'Get'
+            </summary>
+            <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.EmptyBasicProperties">
+            <summary>
+            Basic properties object with default settings
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Routing.TypeRouter">
+            <summary>
+            Default type router
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.TypeRouter.#ctor(SevenDigital.Messaging.Base.Routing.IMessageRouter)">
+            <summary>
+            Create a type router to drive the given message router.
+            You don't need to do this yourself -- Use `MessagingBaseConfiguration`
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.TypeRouter.BuildRoutes(System.Type)">
+            <summary>
+            Build all dependant types into the messaging server
+            </summary>
+            <param name="type"></param>
+        </member>
+    </members>
+</doc>
