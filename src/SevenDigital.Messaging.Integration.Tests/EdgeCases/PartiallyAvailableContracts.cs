@@ -85,7 +85,9 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 
 		static void SimulateOldStyleMessage(Guid cid)
 		{
-			var router = ObjectFactory.GetInstance<IMessageRouter>();
+			var router = ObjectFactory.TryGetInstance<IMessageRouter>();
+
+			Assert.That(router, Is.Not.Null, "Failed to get a messaging connection");
 
 			// ReSharper disable PossibleNullReferenceException
 			var correct = string.Join(", ", typeof(ISpecificMessage).AssemblyQualifiedName.Split(',').Take(2));

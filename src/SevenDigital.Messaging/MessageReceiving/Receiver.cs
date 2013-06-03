@@ -11,6 +11,11 @@ namespace SevenDigital.Messaging.MessageSending
 	/// Standard node factory for messaging.
 	/// You don't need to create this yourself, use `Messaging.Receiver()`
 	/// </summary>
+	/// <remarks>
+	/// The Receiver is a factory class for ReceiverNodes. It provides
+	/// the API point to decide to use a unique endpoint name (Listen) or
+	/// a specific endpoint name (TakeFrom)
+	/// </remarks>
 	public class Receiver : IReceiver, IReceiverControl, IDisposable
 	{
 		readonly IUniqueEndpointGenerator _uniqueEndPointGenerator;
@@ -51,13 +56,22 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			lock (_lockObject)
 			{
-				if (PurgeOnConnect)
-				{
-					_messageRouter.Purge(endpoint.ToString());
-				}
+				if (PurgeOnConnect) PurgeEndpoint(endpoint);
 				var node = new ReceiverNode(this, endpoint, _handler, _messageBase, _sleeper);
 				_registeredNodes.Add(node);
 				return node;
+			}
+		}
+
+		void PurgeEndpoint(Endpoint endpoint)
+		{
+			try
+			{
+				_messageRouter.Purge(endpoint.ToString());
+			}
+			catch (RabbitMQ.Client.Exceptions.OperationInterruptedException oie)
+			{
+				Console.WriteLine("Could not purge, connection died");
 			}
 		}
 

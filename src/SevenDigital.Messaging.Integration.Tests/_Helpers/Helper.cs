@@ -19,13 +19,16 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			var server = ConfigurationManager.AppSettings["rabbitServer"];
 			MessagingSystem.Configure.WithDefaults().SetMessagingServer(server);
+			ObjectFactory.Configure(map=>map.For<IUniqueEndpointGenerator>().Use<TestEndpointGenerator>());
 		}
+
 		public static void DeleteQueue(string queueName)
 		{
 			try
 			{
 				ObjectFactory.GetInstance<IRabbitMqConnection>().WithChannel(channel => channel.QueueDelete(queueName));
-			} catch
+			}
+			catch
 			{
 				Ignore();
 			}
