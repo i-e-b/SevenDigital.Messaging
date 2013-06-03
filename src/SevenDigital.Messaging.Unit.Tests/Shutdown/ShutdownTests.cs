@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Shutdown
 	[TestFixture]
 	public class ShutdownTests
 	{
-		[Test]
+		[Test, Ignore("Not re-implemented yet")]
 		public void Calling_messaging_shutdown_stops_dispatch_controller ()
 		{
 			/*var dispatchMock = Substitute.For<IDispatchController>();
@@ -23,7 +23,6 @@ namespace SevenDigital.Messaging.Unit.Tests.Shutdown
 
 			dispatchMock.Received().Shutdown();
 			channelMock.Received().Dispose();*/
-			Assert.Inconclusive("Not re-implemented yet");
 		}
 	}
 }

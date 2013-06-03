@@ -5,6 +5,7 @@ using DispatchSharp.QueueTypes;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
+using System.Linq;
 
 namespace SevenDigital.Messaging.MessageSending
 {
@@ -82,7 +83,12 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			return false;
 		}
-		
+
+		public string CurrentTypes ()
+		{
+			return string.Join (", ", _boundMessageTypes.Select(m => m.ToString));
+		}
+
 		IPendingMessage<object> SleepingGetMessage()
 		{
 			if (_boundMessageTypes.Count < 1)
