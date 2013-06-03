@@ -11,8 +11,6 @@
     <RootNamespace>SevenDigital.Messaging.Integration.Tests</RootNamespace>
     <AssemblyName>SevenDigital.Messaging.Integration.Tests</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,23 +33,11 @@
     <Reference Include="Moq">
       <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="RabbitMQ.Client, Version=2.8.1.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MessagingBase.1.0.3\lib\net40\RabbitMQ.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="SevenDigital.Messaging.Base, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MessagingBase.1.0.3\lib\net40\SevenDigital.Messaging.Base.dll</HintPath>
-    </Reference>
     <Reference Include="SevenDigital.ServiceStack.Merged">
       <HintPath>..\..\packages\ServiceStackSnapShot.1.0.0\lib\net40\SevenDigital.ServiceStack.Merged.dll</HintPath>
     </Reference>
     <Reference Include="ShiftIt">
       <HintPath>..\..\packages\MessagingBase.1.0.3\lib\net40\ShiftIt.dll</HintPath>
-    </Reference>
-    <Reference Include="SignalHandling, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MessagingBase.1.0.3\lib\net40\SignalHandling.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap">
       <HintPath>..\..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
@@ -65,8 +51,18 @@
     <Reference Include="System.Xml" />
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
+      <Package>mono-nunit</Package>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\..\packages\MessagingBase.1.0.3\lib\net40\RabbitMQ.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="SevenDigital.Messaging.Base">
+      <HintPath>..\..\packages\MessagingBase.1.0.3\lib\net40\SevenDigital.Messaging.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="SignalHandling">
+      <HintPath>..\..\packages\MessagingBase.1.0.3\lib\net40\SignalHandling.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EdgeCases\PartiallyAvailableContracts.cs" />
@@ -77,7 +73,6 @@
     <Compile Include="Loopback\LoopbackModeTests.cs" />
     <Compile Include="MessageSending\RetryReceivingTests.cs" />
     <Compile Include="MessageSending\StressTests.cs" />
-    <Compile Include="MessageSending\UnreachableEndpointTests.cs" />
     <Compile Include="MessageSending\UnregisteringHandlersTests.cs" />
     <Compile Include="_Helpers\Handlers\FailingColourHandler.cs" />
     <Compile Include="_Helpers\Helper.cs" />
