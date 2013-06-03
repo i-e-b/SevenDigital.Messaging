@@ -89,6 +89,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				var colourSignal = TwoColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
 				Assert.That(colourSignal, Is.True, "Did not get message!");
+				Assert.That(TwoColourMessageHandler.ReceivedCount, Is.EqualTo(1), "Got a wrong number of messages");
 				Assert.That(TwoColourMessageHandler.ReceivedMessage.CorrelationId, Is.EqualTo(message.CorrelationId));
 			}
 		}
