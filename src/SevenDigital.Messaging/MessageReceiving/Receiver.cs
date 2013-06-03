@@ -60,16 +60,17 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			lock (_lockObject)
 			{
-				if (PurgeOnConnect) PurgeEndpoint(endpoint);
 				var node = new ReceiverNode(this, endpoint, _handler, _messageBase, _sleeper);
 				_registeredNodes.Add(node);
+
+				if (PurgeOnConnect) PurgeEndpoint(endpoint);
 				return node;
 			}
 		}
 
 		void PurgeEndpoint(Endpoint endpoint)
 		{
-			//_rmqc.WithChannel(channel => channel.QueuePurge(endpoint.ToString()));
+			_messageRouter.AddDestination(endpoint.ToString());
 			_messageRouter.Purge(endpoint.ToString());
 		}
 
