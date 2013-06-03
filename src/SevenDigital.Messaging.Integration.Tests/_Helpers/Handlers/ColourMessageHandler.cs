@@ -28,15 +28,18 @@ namespace SevenDigital.Messaging.Integration.Tests.Handlers
 	public class TwoColourMessageHandler : IHandle<ITwoColoursMessage>
 	{
 		public static AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
+		public static int ReceivedCount = 0;
 		public static ITwoColoursMessage ReceivedMessage { get; private set; }
 
 		public static void Prepare()
 		{
 			AutoResetEvent = new AutoResetEvent(false);
+			ReceivedCount = 0;
 		}
 
 		public void Handle(ITwoColoursMessage message)
 		{
+			Interlocked.Increment(ref ReceivedCount);
 			ReceivedMessage = message;
 			AutoResetEvent.Set();
 		}

@@ -44,8 +44,14 @@ namespace SevenDigital.Messaging.MessageSending
 
 		void SendWaitingMessage(IMessage message)
 		{
-			TryFireHooks(message);
-			_messagingBase.SendMessage(message);
+			try
+			{
+				TryFireHooks(message);
+				_messagingBase.SendMessage(message);
+			} catch
+			{
+				Console.WriteLine("WTF?");
+			}
 		}
 
 		static void TryFireHooks(IMessage message)

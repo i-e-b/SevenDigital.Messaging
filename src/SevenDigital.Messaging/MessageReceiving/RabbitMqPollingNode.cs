@@ -52,17 +52,7 @@ namespace SevenDigital.Messaging.MessageSending
 			return
 				msg == null
 				? new WorkQueueItem<IPendingMessage<object>>()
-				: new WorkQueueItem<IPendingMessage<object>>(msg, DoFinish, DoCancel);
-		}
-
-		void DoFinish(IPendingMessage<object> m)
-		{
-			m.Finish();
-		}
-
-		void DoCancel(IPendingMessage<object> m)
-		{
-			m.Cancel();
+				: new WorkQueueItem<IPendingMessage<object>>(msg, m => m.Finish(), m => m.Cancel());
 		}
 
 		/// <summary>
