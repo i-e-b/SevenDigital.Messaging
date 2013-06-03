@@ -85,6 +85,12 @@ namespace SevenDigital.Messaging.MessageSending
 		
 		IPendingMessage<object> SleepingGetMessage()
 		{
+			if (_boundMessageTypes.Count < 1)
+			{
+				_sleeper.SleepMore();
+				return null;
+			}
+
 			IPendingMessage<object> message = EnsureQueuesAndPollForMessage();
 
 			if (message != null)
@@ -107,8 +113,10 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 			catch (Exception ex)
 			{
-				if (IsMissingQueue(ex)) TryRebuildQueues();
-				return null;
+				if (IsMissingQueue(ex))
+					TryRebuildQueues();
+
+				return null; // will get messages next time
 			}
 		}
 

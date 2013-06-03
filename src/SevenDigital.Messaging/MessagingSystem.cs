@@ -208,12 +208,12 @@ namespace SevenDigital.Messaging
 				ObjectFactory.EjectAllInstancesOf<IChannelAction>();
 			}
 
-			ObjectFactory.EjectAllInstancesOf<IMessagingHost>();
+			/*ObjectFactory.EjectAllInstancesOf<IMessagingHost>();
 			ObjectFactory.EjectAllInstancesOf<IRabbitMqConnection>();
 			ObjectFactory.EjectAllInstancesOf<IUniqueEndpointGenerator>();
 			ObjectFactory.EjectAllInstancesOf<ISleepWrapper>();
 			ObjectFactory.EjectAllInstancesOf<IReceiver>();
-			ObjectFactory.EjectAllInstancesOf<ISenderNode>();
+			ObjectFactory.EjectAllInstancesOf<ISenderNode>();*/
 		}
 
 		public void SetConcurrentHandlers(int max)
