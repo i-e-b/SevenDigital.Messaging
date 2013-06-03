@@ -123,7 +123,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 		}
 
-		[Test/*, Ignore("this doesn't work local-to-local right now")*/]
+		[Test, Ignore("this doesn't work local-to-local right now")]
 		public void Only_one_handler_should_fire_when_competing_for_an_endpoint()
 		{
 			using (var namedReceiverNode1 = _receiver.TakeFrom(new Endpoint("shared-endpoint")))

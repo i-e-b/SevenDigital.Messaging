@@ -265,7 +265,7 @@ namespace SevenDigital.Messaging
 			ObjectFactory.EjectAllInstancesOf<T>();
 			if (actual == null) return;
 
-			Thread.Sleep(250); // Give other threads a chance to no collide.
+			//Thread.Sleep(250); // Give other threads a chance to no collide.
 			actual.Dispose();
 		}
 
