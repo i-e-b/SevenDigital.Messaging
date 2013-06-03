@@ -169,7 +169,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 				receiverNode.Handle<IColourMessage>().With<ChainHandler>();
 				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
+				// bug: Current problem in new threading:
+				// two messages are being sent, but only one is being picked up.
+
 				_sender.SendMessage(new GreenMessage());
+
 				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
 				Assert.That(villainSignal, Is.True);

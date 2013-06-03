@@ -52,7 +52,17 @@ namespace SevenDigital.Messaging.MessageSending
 			return
 				msg == null
 				? new WorkQueueItem<IPendingMessage<object>>()
-				: new WorkQueueItem<IPendingMessage<object>>(msg, m => m.Finish(), m => m.Cancel());
+				: new WorkQueueItem<IPendingMessage<object>>(msg, DoFinish, DoCancel);
+		}
+
+		void DoFinish(IPendingMessage<object> m)
+		{
+			m.Finish();
+		}
+
+		void DoCancel(IPendingMessage<object> m)
+		{
+			m.Cancel();
 		}
 
 		/// <summary>
@@ -114,10 +124,25 @@ namespace SevenDigital.Messaging.MessageSending
 			catch (Exception ex)
 			{
 				if (IsMissingQueue(ex))
+				{
 					TryRebuildQueues();
 
-				return null; // will get messages next time
+					return null; // will get messages next time
+				}
+				if (DoubleAck(ex))
+				{
+					Console.WriteLine("Double ack?");
+					return null;
+				}
+				throw;
 			}
+		}
+
+		bool DoubleAck(Exception exception)
+		{
+			var e = exception as RabbitMQ.Client.Exceptions.OperationInterruptedException;
+			return (e != null)
+				&& (e.ShutdownReason.ReplyCode == 406);
 		}
 
 		static bool IsMissingQueue(Exception exception)

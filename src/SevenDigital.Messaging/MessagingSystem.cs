@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.EventHooks;
@@ -190,30 +191,81 @@ namespace SevenDigital.Messaging
 	}
 	#endregion
 
+	class SDM_Configure : IMessagingConfigure
+	{
+		public IMessagingConfigureOptions WithDefaults()
+		{
+			if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
+				return new SDM_ConfigureOptions();
+
+			new MessagingBaseConfiguration().WithDefaults();
+			Cooldown.Activate();
+
+			ObjectFactory.Configure(map =>
+			{
+				map.For<IMessagingHost>().Use(() => new Host("localhost"));
+				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
+				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
+
+				map.For<IMessageHandler>().Use<MessageHandler>();
+				map.For<ISleepWrapper>().Use<SleepWrapper>();
+
+				map.For<IReceiver>().Singleton().Use<Receiver>();
+				map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
+				map.For<ISenderNode>().Singleton().Use<SenderNode>();
+			});
+
+			return new SDM_ConfigureOptions();
+		}
+
+		public void WithLoopbackMode()
+		{
+			if (MessagingSystem.UsingLoopbackMode()) return;
+			if (MessagingSystem.IsConfigured())
+				throw new InvalidOperationException("Messaging system has already been configured. You should set up loopback mode first.");
+
+			new MessagingBaseConfiguration().WithDefaults();
+			ObjectFactory.EjectAllInstancesOf<IReceiver>();
+
+			var factory = new LoopbackReceiver();
+			ObjectFactory.Configure(map =>
+			{
+				map.For<IReceiver>().Singleton().Use(factory);
+				map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackReceiver>().Is(factory);
+				map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
+			});
+
+
+			ObjectFactory.Configure(map =>
+				map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));
+		}
+	}
+
 	class SDM_Control : IMessagingControl
 	{
 		public void Shutdown()
 		{
-			var controller = ObjectFactory.TryGetInstance<IReceiver>() as IReceiverControl;
-			if (controller != null)
-			{
-				controller.Shutdown();
-				ObjectFactory.EjectAllInstancesOf<IReceiver>();
-			}
+			Console.WriteLine("SHUTDOWN!");
 
-			var connection = ObjectFactory.TryGetInstance<IChannelAction>();
-			if (connection != null)
-			{
-				connection.Dispose();
-				ObjectFactory.EjectAllInstancesOf<IChannelAction>();
-			}
+			EjectAndDispose<IReceiverControl>();
+			EjectAndDispose<IChannelAction>();
 
-			/*ObjectFactory.EjectAllInstancesOf<IMessagingHost>();
+			ObjectFactory.EjectAllInstancesOf<IMessagingHost>();
 			ObjectFactory.EjectAllInstancesOf<IRabbitMqConnection>();
 			ObjectFactory.EjectAllInstancesOf<IUniqueEndpointGenerator>();
 			ObjectFactory.EjectAllInstancesOf<ISleepWrapper>();
 			ObjectFactory.EjectAllInstancesOf<IReceiver>();
-			ObjectFactory.EjectAllInstancesOf<ISenderNode>();*/
+			ObjectFactory.EjectAllInstancesOf<ISenderNode>();
+		}
+
+		void EjectAndDispose<T>()
+		{
+			var actual = ObjectFactory.TryGetInstance<T>() as IDisposable;
+			ObjectFactory.EjectAllInstancesOf<T>();
+			if (actual == null) return;
+
+			Thread.Sleep(250); // Give other threads a chance to no collide.
+			actual.Dispose();
 		}
 
 		public void SetConcurrentHandlers(int max)
@@ -251,54 +303,6 @@ namespace SevenDigital.Messaging
 		}
 	}
 
-	class SDM_Configure : IMessagingConfigure
-	{
-		public IMessagingConfigureOptions WithDefaults()
-		{
-			if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
-				return new SDM_ConfigureOptions();
-
-			new MessagingBaseConfiguration().WithDefaults();
-			Cooldown.Activate();
-
-			ObjectFactory.Configure(map =>
-			{
-				map.For<IMessagingHost>().Use(() => new Host("localhost"));
-				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
-				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
-
-				map.For<IMessageHandler>().Use<MessageHandler>();
-				map.For<ISleepWrapper>().Use<SleepWrapper>();
-
-				map.For<IReceiver>().Singleton().Use<Receiver>();
-				map.For<ISenderNode>().Singleton().Use<SenderNode>();
-			});
-
-			return new SDM_ConfigureOptions();
-		}
-
-		public void WithLoopbackMode()
-		{
-			if (MessagingSystem.UsingLoopbackMode()) return;
-			if (MessagingSystem.IsConfigured())
-				throw new InvalidOperationException("Messaging system has already been configured. You should set up loopback mode first.");
-
-			new MessagingBaseConfiguration().WithDefaults();
-			ObjectFactory.EjectAllInstancesOf<IReceiver>();
-
-			var factory = new LoopbackReceiver();
-			ObjectFactory.Configure(map =>
-			{
-				map.For<IReceiver>().Singleton().Use(factory);
-				map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackReceiver>().Is(factory);
-				map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
-			});
-
-
-			ObjectFactory.Configure(map =>
-				map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));
-		}
-	}
 
 	class SDM_ConfigureOptions : IMessagingConfigureOptions
 	{

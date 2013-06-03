@@ -182,6 +182,11 @@
             A received message instance
             </summary>
         </member>
+        <member name="M:SevenDigital.Messaging.Base.PendingMessage`1.#ctor(SevenDigital.Messaging.Base.Routing.IMessageRouter,`0,System.UInt64)">
+            <summary>
+            Wrap a message object and delivery tag as a PendingMessage
+            </summary>
+        </member>
         <member name="P:SevenDigital.Messaging.Base.PendingMessage`1.Message">
             <summary>Message on queue</summary>
         </member>
