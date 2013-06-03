@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
@@ -23,6 +24,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessagingBase _messageBase;
 		readonly IMessageHandler _handler;
 		readonly IMessageRouter _messageRouter;
+		readonly IRabbitMqConnection _rmqc;
 		readonly List<IReceiverNode> _registeredNodes;
 		readonly object _lockObject;
 
@@ -35,13 +37,15 @@ namespace SevenDigital.Messaging.MessageSending
 			ISleepWrapper sleeper,
 			IMessagingBase messageBase,
 			IMessageHandler handler,
-			IMessageRouter messageRouter)
+			IMessageRouter messageRouter,
+			IRabbitMqConnection rmqc)
 		{
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
 			_sleeper = sleeper;
 			_messageBase = messageBase;
 			_handler = handler;
 			_messageRouter = messageRouter;
+			_rmqc = rmqc;
 			_lockObject = new object();
 			_registeredNodes = new List<IReceiverNode>();
 			PurgeOnConnect = false;
@@ -65,14 +69,8 @@ namespace SevenDigital.Messaging.MessageSending
 
 		void PurgeEndpoint(Endpoint endpoint)
 		{
-			try
-			{
-				_messageRouter.Purge(endpoint.ToString());
-			}
-			catch (RabbitMQ.Client.Exceptions.OperationInterruptedException oie)
-			{
-				Console.WriteLine("Could not purge, connection died");
-			}
+			_rmqc.WithChannel(channel => channel.QueuePurge(endpoint.ToString()));
+			//_messageRouter.Purge(endpoint.ToString());
 		}
 
 		/// <summary>
