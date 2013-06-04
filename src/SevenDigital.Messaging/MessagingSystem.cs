@@ -248,23 +248,32 @@ namespace SevenDigital.Messaging
 			EjectAndDispose<IReceiverControl>();
 			EjectAndDispose<IChannelAction>();
 
-			EjectAndDispose<IMessagingHost>();
-			EjectAndDispose<IRabbitMqConnection>();
 			EjectAndDispose<IUniqueEndpointGenerator>();
 			EjectAndDispose<ISleepWrapper>();
 			EjectAndDispose<IReceiver>();
 			EjectAndDispose<ISenderNode>();
 			EjectAndDispose<IEventHook>();
+			EjectAndDispose<IRabbitMqConnection>();
+			EjectAndDispose<IMessagingHost>();
 		}
 
 		void EjectAndDispose<T>()
 		{
-			var actual = ObjectFactory.TryGetInstance<T>() as IDisposable;
-			ObjectFactory.EjectAllInstancesOf<T>();
-			if (actual == null) return;
+			if (!ObjectFactory.Model.HasImplementationsFor<T>()) return;
 
-			Thread.Sleep(250);
-			actual.Dispose();
+			try
+			{
+				var actual = ObjectFactory.TryGetInstance<T>() as IDisposable;
+				ObjectFactory.EjectAllInstancesOf<T>();
+				if (actual == null) return;
+
+				Thread.Sleep(250);
+				actual.Dispose();
+			}
+			catch (StructureMapException)
+			{
+				// TryGetInstance still throws if it has an incomplete definition for a type.
+			}
 		}
 
 		public void SetConcurrentHandlers(int max)
