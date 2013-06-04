@@ -32,6 +32,10 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DispatchSharp, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\DispatchSharp.0.1.2\lib\net40\DispatchSharp.dll</HintPath>
+    </Reference>
     <Reference Include="NSubstitute, Version=1.6.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NSubstitute.1.6.0.0\lib\NET40\NSubstitute.dll</HintPath>
@@ -69,6 +73,7 @@
     <Compile Include="LoopbackMessaging\LoopbackNodeFactoryTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackStabilityTests.cs" />
+    <Compile Include="MessageReceiving\RabbitMqPollingNodeTests.cs" />
     <Compile Include="Routing\UniqueEndpointGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MessageSending\SendMessageTests.cs" />
@@ -84,9 +89,7 @@
       <Name>SevenDigital.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MessageReceiving\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
