@@ -20,6 +20,10 @@ namespace SevenDigital.Messaging
 
 	}
 
+	/// <summary>
+	/// Control methods for IReceiver.
+	/// Seperated to simplify receiver interface.
+	/// </summary>
 	public interface IReceiverControl
 	{
 		/// <summary>

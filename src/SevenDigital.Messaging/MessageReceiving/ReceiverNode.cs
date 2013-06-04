@@ -90,20 +90,20 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			_rabbitMqPollingNode.AddMessageType(messageType);
 			_handler.AddHandler(messageType, handlerType);
-
-			Console.WriteLine("Currently listening to "+_rabbitMqPollingNode.CurrentTypes());
 		}
 
 		void HandleIncomingMessage(IPendingMessage<object> incoming)
 		{
-			Console.WriteLine("Message incoming: " + incoming.Message.GetType());
 			_handler.TryHandle(incoming);
 		}
 
+		/// <summary>
+		/// Stop this node and deregister from parent.
+		/// </summary>
 		public void Dispose()
 		{
-			_parent.Remove(this);
 			_receivingDispatcher.Stop();
+			_parent.Remove(this);
 		}
 
 		#region Equality members

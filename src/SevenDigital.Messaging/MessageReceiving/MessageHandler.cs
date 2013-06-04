@@ -99,7 +99,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine("An event hook failed after handling " + ex.GetType() + "; " + ex.Message);
+					Log.Warning("An event hook failed after handling " + ex.GetType() + "; " + ex.Message);
 				}
 			}
 		}
@@ -114,7 +114,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 				}
 				catch (Exception exi)
 				{
-					Console.WriteLine("An event hook failed after handling " + exi.GetType() + "; " + exi.Message);
+					Log.Warning("An event hook failed after handling " + exi.GetType() + "; " + exi.Message);
 				}
 			}
 		}

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
@@ -23,7 +22,6 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly ISleepWrapper _sleeper;
 		readonly IMessagingBase _messageBase;
 		readonly IMessageHandler _handler;
-		readonly IRabbitMqConnection _rmqc;
 		readonly List<IReceiverNode> _registeredNodes;
 		readonly IMessageRouter _messageRouter;
 		readonly object _lockObject;
@@ -37,15 +35,13 @@ namespace SevenDigital.Messaging.MessageSending
 			ISleepWrapper sleeper,
 			IMessagingBase messageBase,
 			IMessageHandler handler,
-			IMessageRouter messageRouter,
-			IRabbitMqConnection rmqc)
+			IMessageRouter messageRouter)
 		{
 			_messageRouter = messageRouter;
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
 			_sleeper = sleeper;
 			_messageBase = messageBase;
 			_handler = handler;
-			_rmqc = rmqc;
 			_lockObject = new object();
 			_registeredNodes = new List<IReceiverNode>();
 			PurgeOnConnect = false;
@@ -124,6 +120,10 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 		}
 
+		/// <summary>
+		/// Set purging policy. If true, all waiting messages are DELETED when a handler is registered.
+		/// This setting is meant for integration tests.
+		/// </summary>
 		public bool PurgeOnConnect { get; set; }
 
 		/// <summary>

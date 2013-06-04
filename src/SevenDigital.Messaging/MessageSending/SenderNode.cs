@@ -31,6 +31,12 @@ namespace SevenDigital.Messaging.MessageSending
 
 			_sendingDispatcher.AddConsumer(SendWaitingMessage);
 			_sendingDispatcher.Start();
+			_sendingDispatcher.Exceptions += _sendingDispatcher_Exceptions;
+		}
+
+		void _sendingDispatcher_Exceptions(object sender, ExceptionEventArgs e)
+		{
+			 Log.Warning("Sender failed: " + e.SourceException.GetType() + "; " + e.SourceException.Message);
 		}
 
 		/// <summary>
@@ -44,14 +50,8 @@ namespace SevenDigital.Messaging.MessageSending
 
 		void SendWaitingMessage(IMessage message)
 		{
-			try
-			{
-				TryFireHooks(message);
-				_messagingBase.SendMessage(message);
-			} catch
-			{
-				Console.WriteLine("WTF?");
-			}
+			TryFireHooks(message);
+			_messagingBase.SendMessage(message);
 		}
 
 		static void TryFireHooks(IMessage message)
@@ -70,6 +70,9 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 		}
 
+		/// <summary>
+		/// Shutdown the sender
+		/// </summary>
 		public void Dispose()
 		{
 			_sendingDispatcher.Stop();

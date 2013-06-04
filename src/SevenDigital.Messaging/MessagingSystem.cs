@@ -38,7 +38,7 @@ namespace SevenDigital.Messaging
 		/// Runtime controls for the messaging system
 		/// </summary>
 		public static readonly IMessagingControl Control = new SDM_Control();
-		
+
 		/// <summary>
 		/// Return a factory for setting up message handlers.
 		/// You must configure messaging before calling.
@@ -71,7 +71,7 @@ namespace SevenDigital.Messaging
 		{
 			return ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is LoopbackReceiver);
 		}
-		
+
 		/// <summary>
 		/// Returns true if messaging has been configured and not shutdown
 		/// </summary>
@@ -92,7 +92,7 @@ namespace SevenDigital.Messaging
 		/// After this method is called, the messaging system must be reconfigured from scratch.
 		/// </summary>
 		void Shutdown();
-		
+
 		/// <summary>
 		/// Set maximum concurrent handlers. Set to 1 for single-thread mode
 		/// </summary>
@@ -173,7 +173,7 @@ namespace SevenDigital.Messaging
 		/// <param name="password">Management password</param>
 		/// <param name="vhost">Virtual host (used where appropriate)</param>
 		IMessagingConfigureOptions SetManagementServer(string host, string username, string password, string vhost);
-		
+
 		/// <summary>
 		/// Configure target messaging host. This should be the IP or hostname of a server 
 		/// running RabbitMQ service. If you are using a non default virtual host, your host
@@ -181,7 +181,7 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		/// <param name="host">IP or hostname of a server running RabbitMQ service</param>
 		IMessagingConfigureOptions SetMessagingServer(string host);
-		
+
 		/// <summary>
 		/// Sets integration test mode. Must be set before any handlers are configured.
 		/// All nodes will purge their queue on creation. All queues and exchanges with ".Integration."
@@ -245,8 +245,6 @@ namespace SevenDigital.Messaging
 	{
 		public void Shutdown()
 		{
-			Console.WriteLine("SHUTDOWN!");
-
 			EjectAndDispose<IReceiverControl>();
 			EjectAndDispose<IChannelAction>();
 
@@ -265,7 +263,7 @@ namespace SevenDigital.Messaging
 			ObjectFactory.EjectAllInstancesOf<T>();
 			if (actual == null) return;
 
-			//Thread.Sleep(250); // Give other threads a chance to no collide.
+			Thread.Sleep(250);
 			actual.Dispose();
 		}
 
@@ -274,7 +272,7 @@ namespace SevenDigital.Messaging
 			if (max < 1) throw new ArgumentException("Concurrent handlers must be at least 1", "max");
 			var controller = ObjectFactory.TryGetInstance<IReceiver>() as IReceiverControl;
 			if (controller == null) throw new InvalidOperationException("Messaging is not configured");
-			
+
 			controller.SetConcurrentHandlers(max);
 		}
 
@@ -329,8 +327,9 @@ namespace SevenDigital.Messaging
 
 		public void SetIntegrationTestMode()
 		{
-			if (MessagingSystem.UsingLoopbackMode()) 
+			if (MessagingSystem.UsingLoopbackMode())
 				throw new Exception("Integration test mode can not be used in loopback mode");
+
 			var controller = ObjectFactory.TryGetInstance<IReceiver>() as IReceiverControl;
 			if (controller == null)
 				throw new Exception("Messaging is not configured");

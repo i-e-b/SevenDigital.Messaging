@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using DispatchSharp;
 using DispatchSharp.QueueTypes;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
-using System.Linq;
 
 namespace SevenDigital.Messaging.MessageSending
 {
@@ -18,7 +18,6 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessagingBase _messagingBase;
 		readonly ISleepWrapper _sleeper;
 		readonly HashSet<Type> _boundMessageTypes;
-		//IPendingMessage<object> _mostRecentMessage;
 
 		/// <summary>
 		/// Create a work item queue that will try to pull items from a named RabbitMQ endpoint
@@ -81,12 +80,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public bool BlockUntilReady()
 		{
-			return false;
-		}
-
-		public string CurrentTypes ()
-		{
-			return string.Join (", ", _boundMessageTypes);
+			return true;
 		}
 
 		IPendingMessage<object> SleepingGetMessage()
@@ -127,14 +121,14 @@ namespace SevenDigital.Messaging.MessageSending
 				}
 				if (DoubleAck(ex))
 				{
-					Console.WriteLine("Double ack?");
+					Log.Warning("Messaging node reported an non-acknowledgable message. This may be a bug in SevenDigital.Messaging");
 					return null;
 				}
 				throw;
 			}
 		}
 
-		bool DoubleAck(Exception exception)
+		static bool DoubleAck(Exception exception)
 		{
 			var e = exception as RabbitMQ.Client.Exceptions.OperationInterruptedException;
 			return (e != null)
