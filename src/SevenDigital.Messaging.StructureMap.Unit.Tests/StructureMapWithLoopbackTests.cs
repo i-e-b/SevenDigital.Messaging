@@ -13,7 +13,6 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		public void Setup()
 		{
 			MessagingSystem.Configure.WithLoopbackMode();
-
 			MessagingSystem.Configure.WithDefaults().SetMessagingServer(HostName);
 		}
 

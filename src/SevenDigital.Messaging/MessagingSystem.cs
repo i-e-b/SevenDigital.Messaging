@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using ServiceStack.Common;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.EventHooks;
@@ -35,7 +36,8 @@ namespace SevenDigital.Messaging
 		public static readonly IMessagingLoopbackInformation Testing = new SDM_Testing();
 
 		/// <summary>
-		/// Runtime controls for the messaging system
+		/// Runtime controls for the messaging system, including
+		/// threading limits and shutdown.
 		/// </summary>
 		public static readonly IMessagingControl Control = new SDM_Control();
 
@@ -253,8 +255,8 @@ namespace SevenDigital.Messaging
 			EjectAndDispose<IReceiver>();
 			EjectAndDispose<ISenderNode>();
 			EjectAndDispose<IEventHook>();
-			EjectAndDispose<IRabbitMqConnection>();
 			EjectAndDispose<IMessagingHost>();
+			EjectAndDispose<IRabbitMqConnection>();
 		}
 
 		void EjectAndDispose<T>()
@@ -263,16 +265,16 @@ namespace SevenDigital.Messaging
 
 			try
 			{
-				var actual = ObjectFactory.TryGetInstance<T>() as IDisposable;
+				var instances = ObjectFactory.GetAllInstances<T>().OfType<IDisposable>().ToList();
 				ObjectFactory.EjectAllInstancesOf<T>();
-				if (actual == null) return;
+				if (instances.Count < 1) return;
 
-				Thread.Sleep(250);
-				actual.Dispose();
+				Thread.Sleep(500); // give running processes a chance to stop running.
+				foreach (var disposable in instances) disposable.Dispose();
 			}
 			catch (StructureMapException)
 			{
-				// TryGetInstance still throws if it has an incomplete definition for a type.
+				ObjectFactory.EjectAllInstancesOf<T>();
 			}
 		}
 
