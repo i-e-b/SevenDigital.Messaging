@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using ServiceStack.Common;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.EventHooks;
@@ -248,15 +247,15 @@ namespace SevenDigital.Messaging
 		public void Shutdown()
 		{
 			EjectAndDispose<IReceiverControl>();
-			EjectAndDispose<IChannelAction>();
+			EjectAndDispose<ISenderNode>();
 
 			EjectAndDispose<IUniqueEndpointGenerator>();
 			EjectAndDispose<ISleepWrapper>();
-			EjectAndDispose<IReceiver>();
-			EjectAndDispose<ISenderNode>();
 			EjectAndDispose<IEventHook>();
+
 			EjectAndDispose<IMessagingHost>();
 			EjectAndDispose<IRabbitMqConnection>();
+			EjectAndDispose<IChannelAction>();
 		}
 
 		void EjectAndDispose<T>()
@@ -274,6 +273,7 @@ namespace SevenDigital.Messaging
 			}
 			catch (StructureMapException)
 			{
+				Console.WriteLine("Shutdown conflict");
 				ObjectFactory.EjectAllInstancesOf<T>();
 			}
 		}
