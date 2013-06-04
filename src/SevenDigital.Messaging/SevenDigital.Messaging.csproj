@@ -81,6 +81,7 @@
     <Compile Include="Endpoint.cs" />
     <Compile Include="RetryMessageAttribute.cs" />
     <Compile Include="Routing\Host.cs" />
+    <Compile Include="Routing\IntegrationEndpointGenerator.cs" />
     <Compile Include="Routing\IUniqueEndpointGenerator.cs" />
     <Compile Include="Routing\IMessagingHost.cs" />
     <Compile Include="Routing\IRoutingEndpoint.cs" />

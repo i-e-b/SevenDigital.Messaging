@@ -346,6 +346,8 @@ namespace SevenDigital.Messaging
 				throw new Exception("Messaging is not configured");
 
 			controller.PurgeOnConnect = true;
+
+			ObjectFactory.Configure(map => map.For<IUniqueEndpointGenerator>().Use<IntegrationEndpointGenerator>());
 		}
 	}
 
