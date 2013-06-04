@@ -32,9 +32,9 @@
     <DocumentationFile>bin\Release\SevenDigital.Messaging.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DispatchSharp, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DispatchSharp, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\DispatchSharp.0.1.0\lib\net40\DispatchSharp.dll</HintPath>
+      <HintPath>..\..\packages\DispatchSharp.0.1.2\lib\net40\DispatchSharp.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=2.8.1.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -64,6 +64,9 @@
     <Compile Include="Cooldown.cs" />
     <Compile Include="IMessage.cs" />
     <Compile Include="Logging\Log.cs" />
+    <Compile Include="Loopback\DummyBinder.cs" />
+    <Compile Include="Loopback\LoopbackBinding.cs" />
+    <Compile Include="Loopback\LoopbackReceiver.cs" />
     <Compile Include="MessageReceiving\IMessageHandler.cs" />
     <Compile Include="MessageReceiving\MessageHandler.cs" />
     <Compile Include="MessageReceiving\SleepWrapper.cs" />
@@ -74,9 +77,6 @@
     <Compile Include="MessageSending\HandlerAction.cs" />
     <Compile Include="MessageReceiving\RabbitMqPollingNode.cs" />
     <Compile Include="IReceiverNode.cs" />
-    <Compile Include="MessageSending\Loopback\DummyBinder.cs" />
-    <Compile Include="MessageSending\Loopback\LoopbackBinding.cs" />
-    <Compile Include="MessageSending\Loopback\LoopbackReceiver.cs" />
     <Compile Include="MessagingSystem.cs" />
     <Compile Include="Endpoint.cs" />
     <Compile Include="RetryMessageAttribute.cs" />

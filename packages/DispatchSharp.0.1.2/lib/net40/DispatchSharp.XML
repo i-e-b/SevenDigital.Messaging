@@ -14,6 +14,12 @@
             Wait for signal to be Set
             </summary>
         </member>
+        <member name="M:DispatchSharp.Internal.IWaitHandle.WaitOne(System.TimeSpan)">
+            <summary>
+            Wait for signal to be Set,
+            wait up to timeout, but no longer.
+            </summary>
+        </member>
         <member name="M:DispatchSharp.Internal.IWaitHandle.Set">
             <summary>
             Set signal, unblocking all waiting threads
@@ -314,6 +320,8 @@
             Worker pool that delegates work to happen on a set number of worker threads.
             Does not consume any more items than there are free workers.
             Strictly obeys inflight limit from dispatcher.
+            Once a worker starts an item it will try to finish it even if the dispatcher is
+            shut down. Threads will be left to die after one minute.
             </summary>
             <typeparam name="T">Type of item on the work queue</typeparam>
         </member>
@@ -346,6 +354,14 @@
             Current work should be finished or cancelled before returning.
             </summary>
         </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.SafeKillThread(System.Threading.Thread)">
+            <summary>
+            Wait for working threads to finish (up to 1 minute)
+            Kill waiting threads immediately.
+            
+            Waiting threads are marked by a non-normal thread priority
+            </summary>
+        </member>
         <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.WorkersInflight">
             <summary>
             Current number of workers running actions against queue items
@@ -354,6 +370,11 @@
         <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.PoolSize">
             <summary>
             Returns number of worker threads in use
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.ThreadedWorkerPool`1.WaitForQueueIfStillActive">
+            <summary>
+            Mark the thread as low priority while it is waiting for queue work.
             </summary>
         </member>
     </members>
