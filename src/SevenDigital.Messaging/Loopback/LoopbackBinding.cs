@@ -25,6 +25,9 @@
 		{
 			_loopbackReceiver.Send(message);
 		}
+
+		/// <summary> No action </summary>
+		public void Dispose() { }
 	}
 
 	/// <summary>

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Routing;
@@ -16,7 +15,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// the API point to decide to use a unique endpoint name (Listen) or
 	/// a specific endpoint name (TakeFrom)
 	/// </remarks>
-	public class Receiver : IReceiver, IReceiverControl, IDisposable
+	public class Receiver : IReceiver, IReceiverControl
 	{
 		readonly IUniqueEndpointGenerator _uniqueEndPointGenerator;
 		readonly ISleepWrapper _sleeper;

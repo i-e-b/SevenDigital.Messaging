@@ -1,3 +1,5 @@
+using System;
+
 namespace SevenDigital.Messaging
 {
 	/// <summary>
@@ -24,7 +26,7 @@ namespace SevenDigital.Messaging
 	/// Control methods for IReceiver.
 	/// Seperated to simplify receiver interface.
 	/// </summary>
-	public interface IReceiverControl
+	public interface IReceiverControl: IDisposable
 	{
 		/// <summary>
 		/// Close all receiver nodes that have been created

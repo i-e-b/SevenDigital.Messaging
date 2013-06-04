@@ -1,9 +1,11 @@
+using System;
+
 namespace SevenDigital.Messaging
 {
 	/// <summary>
 	/// A messaging node that can send messages
 	/// </summary>
-	public interface ISenderNode
+	public interface ISenderNode : IDisposable
 	{
 		/// <summary>
 		/// Send the given message. Does not guarantee reception.

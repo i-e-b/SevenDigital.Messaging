@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// Standard sender node for Messaging.
 	/// You do not need to create this yourself. Use `Messaging.Sender()`
 	/// </summary>
-	public class SenderNode : ISenderNode, IDisposable
+	public class SenderNode : ISenderNode
 	{
 		const int SingleThreaded = 1;
 		readonly IMessagingBase _messagingBase;
