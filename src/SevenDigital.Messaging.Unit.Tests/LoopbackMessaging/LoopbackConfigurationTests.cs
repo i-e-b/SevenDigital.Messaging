@@ -1,10 +1,9 @@
 ﻿using System;
-using Moq;
 using NUnit.Framework;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
-{
+{/*
 	[TestFixture]
 	public class LoopbackConfigurationTests
 	{
@@ -174,5 +173,5 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 
 	public interface IDummyMessage : IMessage
 	{
-	}
+	}*/
 }
