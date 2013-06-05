@@ -166,11 +166,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 				receiverNode.Handle<IColourMessage>().With<ChainHandler>();
 				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
 
-				// bug: Current problem in new threading:
-				// two messages are being sent, but only one is being picked up.
-				// 1) I think the existing handlers are not being unbound correctly on node disposal
-				// 2) The bindings are being set correctly, but 2nd message never comes in.
-
 				_sender.SendMessage(new GreenMessage());
 
 				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);

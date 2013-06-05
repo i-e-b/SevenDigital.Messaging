@@ -1,3 +1,5 @@
+using System;
+
 namespace SevenDigital.Messaging.Routing
 {
 	/// <summary>
@@ -6,6 +8,7 @@ namespace SevenDigital.Messaging.Routing
 	public class UniqueEndpointGenerator : IUniqueEndpointGenerator
 	{
 		readonly string strongName;
+		readonly string integrationName;
 
 		/// <summary>
 		/// Create a new endpoint generator.
@@ -13,11 +16,15 @@ namespace SevenDigital.Messaging.Routing
 		/// </summary>
 		public UniqueEndpointGenerator()
 		{
+			UseIntegrationTestName = false;
+
 			strongName =  
 				Naming.MachineName()
 				+ "_" 
 				+ Naming.GoodAssemblyName()
 				+ "_Listener";
+			
+			integrationName = "Test_Listener_" + Guid.NewGuid();
 		}
 
 		/// <summary>
@@ -25,7 +32,15 @@ namespace SevenDigital.Messaging.Routing
 		/// </summary>
 		public Endpoint Generate()
 		{
-			return new Endpoint(strongName);
+			return new Endpoint(
+				UseIntegrationTestName
+				? integrationName
+				: strongName);
 		}
+
+		/// <summary>
+		/// If true, will generate names that integration mode will delete.
+		/// </summary>
+		public bool UseIntegrationTestName { get; set; }
 	}
 }

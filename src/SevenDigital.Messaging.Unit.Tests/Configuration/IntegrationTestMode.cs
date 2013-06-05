@@ -16,9 +16,10 @@ namespace SevenDigital.Messaging.Unit.Tests.Configuration
 		[Test]
 		public void should_use_integration_test_endpoint_generator ()
 		{
+			var gen = ObjectFactory.GetInstance<IUniqueEndpointGenerator>();
 			Assert.That(
-				ObjectFactory.GetInstance<IUniqueEndpointGenerator>(),
-				Is.InstanceOf<IntegrationEndpointGenerator>()
+				gen.UseIntegrationTestName,
+				Is.True
 				);
 		}
 

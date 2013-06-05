@@ -46,7 +46,15 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Set purging policy. If true, all waiting messages are DELETED when a handler is registered.
 		/// This setting is meant for integration tests.
+		/// Default is false.
 		/// </summary>
 		bool PurgeOnConnect { get; set; }
+
+		/// <summary>
+		/// Set cleanup policy. If true, all endpoints generated in integration mode
+		/// are deleted when the receiver is disposed.
+		/// Default is false.
+		/// </summary>
+		bool DeleteIntegrationEndpointsOnShutdown { get; set; }
 	}
 }

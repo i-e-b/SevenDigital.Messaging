@@ -2,7 +2,7 @@
 <configuration>
   <appSettings>
     <clear/>
-    <add key="rabbitServer" value="systest-jester-q00.nix.sys.7d/jester"/>
+    <add key="rabbitServer" value="systest-jester-q00.nix.sys.7d"/>
   </appSettings>
   <startup>
     <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/>
