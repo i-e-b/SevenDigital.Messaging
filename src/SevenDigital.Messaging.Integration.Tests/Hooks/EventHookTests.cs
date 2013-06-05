@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using Moq;
+using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
-		Mock<IEventHook> mock_event_hook;
+		IEventHook mock_event_hook;
 		private ISenderNode senderNode;
 
 		[TestFixtureSetUp]
@@ -29,9 +29,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			mock_event_hook = new Mock<IEventHook>();
+			mock_event_hook = Substitute.For<IEventHook>();
 
-			ObjectFactory.Configure(map => map.For<IEventHook>().Use(mock_event_hook.Object));
+			ObjectFactory.Configure(map => map.For<IEventHook>().Use(mock_event_hook));
 
 			node_factory = MessagingSystem.Receiver();
 			senderNode = MessagingSystem.Sender();
@@ -44,7 +44,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 			senderNode.SendMessage(message);
 
-			mock_event_hook.Verify(h => h.MessageSent(message));
+			mock_event_hook.Received().MessageSent(message);
 		}
 
 		[Test]
@@ -62,7 +62,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 			lock (mock_event_hook)
 			{
-				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
+				mock_event_hook.Received().MessageReceived(Arg.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId));
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 			lock (mock_event_hook)
 			{
-				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId)));
+				mock_event_hook.Received().MessageReceived(Arg.Is<IColourMessage>(im => im.CorrelationId == message.CorrelationId));
 			}
 		}
 
@@ -97,8 +97,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 				AnotherColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
-				mock_event_hook.Verify(h => h.MessageReceived(It.Is<IMessage>(im => im.CorrelationId == message.CorrelationId)),
-					Times.Exactly(2));
+				mock_event_hook.Received(2).MessageReceived(Arg.Is<IMessage>(im => im.CorrelationId == message.CorrelationId));
 			}
 		}
 

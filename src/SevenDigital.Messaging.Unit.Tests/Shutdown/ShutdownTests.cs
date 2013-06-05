@@ -1,7 +1,6 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base.RabbitMq;
-using SevenDigital.Messaging.Routing;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.Shutdown
@@ -17,6 +16,8 @@ namespace SevenDigital.Messaging.Unit.Tests.Shutdown
 		[SetUp]
 		public void a_set_of_configured_components_being_shut_down()
 		{
+			MessagingSystem.Control.Shutdown();
+
 			_receiverControl = Substitute.For<IReceiverControl>();
 			_channelAction = Substitute.For<IChannelAction>();
 			_sender = Substitute.For<ISenderNode>();
