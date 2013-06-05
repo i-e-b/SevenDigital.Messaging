@@ -8,5 +8,10 @@ namespace SevenDigital.Messaging.Routing
 		/// Create an endpoint name
 		/// </summary>
 		Endpoint Generate();
+
+		/// <summary>
+		/// If true, will generate names that integration mode will delete.
+		/// </summary>
+		bool UseIntegrationTestName { get; set; }
 	}
 }

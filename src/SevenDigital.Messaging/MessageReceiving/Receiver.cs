@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
+using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
 {
@@ -44,6 +46,7 @@ namespace SevenDigital.Messaging.MessageSending
 			_lockObject = new object();
 			_registeredNodes = new List<IReceiverNode>();
 			PurgeOnConnect = false;
+			DeleteIntegrationEndpointsOnShutdown = false;
 		}
 
 		/// <summary>
@@ -61,12 +64,6 @@ namespace SevenDigital.Messaging.MessageSending
 				if (PurgeOnConnect) PurgeEndpoint(endpoint);
 				return node;
 			}
-		}
-
-		void PurgeEndpoint(Endpoint endpoint)
-		{
-			_messageRouter.AddDestination(endpoint.ToString());
-			_messageRouter.Purge(endpoint.ToString());
 		}
 
 		/// <summary>
@@ -126,11 +123,46 @@ namespace SevenDigital.Messaging.MessageSending
 		public bool PurgeOnConnect { get; set; }
 
 		/// <summary>
+		/// Set cleanup policy. If true, all endpoints generated in integration mode
+		/// are deleted when the receiver is disposed.
+		/// Default is false.
+		/// </summary>
+		public bool DeleteIntegrationEndpointsOnShutdown { get; set; }
+
+		/// <summary>
 		/// Shutdown all nodes.
 		/// </summary>
 		public void Dispose()
 		{
 			Shutdown();
+
+			if (DeleteIntegrationEndpointsOnShutdown) DeleteIntegrationEndpoints();
+		}
+
+		void DeleteIntegrationEndpoints()
+		{
+			lock (_lockObject)
+			{
+				((RabbitRouter) ObjectFactory.GetInstance<IMessageRouter>()).RemoveRouting(DeleteNameFilter);
+			}
+		}
+
+		static bool DeleteNameFilter(string queueName)
+		{
+			var name = queueName.ToLowerInvariant();
+			var delete = name.ToLowerInvariant().Contains(".integration.")
+				   || name == "ping-pong-endpoint" || name == "registered-message-endpoint"
+				   || name == "shared-endpoint" || name == "unregistered-message-endpoint"
+				   || name == "survival_test_endpoint"
+				   || name.EndsWith("sevendigital.messaging_listener")
+				   || name.StartsWith("test_listener_");
+			return delete;
+		}
+
+		void PurgeEndpoint(Endpoint endpoint)
+		{
+			_messageRouter.AddDestination(endpoint.ToString());
+			_messageRouter.Purge(endpoint.ToString());
 		}
 	}
 }

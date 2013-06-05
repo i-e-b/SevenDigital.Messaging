@@ -43,5 +43,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			return new Endpoint("Messaging.Integration.TestEndpoint");
 		}
+
+		public bool UseIntegrationTestName { get; set; }
 	}
 }

@@ -209,7 +209,7 @@ namespace SevenDigital.Messaging
 				ObjectFactory.Configure(map => {
 					map.For<IMessagingHost>().Use(() => new Host("localhost"));
 					map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
-					map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
+					map.For<IUniqueEndpointGenerator>().Singleton().Use<UniqueEndpointGenerator>();
 
 					map.For<IMessageHandler>().Use<MessageHandler>();
 					map.For<ISleepWrapper>().Use<SleepWrapper>();
@@ -267,10 +267,8 @@ namespace SevenDigital.Messaging
 			}
 		}
 
-		void EjectAndDispose<T>()
+		static void EjectAndDispose<T>()
 		{
-			/*try
-			{*/
 			List<IDisposable> instances;
 
 			try
@@ -281,16 +279,11 @@ namespace SevenDigital.Messaging
 			{
 				instances = new List<IDisposable>();
 			}
+
 			ObjectFactory.EjectAllInstancesOf<T>();
 			if (instances.Count < 1) return;
 
 			foreach (var disposable in instances) disposable.Dispose();
-			/*}
-			catch (StructureMapException)
-			{
-				Console.WriteLine("Shutdown conflict");
-				ObjectFactory.EjectAllInstancesOf<T>();
-			}*/
 		}
 
 		public void SetConcurrentHandlers(int max)
@@ -360,9 +353,12 @@ namespace SevenDigital.Messaging
 			if (controller == null)
 				throw new Exception("Messaging is not configured");
 
-			controller.PurgeOnConnect = true;
+			var namer = ObjectFactory.TryGetInstance<IUniqueEndpointGenerator>();
+			if (namer == null) throw new Exception("Unique endpoint generator was not properly configured.");
 
-			ObjectFactory.Configure(map => map.For<IUniqueEndpointGenerator>().Use<IntegrationEndpointGenerator>());
+			namer.UseIntegrationTestName = true;
+			controller.PurgeOnConnect = true;
+			controller.DeleteIntegrationEndpointsOnShutdown = true;
 		}
 	}
 
