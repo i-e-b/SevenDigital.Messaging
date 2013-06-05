@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using Moq;
+using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
-		Mock<IEventHook> mock_event_hook;
+		IEventHook mock_event_hook;
 		
 		[TestFixtureSetUp]
 		public void StartMessaging()
@@ -27,9 +27,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			mock_event_hook = new Mock<IEventHook>();
+			mock_event_hook = Substitute.For<IEventHook>();
 
-			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook.Object));
+			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook));
 
 			node_factory = ObjectFactory.GetInstance<IReceiver>();
 		}
@@ -41,11 +41,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				var message = TriggerFailingHandler(receiverNode);
 
-				mock_event_hook.Verify(h=>h.HandlerFailed(
-					It.Is<IMessage>(im=> im.CorrelationId == message.CorrelationId),
-					It.Is<Type>(t=>t == typeof (FailingColourHandler)),
-					It.Is<Exception>(e=>e.Message == FailingColourHandler.Message)
-					));
+				mock_event_hook.Received().HandlerFailed(
+					Arg.Is<IMessage>(im=> im.CorrelationId == message.CorrelationId),
+					Arg.Is<Type>(t=>t == typeof (FailingColourHandler)),
+					Arg.Is<Exception>(e=>e.Message == FailingColourHandler.Message)
+					);
 			}
 		}
 
@@ -56,8 +56,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			{
 				TriggerFailingHandler(receiverNode);
 
-				mock_event_hook.Verify(h=>h.MessageReceived(It.IsAny<IMessage>()),
-					Times.Exactly(0));
+				mock_event_hook.DidNotReceive().MessageReceived(Arg.Any<IMessage>());
 			}
 		}
 		
