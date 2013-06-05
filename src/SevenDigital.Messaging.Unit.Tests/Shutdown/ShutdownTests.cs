@@ -33,6 +33,12 @@ namespace SevenDigital.Messaging.Unit.Tests.Shutdown
 
 			MessagingSystem.Control.Shutdown();
 		}
+		
+		[Test]
+		public void should_have_ejected_configuration ()
+		{
+			Assert.That(ObjectFactory.GetAllInstances<IReceiver>(), Is.Empty);
+		}
 
 		[Test]
 		public void should_dispose_of_channel_action()

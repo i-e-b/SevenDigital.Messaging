@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 {
