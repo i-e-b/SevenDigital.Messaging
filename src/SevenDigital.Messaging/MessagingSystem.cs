@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.EventHooks;
@@ -64,7 +63,6 @@ namespace SevenDigital.Messaging
 			return ObjectFactory.GetInstance<ISenderNode>();
 		}
 
-
 		/// <summary>
 		/// Returns true if in loopback mode
 		/// </summary>
@@ -78,8 +76,12 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		internal static bool IsConfigured()
 		{
-			return ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is IReceiverControl);
+			return 
+				ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is IReceiverControl)
+				&& ObjectFactory.Model.HasImplementationsFor<ISenderNode>();
 		}
+
+		internal static readonly object ConfigurationLock = new object();
 	}
 
 	#region Config interfaces
@@ -196,49 +198,52 @@ namespace SevenDigital.Messaging
 	{
 		public IMessagingConfigureOptions WithDefaults()
 		{
-			if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
-				return new SDM_ConfigureOptions();
-
-			new MessagingBaseConfiguration().WithDefaults();
-			Cooldown.Activate();
-
-			ObjectFactory.Configure(map =>
+			lock (MessagingSystem.ConfigurationLock)
 			{
-				map.For<IMessagingHost>().Use(() => new Host("localhost"));
-				map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
-				map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
+				if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
+					return new SDM_ConfigureOptions();
 
-				map.For<IMessageHandler>().Use<MessageHandler>();
-				map.For<ISleepWrapper>().Use<SleepWrapper>();
+				new MessagingBaseConfiguration().WithDefaults();
+				Cooldown.Activate();
 
-				map.For<IReceiver>().Singleton().Use<Receiver>();
-				map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
-				map.For<ISenderNode>().Singleton().Use<SenderNode>();
-			});
+				ObjectFactory.Configure(map => {
+					map.For<IMessagingHost>().Use(() => new Host("localhost"));
+					map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
+					map.For<IUniqueEndpointGenerator>().Use<UniqueEndpointGenerator>();
 
-			return new SDM_ConfigureOptions();
+					map.For<IMessageHandler>().Use<MessageHandler>();
+					map.For<ISleepWrapper>().Use<SleepWrapper>();
+
+					map.For<IReceiver>().Singleton().Use<Receiver>();
+					map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
+					map.For<ISenderNode>().Singleton().Use<SenderNode>();
+				});
+
+				return new SDM_ConfigureOptions();
+			}
 		}
 
 		public void WithLoopbackMode()
 		{
-			if (MessagingSystem.UsingLoopbackMode()) return;
-			if (MessagingSystem.IsConfigured())
-				throw new InvalidOperationException("Messaging system has already been configured. You should set up loopback mode first.");
-
-			new MessagingBaseConfiguration().WithDefaults();
-			ObjectFactory.EjectAllInstancesOf<IReceiver>();
-
-			var factory = new LoopbackReceiver();
-			ObjectFactory.Configure(map =>
+			lock (MessagingSystem.ConfigurationLock)
 			{
-				map.For<IReceiver>().Singleton().Use(factory);
-				map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackReceiver>().Is(factory);
-				map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
-			});
+				if (MessagingSystem.UsingLoopbackMode()) return;
+				if (MessagingSystem.IsConfigured())
+					throw new InvalidOperationException("Messaging system has already been configured. You should set up loopback mode first.");
+
+				new MessagingBaseConfiguration().WithDefaults();
+				ObjectFactory.EjectAllInstancesOf<IReceiver>();
+
+				var factory = new LoopbackReceiver();
+				ObjectFactory.Configure(map => {
+					map.For<IReceiver>().Singleton().Use(factory);
+					map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackReceiver>().Is(factory);
+					map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
+				});
 
 
-			ObjectFactory.Configure(map =>
-				map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));
+				ObjectFactory.Configure(map => map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));
+			}
 		}
 	}
 
@@ -246,36 +251,46 @@ namespace SevenDigital.Messaging
 	{
 		public void Shutdown()
 		{
-			EjectAndDispose<IReceiverControl>();
-			EjectAndDispose<ISenderNode>();
+			lock (MessagingSystem.ConfigurationLock)
+			{
+				EjectAndDispose<IReceiverControl>();
+				EjectAndDispose<IReceiver>();
+				EjectAndDispose<ISenderNode>();
 
-			EjectAndDispose<IUniqueEndpointGenerator>();
-			EjectAndDispose<ISleepWrapper>();
-			EjectAndDispose<IEventHook>();
+				EjectAndDispose<IUniqueEndpointGenerator>();
+				EjectAndDispose<ISleepWrapper>();
+				EjectAndDispose<IEventHook>();
 
-			EjectAndDispose<IMessagingHost>();
-			EjectAndDispose<IRabbitMqConnection>();
-			EjectAndDispose<IChannelAction>();
+				EjectAndDispose<IMessagingHost>();
+				EjectAndDispose<IRabbitMqConnection>();
+				EjectAndDispose<IChannelAction>();
+			}
 		}
 
 		void EjectAndDispose<T>()
 		{
-			if (!ObjectFactory.Model.HasImplementationsFor<T>()) return;
+			/*try
+			{*/
+			List<IDisposable> instances;
 
 			try
 			{
-				var instances = ObjectFactory.GetAllInstances<T>().OfType<IDisposable>().ToList();
-				ObjectFactory.EjectAllInstancesOf<T>();
-				if (instances.Count < 1) return;
-
-				Thread.Sleep(500); // give running processes a chance to stop running.
-				foreach (var disposable in instances) disposable.Dispose();
+				instances = ObjectFactory.GetAllInstances<T>().OfType<IDisposable>().ToList();
 			}
+			catch
+			{
+				instances = new List<IDisposable>();
+			}
+			ObjectFactory.EjectAllInstancesOf<T>();
+			if (instances.Count < 1) return;
+
+			foreach (var disposable in instances) disposable.Dispose();
+			/*}
 			catch (StructureMapException)
 			{
 				Console.WriteLine("Shutdown conflict");
 				ObjectFactory.EjectAllInstancesOf<T>();
-			}
+			}*/
 		}
 
 		public void SetConcurrentHandlers(int max)

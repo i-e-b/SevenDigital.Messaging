@@ -78,6 +78,11 @@
             The message may be acknowledged or cancelled to finish reception.
             </summary>
         </member>
+        <member name="M:SevenDigital.Messaging.Base.IMessagingBase.ResetCaches">
+            <summary>
+            Ensure that routes and connections are rebuild on next SendMessage or CreateDestination.
+            </summary>
+        </member>
         <member name="T:SevenDigital.Messaging.Base.IPendingMessage`1">
             <summary>
             Represents a message received from RabbitMq.

@@ -144,7 +144,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		void TryRebuildQueues()
 		{
-			MessagingBase.ResetCaches();
+			_messagingBase.ResetCaches();
 			foreach (var sourceMessage in _boundMessageTypes)
 			{
 				_messagingBase.CreateDestination(sourceMessage, _endpoint);
