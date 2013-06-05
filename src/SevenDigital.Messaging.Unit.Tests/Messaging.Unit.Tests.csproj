@@ -70,7 +70,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\IntegrationTestMode.cs" />
     <Compile Include="LoopbackMessaging\LoopbackConfigurationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackNodeFactoryTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
@@ -91,7 +90,9 @@
       <Name>SevenDigital.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

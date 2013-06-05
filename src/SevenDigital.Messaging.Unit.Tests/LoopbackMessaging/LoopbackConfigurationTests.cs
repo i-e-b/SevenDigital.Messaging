@@ -1,13 +1,14 @@
 ﻿using System;
+using NSubstitute;
 using NUnit.Framework;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
-{/*
+{
 	[TestFixture]
 	public class LoopbackConfigurationTests
 	{
-		Mock<IEventHook> mock_event_hook;
+		IEventHook mock_event_hook;
 		private ISenderNode _senderNode;
 		private IReceiver _receiver;
 
@@ -18,8 +19,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 
 			MessagingSystem.Configure.WithDefaults();
 
-			mock_event_hook = new Mock<IEventHook>();
-			ObjectFactory.Configure(map => map.For<IEventHook>().Use(mock_event_hook.Object));
+			mock_event_hook = Substitute.For<IEventHook>();
+			ObjectFactory.Configure(map => map.For<IEventHook>().Use(mock_event_hook));
 
 			ResetHandlers();
 
@@ -54,9 +55,9 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 				receiver.Handle<IDummyMessage>().With<CrappyHandler>();
 				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 
-				mock_event_hook.Verify(h => h.HandlerFailed(It.IsAny<IMessage>(),
-					It.Is<Type>(t => t == typeof(CrappyHandler)),
-					It.Is<ArgumentException>(ex => ex.GetType() == typeof(ArgumentException))));
+				mock_event_hook.Received().HandlerFailed(Arg.Any<IMessage>(),
+					Arg.Is<Type>(t => t == typeof(CrappyHandler)),
+					Arg.Is<ArgumentException>(ex => ex.GetType() == typeof(ArgumentException)));
 			}
 		}
 
@@ -103,8 +104,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 			}
 
-			mock_event_hook.Verify(h => h.MessageSent(It.IsAny<DummyMessage>()));
-			mock_event_hook.Verify(h => h.MessageReceived(It.IsAny<DummyMessage>()));
+			mock_event_hook.Received().MessageSent(Arg.Any<DummyMessage>());
+			mock_event_hook.Received().MessageReceived(Arg.Any<DummyMessage>());
 		}
 
 		[Test]
@@ -116,8 +117,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 			}
 
-			mock_event_hook.Verify(h => h.MessageSent(It.IsAny<DummyMessage>()));
-			mock_event_hook.Verify(h => h.HandlerFailed(It.IsAny<DummyMessage>(), It.Is<Type>(t => t == typeof(CrappyHandler)), It.IsAny<Exception>()));
+			mock_event_hook.Received().MessageSent(Arg.Any<DummyMessage>());
+			mock_event_hook.Received().HandlerFailed(Arg.Any<DummyMessage>(), Arg.Is<Type>(t => t == typeof(CrappyHandler)), Arg.Any<Exception>());
 		}
 
 		[Test]
@@ -173,5 +174,5 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 
 	public interface IDummyMessage : IMessage
 	{
-	}*/
+	}
 }
