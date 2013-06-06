@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SevenDigital.Messaging.MessageSending.Loopback;
+using SevenDigital.Messaging.Loopback;
 using StructureMap;
 
 namespace SevenDigital.Messaging.StructureMap.Unit.Tests

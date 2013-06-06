@@ -1,6 +1,6 @@
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.MessageSending
+namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 {
 	/// <summary>
 	/// Generates polling, self filling worker queues

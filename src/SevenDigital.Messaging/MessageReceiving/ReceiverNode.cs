@@ -2,10 +2,10 @@ using System;
 using DispatchSharp;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.MessageReceiving;
+using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.MessageSending
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	/// <summary>
 	/// Standard receiver node for Messaging.

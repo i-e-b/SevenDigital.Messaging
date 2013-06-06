@@ -4,9 +4,10 @@ using System.Linq;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.EventHooks;
+using SevenDigital.Messaging.Loopback;
 using SevenDigital.Messaging.MessageReceiving;
+using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.MessageSending;
-using SevenDigital.Messaging.MessageSending.Loopback;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 

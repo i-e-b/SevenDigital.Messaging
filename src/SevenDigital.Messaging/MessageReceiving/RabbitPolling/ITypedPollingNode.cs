@@ -2,7 +2,7 @@ using System;
 using DispatchSharp;
 using SevenDigital.Messaging.Base;
 
-namespace SevenDigital.Messaging.MessageSending
+namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 {
 	/// <summary>
 	/// A work queue that polls for message types
