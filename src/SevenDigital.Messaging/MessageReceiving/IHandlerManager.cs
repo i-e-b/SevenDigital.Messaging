@@ -36,8 +36,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 		int CountHandlers();
 
 		/// <summary>
-		/// List handlers for the given type
+		/// List handlers that could process a given message type.
+		/// More generic handlers will be returned for more specific message types
 		/// </summary>
-		IEnumerable<Type> HandlersForType<T>() where T : class, IMessage;
+		IEnumerable<Type> GetMatchingHandlers(Type type);
 	}
 }

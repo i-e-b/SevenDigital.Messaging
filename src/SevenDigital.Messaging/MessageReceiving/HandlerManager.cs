@@ -119,7 +119,11 @@ namespace SevenDigital.Messaging.MessageReceiving
 			}
 		}
 
-		IEnumerable<Type> GetMatchingHandlers(Type type)
+		/// <summary>
+		/// List handlers that could process a given message type.
+		/// More generic handlers will be returned for more specific message types
+		/// </summary>
+		public IEnumerable<Type> GetMatchingHandlers(Type type)
 		{
 			return _handlers.Keys.Where(k => k.IsAssignableFrom(type)).SelectMany(k => _handlers[k]);
 		}
@@ -156,17 +160,6 @@ namespace SevenDigital.Messaging.MessageReceiving
 		public int CountHandlers()
 		{
 			return _handlers.Values.Sum(hs=>hs.Count);
-		}
-
-		/// <summary>
-		/// List handlers for the given type
-		/// </summary>
-		public IEnumerable<Type> HandlersForType<T>() where T : class, IMessage
-		{
-			if (!_handlers.ContainsKey(typeof(T))) return new Type[0];
-			return _handlers[typeof(T)]
-				.Select(t => Type.GetType(t.AssemblyQualifiedName ?? ""))
-				.ToList();
 		}
 
 	}
