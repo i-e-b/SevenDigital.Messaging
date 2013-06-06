@@ -4,10 +4,9 @@ using DispatchSharp;
 using DispatchSharp.QueueTypes;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Logging;
-using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.MessageSending
+namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 {
 	/// <summary>
 	/// A pull-based, polling, blocking RabbitMQ work item queue

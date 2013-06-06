@@ -1,4 +1,4 @@
-namespace SevenDigital.Messaging.MessageSending.Loopback
+namespace SevenDigital.Messaging.Loopback
 {
 	/// <summary>
 	/// A receiver node that does nothing.

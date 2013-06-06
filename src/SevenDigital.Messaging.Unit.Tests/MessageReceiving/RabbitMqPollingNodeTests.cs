@@ -5,6 +5,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.MessageReceiving;
+using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 

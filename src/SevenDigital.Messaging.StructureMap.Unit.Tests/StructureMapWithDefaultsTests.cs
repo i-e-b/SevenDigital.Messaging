@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.MessageReceiving;
+using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;

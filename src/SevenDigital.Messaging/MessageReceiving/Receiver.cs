@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using SevenDigital.Messaging.Base.Routing;
-using SevenDigital.Messaging.MessageReceiving;
+using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
-namespace SevenDigital.Messaging.MessageSending
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	/// <summary>
 	/// Standard node factory for messaging.

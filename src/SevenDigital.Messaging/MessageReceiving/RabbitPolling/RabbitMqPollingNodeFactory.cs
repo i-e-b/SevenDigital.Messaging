@@ -1,8 +1,7 @@
 ﻿using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
 
-namespace SevenDigital.Messaging.MessageSending
+namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 {
 	/// <summary>
 	/// Polling node that reads from MessagingBase

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using StructureMap;
 
-namespace SevenDigital.Messaging.MessageSending.Loopback
+namespace SevenDigital.Messaging.Loopback
 {
 	/// <summary>
 	/// Node factory for loopback.
