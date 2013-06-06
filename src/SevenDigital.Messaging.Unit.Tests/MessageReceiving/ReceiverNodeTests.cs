@@ -1,6 +1,9 @@
-﻿using DispatchSharp;
+﻿using System;
+using DispatchSharp;
+using DispatchSharp.WorkerPools;
 using NSubstitute;
 using NUnit.Framework;
+using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
@@ -18,7 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		IPollingNodeFactory _pollerFactory;
 		ITypedPollingNode _poller;
 		IDispatcherFactory _dispatcherFactory;
-		IDispatch<object> _dispatcher;
+		IDispatch<IPendingMessage<object>> _dispatcher;
 
 		[SetUp]
 		public void setup()
@@ -33,10 +36,10 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 			_pollerFactory = Substitute.For<IPollingNodeFactory>();
 			_pollerFactory.Create(Arg.Any<IRoutingEndpoint>()).Returns(_poller);
 
-			_dispatcher = Substitute.For<IDispatch<object>>();
+			_dispatcher = Substitute.For<IDispatch<IPendingMessage<object>>>();
 
 			_dispatcherFactory = Substitute.For<IDispatcherFactory>();
-			_dispatcherFactory.Create(Arg.Any<IWorkQueue<object>>(), Arg.Any<IWorkerPool<object>>())
+			_dispatcherFactory.Create(Arg.Any<IWorkQueue<IPendingMessage<object>>>(), Arg.Any<IWorkerPool<IPendingMessage<object>>>())
 				.Returns(_dispatcher);
 
 			_subject = new ReceiverNode(
@@ -68,10 +71,11 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		}
 
 		[Test]
-		public void disposing_of_the_node_unregisters_the_node_from_parent ()
+		public void disposing_of_the_node_unregisters_the_node_from_parent_and_stops_dispatcher ()
 		{
 			_subject.Dispose();
 			_parent.Received().Remove(_subject);
+			_dispatcher.Received().Stop();
 		}
 
 		[Test]
@@ -79,6 +83,52 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		{
 			Assert.That(_subject.DestinationName, Is.EqualTo("endpoint"));
 			_endpoint.Received().ToString();
+		}
+
+		[Test]
+		public void node_creates_and_starts_a_dispatcher ()
+		{
+			_dispatcherFactory.ReceivedWithAnyArgs().Create<IPendingMessage<object>>(null,null);
+			_dispatcher.Start();
+		}
+
+		[Test]
+		public void dispatcher_is_set_to_use_HandleIncomingMessage ()
+		{
+			_dispatcher.Received().AddConsumer(Arg.Is<Action<IPendingMessage<object>>>(a => a == ((ReceiverNode)_subject).HandleIncomingMessage));
+		}
+
+		[Test]
+		public void dispatcher_uses_a_threaded_worker_pool ()
+		{
+			_dispatcherFactory.Received().Create(Arg.Any<IWorkQueue<IPendingMessage<object>>>(),
+				Arg.Any<ThreadedWorkerPool<IPendingMessage<object>>>());
+		}
+
+		[Test]
+		public void dispatcher_uses_the_poller_factory_node ()
+		{
+			_dispatcherFactory.Received().Create(
+				_poller,
+				Arg.Any<IWorkerPool<IPendingMessage<object>>>());
+		}
+
+		[Test]
+		public void setting_concurreny_limit_sets_dispatcher_inflight_limit ()
+		{
+			_dispatcher.WhenForAnyArgs(m => m.MaximumInflight = Arg.Any<int>()).Do(
+				ci => Assert.That(ci.Args()[0], Is.EqualTo(2))
+				);
+			_subject.SetConcurrentHandlers(2);
+		}
+
+		[Test]
+		public void incoming_messages_are_passed_to_handler_manager ()
+		{
+			var incoming = Substitute.For<IPendingMessage<object>>();
+			((ReceiverNode)_subject).HandleIncomingMessage(incoming);
+
+			_handlerManager.Received().TryHandle(incoming);
 		}
 
 		#region TypeJunk
