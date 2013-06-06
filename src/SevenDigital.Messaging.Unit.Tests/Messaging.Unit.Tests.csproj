@@ -32,9 +32,9 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DispatchSharp, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DispatchSharp, Version=0.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\DispatchSharp.0.1.2\lib\net40\DispatchSharp.dll</HintPath>
+      <HintPath>..\..\packages\DispatchSharp.0.1.3\lib\net40\DispatchSharp.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute, Version=1.6.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
