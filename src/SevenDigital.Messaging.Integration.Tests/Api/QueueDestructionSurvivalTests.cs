@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		IReceiver _receiver;
 		ISenderNode senderNode;
 
-		const string TestQueue = "survival_test_endpoint";
+		const string TestQueue = "Test_listener_survival_test_endpoint";
 
 		static TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
 

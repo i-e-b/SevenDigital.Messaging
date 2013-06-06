@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Routing;
@@ -151,9 +150,6 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			var name = queueName.ToLowerInvariant();
 			var delete = name.ToLowerInvariant().Contains(".integration.")
-				   || name == "ping-pong-endpoint" || name == "registered-message-endpoint"
-				   || name == "shared-endpoint" || name == "unregistered-message-endpoint"
-				   || name == "survival_test_endpoint"
 				   || name.EndsWith("sevendigital.messaging_listener")
 				   || name.StartsWith("test_listener_");
 			return delete;
