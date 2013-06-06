@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IReceiverControl _parent;
 		readonly IRoutingEndpoint _endpoint;
 		readonly IDispatch<IPendingMessage<object>> _receivingDispatcher;
-		readonly IMessageHandler _handler; // message type => [handler types]
+		readonly IHandlerManager _handler; // message type => [handler types]
 		readonly RabbitMqPollingNode _rabbitMqPollingNode;
 
 		/// <summary>
@@ -30,7 +30,7 @@ namespace SevenDigital.Messaging.MessageSending
 		public ReceiverNode(
 			IReceiverControl parent,
 			IRoutingEndpoint endpoint,
-			IMessageHandler handler,
+			IHandlerManager handler,
 			IMessagingBase messagingBase,
 			ISleepWrapper sleeper)
 		{

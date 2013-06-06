@@ -22,7 +22,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IUniqueEndpointGenerator _uniqueEndPointGenerator;
 		readonly ISleepWrapper _sleeper;
 		readonly IMessagingBase _messageBase;
-		readonly IMessageHandler _handler;
+		readonly IHandlerManager _handler;
 		readonly List<IReceiverNode> _registeredNodes;
 		readonly IMessageRouter _messageRouter;
 		readonly object _lockObject;
@@ -35,7 +35,7 @@ namespace SevenDigital.Messaging.MessageSending
 			IUniqueEndpointGenerator uniqueEndPointGenerator,
 			ISleepWrapper sleeper,
 			IMessagingBase messageBase,
-			IMessageHandler handler,
+			IHandlerManager handler,
 			IMessageRouter messageRouter)
 		{
 			_messageRouter = messageRouter;

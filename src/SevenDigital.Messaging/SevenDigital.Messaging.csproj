@@ -68,8 +68,8 @@
     <Compile Include="Loopback\DummyBinder.cs" />
     <Compile Include="Loopback\LoopbackBinding.cs" />
     <Compile Include="Loopback\LoopbackReceiver.cs" />
-    <Compile Include="MessageReceiving\IMessageHandler.cs" />
-    <Compile Include="MessageReceiving\MessageHandler.cs" />
+    <Compile Include="MessageReceiving\IHandlerManager.cs" />
+    <Compile Include="MessageReceiving\HandlerManager.cs" />
     <Compile Include="MessageReceiving\SleepWrapper.cs" />
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
     <Compile Include="EventHooks\ITestEventHook.cs" />
