@@ -213,6 +213,7 @@ namespace SevenDigital.Messaging
 
 					map.For<IHandlerManager>().Use<HandlerManager>();
 					map.For<ISleepWrapper>().Use<SleepWrapper>();
+					map.For<IPollingNodeFactory>().Use<RabbitMqPollingNodeFactory>();
 
 					map.For<IReceiver>().Singleton().Use<Receiver>();
 					map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
