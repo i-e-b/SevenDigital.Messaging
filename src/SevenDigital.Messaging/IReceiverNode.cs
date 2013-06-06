@@ -10,9 +10,9 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Bind a message type to a handler type
 		/// </summary>
-		/// <typeparam name="T">Type of message to handle. This should be an interface that implements IMessage.</typeparam>
+		/// <typeparam name="TMessage">Type of message to handle. This should be an interface that implements IMessage.</typeparam>
 		/// <returns>A message binding, use this to specify the handler type</returns>
-		IMessageBinding<T> Handle<T>() where T : class, IMessage;
+		IMessageBinding<TMessage> Handle<TMessage>() where TMessage : class, IMessage;
 
 		/// <summary>
 		/// Gets the name of the destination queue used by messaging
@@ -22,8 +22,8 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Remove a handler from all message bindings. The handler will no longer be called.
 		/// </summary>
-		/// <typeparam name="T">Type of hander previously bound with `Handle&lt;T&gt;`</typeparam>
-		void Unregister<T>();
+		/// <typeparam name="THandler">Type of hander previously bound with `Handle&lt;T&gt;`</typeparam>
+		void Unregister<THandler>();
 
 		/// <summary>
 		/// Set maximum number of concurrent handlers on this node

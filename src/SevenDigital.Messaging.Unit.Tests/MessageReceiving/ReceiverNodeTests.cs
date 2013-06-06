@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
-using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
@@ -22,6 +21,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		{
 			_parent = Substitute.For<IReceiverControl>();
 			_endpoint = Substitute.For<IRoutingEndpoint>();
+			_endpoint.ToString().Returns("endpoint");
 			_handlerManager = Substitute.For<IHandlerManager>();
 
 			_poller = Substitute.For<ITypedPollingNode>();
@@ -39,6 +39,36 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		{
 			_subject.Handle<IMessage>().With<MessageHandler>();
 			_handlerManager.Received().AddHandler(typeof(IMessage), typeof(MessageHandler));
+		}
+
+		[Test]
+		public void binding_a_message_type_to_a_handler_type_adds_the_type_to_the_polling_node ()
+		{
+			_subject.Handle<IMessage>().With<MessageHandler>();
+			_poller.Received().AddMessageType(typeof(IMessage));
+		}
+
+		[Test]
+		public void unbinding_a_message_type_removes_the_handler_associations ()
+		{
+			_subject.Handle<IMessage>().With<MessageHandler>();
+			_subject.Unregister<MessageHandler>();
+
+			_handlerManager.RemoveHandler(typeof(MessageHandler));
+		}
+
+		[Test]
+		public void disposing_of_the_node_unregisters_the_node_from_parent ()
+		{
+			_subject.Dispose();
+			_parent.Received().Remove(_subject);
+		}
+
+		[Test]
+		public void destination_name_comes_from_endpoint ()
+		{
+			Assert.That(_subject.DestinationName, Is.EqualTo("endpoint"));
+			_endpoint.Received().ToString();
 		}
 
 		#region TypeJunk
