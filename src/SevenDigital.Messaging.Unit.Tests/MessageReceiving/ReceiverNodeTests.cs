@@ -116,10 +116,9 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		[Test]
 		public void setting_concurreny_limit_sets_dispatcher_inflight_limit ()
 		{
-			_dispatcher.WhenForAnyArgs(m => m.MaximumInflight = Arg.Any<int>()).Do(
-				ci => Assert.That(ci.Args()[0], Is.EqualTo(2))
-				);
 			_subject.SetConcurrentHandlers(2);
+
+			_dispatcher.Received().SetMaximumInflight(2);
 		}
 
 		[Test]

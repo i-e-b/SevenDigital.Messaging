@@ -79,7 +79,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void SetConcurrentHandlers(int max)
 		{
-			_receivingDispatcher.MaximumInflight = max;
+			_receivingDispatcher.SetMaximumInflight(max);
 		}
 
 		/// <summary>

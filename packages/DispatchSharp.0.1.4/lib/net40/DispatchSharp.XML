@@ -17,6 +17,14 @@
             </summary>
             <typeparam name="T">Type of work items to be processed</typeparam>
         </member>
+        <member name="M:DispatchSharp.IDispatch`1.MaximumInflight">
+            <summary> Maximum number of work items being processed at any one time </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.SetMaximumInflight(System.Int32)">
+            <summary>
+            Maximum number of work items being processed at any one time
+            </summary>
+        </member>
         <member name="M:DispatchSharp.IDispatch`1.CurrentInflight">
             <summary> Snapshot of number of work items being processed </summary>
         </member>
@@ -46,20 +54,18 @@
             Continue consuming work and return when the queue reports 0 items waiting. 
             </summary>
         </member>
-        <member name="P:DispatchSharp.IDispatch`1.MaximumInflight">
-            <summary> Maximum number of work items being processed at any one time </summary>
-        </member>
         <member name="E:DispatchSharp.IDispatch`1.Exceptions">
             <summary> Event triggered when a consumer throws an exception </summary>
         </member>
-        <member name="M:DispatchSharp.Dispatch`1.CreateDefaultMultithreaded(System.String)">
+        <member name="M:DispatchSharp.Dispatch`1.CreateDefaultMultithreaded(System.String,System.Int32)">
             <summary>
             Create a dispatcher with defaults for processing non-persistent items
             using all the CPU cores on the local machine
             </summary>
             <param name="name">Name of the dispatcher (useful for debugging)</param>
+            <param name="threadCount">Number of thread to use. Default is number of cores in the host.</param>
         </member>
-        <member name="M:DispatchSharp.Dispatch`1.ProcessBatch(System.String,System.Collections.Generic.IEnumerable{`0},System.Action{`0},System.Action{System.Exception})">
+        <member name="M:DispatchSharp.Dispatch`1.ProcessBatch(System.String,System.Collections.Generic.IEnumerable{`0},System.Action{`0},System.Int32,System.Action{System.Exception})">
             <summary>
             Process a batch of work with all defaults and a given action.
             Blocks until all work complete.
@@ -68,6 +74,14 @@
         <member name="M:DispatchSharp.Dispatch`1.#ctor(DispatchSharp.IWorkQueue{`0},DispatchSharp.IWorkerPool{`0})">
             <summary>
             Create a dispatcher with a specific queue and worker pool
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.MaximumInflight">
+            <summary> Maximum number of work items being processed at any one time </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.SetMaximumInflight(System.Int32)">
+            <summary>
+            Maximum number of work items being processed at any one time
             </summary>
         </member>
         <member name="M:DispatchSharp.Dispatch`1.CurrentInflight">
@@ -99,9 +113,6 @@
             Continue consuming work and return when the queue reports 0 items waiting.
             If you continue to add work, this method will continue to block.
             </summary>
-        </member>
-        <member name="P:DispatchSharp.Dispatch`1.MaximumInflight">
-            <summary> Maximum number of work items being processed at any one time </summary>
         </member>
         <member name="E:DispatchSharp.Dispatch`1.Exceptions">
             <summary> Event triggered when a consumer throws an exception </summary>
@@ -251,6 +262,11 @@
             Current number of workers running actions against queue items
             </summary>
         </member>
+        <member name="M:DispatchSharp.IWorkerPool`1.PoolSize">
+            <summary>
+            Returns number of worker threads in use
+            </summary>
+        </member>
         <member name="M:DispatchSharp.WorkerPools.DirectWorkerPool`1.#ctor">
             <summary>
             Create a new direct worker pool
@@ -275,6 +291,11 @@
         <member name="M:DispatchSharp.WorkerPools.DirectWorkerPool`1.WorkersInflight">
             <summary>
             Current number of workers running actions against queue items
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.WorkerPools.DirectWorkerPool`1.PoolSize">
+            <summary>
+            Returns number of worker threads in use
             </summary>
         </member>
         <member name="T:DispatchSharp.ExceptionEventArgs">
