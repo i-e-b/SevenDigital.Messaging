@@ -77,10 +77,11 @@
     <Compile Include="MessageReceiving\MessageHandlerTests.cs" />
     <Compile Include="MessageReceiving\RabbitMqPollingNodeTests.cs" />
     <Compile Include="MessageReceiving\ReceiverNodeTests.cs" />
+    <Compile Include="MessageReceiving\ReceiverTests.cs" />
     <Compile Include="MessageReceiving\SleepWrapperTests.cs" />
+    <Compile Include="MessageSending\SenderNodeTests.cs" />
     <Compile Include="Routing\UniqueEndpointGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MessageSending\SendMessageTests.cs" />
     <Compile Include="Shutdown\ShutdownTests.cs" />
     <Compile Include="_Helpers\IsMono.cs" />
   </ItemGroup>
