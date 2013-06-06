@@ -2,7 +2,7 @@
 using System.Threading;
 using SignalHandling;
 
-namespace SevenDigital.Messaging
+namespace SevenDigital.Messaging.Infrastructure
 {
 	/// <summary>
 	/// Utility for setting up the termination cooldown event handler

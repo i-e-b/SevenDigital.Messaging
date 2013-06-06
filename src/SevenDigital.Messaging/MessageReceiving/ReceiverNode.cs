@@ -2,6 +2,7 @@ using System;
 using DispatchSharp;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.Routing;
 
@@ -31,14 +32,15 @@ namespace SevenDigital.Messaging.MessageReceiving
 			IReceiverControl parent,
 			IRoutingEndpoint endpoint,
 			IHandlerManager handler,
-			IPollingNodeFactory pollerFactory)
+			IPollingNodeFactory pollerFactory,
+			IDispatcherFactory dispatchFactory)
 		{
 			_parent = parent;
 			_endpoint = endpoint;
 			_handler = handler;
 			_pollingNode = pollerFactory.Create(endpoint);
-			
-			_receivingDispatcher = new Dispatch<IPendingMessage<object>>( 
+
+			_receivingDispatcher = dispatchFactory.Create(
 				_pollingNode,
 				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver")
 				);

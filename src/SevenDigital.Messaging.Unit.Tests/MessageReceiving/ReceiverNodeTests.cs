@@ -1,5 +1,7 @@
-﻿using NSubstitute;
+﻿using DispatchSharp;
+using NSubstitute;
 using NUnit.Framework;
+using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.Routing;
@@ -15,6 +17,8 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		IHandlerManager _handlerManager;
 		IPollingNodeFactory _pollerFactory;
 		ITypedPollingNode _poller;
+		IDispatcherFactory _dispatcherFactory;
+		IDispatch<object> _dispatcher;
 
 		[SetUp]
 		public void setup()
@@ -29,8 +33,14 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 			_pollerFactory = Substitute.For<IPollingNodeFactory>();
 			_pollerFactory.Create(Arg.Any<IRoutingEndpoint>()).Returns(_poller);
 
+			_dispatcher = Substitute.For<IDispatch<object>>();
+
+			_dispatcherFactory = Substitute.For<IDispatcherFactory>();
+			_dispatcherFactory.Create(Arg.Any<IWorkQueue<object>>(), Arg.Any<IWorkerPool<object>>())
+				.Returns(_dispatcher);
+
 			_subject = new ReceiverNode(
-				_parent, _endpoint, _handlerManager, _pollerFactory
+				_parent, _endpoint, _handlerManager, _pollerFactory, _dispatcherFactory
 				);
 		}
 
