@@ -3,6 +3,7 @@ using DispatchSharp;
 using DispatchSharp.QueueTypes;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Logging;
 using StructureMap;
 
@@ -21,10 +22,10 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <summary>
 		/// Create a new message sending node. You do not need to create this yourself. Use `Messaging.Sender()`
 		/// </summary>
-		public SenderNode(IMessagingBase messagingBase)
+		public SenderNode(IMessagingBase messagingBase, IDispatcherFactory dispatchFactory)
 		{
 			_messagingBase = messagingBase;
-			_sendingDispatcher = new Dispatch<IMessage>( 
+			_sendingDispatcher = dispatchFactory.Create( 
 				new InMemoryWorkQueue<IMessage>(), // later, replace with Persistent Disk Queue
 				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
 				);

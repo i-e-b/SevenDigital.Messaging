@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.MessageSending;
@@ -35,6 +36,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		public void should_get_polling_node_provider ()
 		{
 			Assert.That(ObjectFactory.GetInstance<IPollingNodeFactory>(), Is.InstanceOf<RabbitMqPollingNodeFactory>());
+		}
+
+		[Test]
+		public void should_get_dispatcher_factory ()
+		{
+			Assert.That(ObjectFactory.GetInstance<IDispatcherFactory>(), Is.InstanceOf<DispatcherFactory>());
 		}
 
 		[Test]

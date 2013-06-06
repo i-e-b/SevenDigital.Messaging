@@ -62,8 +62,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cooldown.cs" />
+    <Compile Include="Infrastructure\Cooldown.cs" />
     <Compile Include="IMessage.cs" />
+    <Compile Include="Infrastructure\DispatcherFactory.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Loopback\DummyBinder.cs" />
     <Compile Include="Loopback\LoopbackBinding.cs" />

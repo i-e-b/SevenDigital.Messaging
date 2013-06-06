@@ -4,6 +4,7 @@ using System.Linq;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.EventHooks;
+using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Loopback;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
@@ -215,6 +216,7 @@ namespace SevenDigital.Messaging
 					map.For<IHandlerManager>().Use<HandlerManager>();
 					map.For<ISleepWrapper>().Use<SleepWrapper>();
 					map.For<IPollingNodeFactory>().Use<RabbitMqPollingNodeFactory>();
+					map.For<IDispatcherFactory>().Use<DispatcherFactory>();
 
 					map.For<IReceiver>().Singleton().Use<Receiver>();
 					map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
