@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SevenDigital.Messaging.Base;
 
 namespace SevenDigital.Messaging.MessageReceiving
@@ -10,7 +11,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// TryDispatch starts a handler instance and passes it
 	/// an incoming message.
 	/// </summary>
-	public interface IMessageHandler
+	public interface IHandlerManager
 	{
 		/// <summary>
 		/// Try to fire actions for a message
@@ -33,5 +34,10 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// Return count of handlers
 		/// </summary>
 		int CountHandlers();
+
+		/// <summary>
+		/// List handlers for the given type
+		/// </summary>
+		IEnumerable<Type> HandlersForType<T>() where T : class, IMessage;
 	}
 }

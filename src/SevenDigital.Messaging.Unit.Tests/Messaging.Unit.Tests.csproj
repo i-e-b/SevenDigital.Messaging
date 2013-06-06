@@ -74,6 +74,7 @@
     <Compile Include="LoopbackMessaging\LoopbackNodeFactoryTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackStabilityTests.cs" />
+    <Compile Include="MessageReceiving\MessageHandlerTests.cs" />
     <Compile Include="MessageReceiving\RabbitMqPollingNodeTests.cs" />
     <Compile Include="Routing\UniqueEndpointGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,9 +91,7 @@
       <Name>SevenDigital.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

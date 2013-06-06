@@ -15,16 +15,16 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// It uses a Work Wrapper to trigger handling of 
 	/// incoming messages.
 	/// </summary>
-	public class MessageHandler : IMessageHandler
+	public class HandlerManager : IHandlerManager
 	{
-		readonly Dictionary<Type, HashSet<Type>> handlers; // message type => [handler types]
+		readonly Dictionary<Type, HashSet<Type>> _handlers; // message type => [handler types]
 
 		/// <summary>
 		/// New dispatcher
 		/// </summary>
-		public MessageHandler()
+		public HandlerManager()
 		{
-			handlers = new Dictionary<Type, HashSet<Type>>();
+			_handlers = new Dictionary<Type, HashSet<Type>>();
 		}
 
 		/// <summary>
@@ -47,7 +47,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 			HandleMessageWithInstancesOfHandlers(pendingMessage, matchingHandlers, messageObject);
 		}
 
-		void HandleMessageWithInstancesOfHandlers(IPendingMessage<object> pendingMessage, IEnumerable<Type> matchingHandlers, object messageObject)
+		static void HandleMessageWithInstancesOfHandlers(IPendingMessage<object> pendingMessage, IEnumerable<Type> matchingHandlers, object messageObject)
 		{
 			foreach (var handler in matchingHandlers)
 			{
@@ -57,7 +57,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 				{
 					var instance = ObjectFactory.GetInstance(handler);
 					handler.GetMethod("Handle", new[] { messageObject.GetType() }).Invoke(instance, new[] { messageObject });
-					FireHandledOkHooks((IMessage) messageObject, hooks);
+					FireHandledOkHooks((IMessage)messageObject, hooks);
 				}
 				catch (Exception ex)
 				{
@@ -70,8 +70,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 						if (ShouldRetry(ex.GetType(), handler)) pendingMessage.Cancel();
 						else pendingMessage.Finish();
 
-						FireHandlerFailedHooks((IMessage) messageObject, hooks, ex, handler);
-					} catch (Exception exinner)
+						FireHandlerFailedHooks((IMessage)messageObject, hooks, ex, handler);
+					}
+					catch (Exception exinner)
 					{
 						Log.Warning("Firing handler failed hooks didn't succeed: " + exinner.Message);
 					}
@@ -87,7 +88,6 @@ namespace SevenDigital.Messaging.MessageReceiving
 				.OfType<RetryMessageAttribute>()
 				.Any(r => r.RetryExceptionType == exceptionType);
 		}
-
 
 		static void FireHandledOkHooks(IMessage msg, IEnumerable<IEventHook> hooks)
 		{
@@ -121,7 +121,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 
 		IEnumerable<Type> GetMatchingHandlers(Type type)
 		{
-			return handlers.Keys.Where(k => k.IsAssignableFrom(type)).SelectMany(k => handlers[k]);
+			return _handlers.Keys.Where(k => k.IsAssignableFrom(type)).SelectMany(k => _handlers[k]);
 		}
 
 		/// <summary>
@@ -129,13 +129,13 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void AddHandler(Type messageType, Type handlerType)
 		{
-			lock (handlers)
+			lock (_handlers)
 			{
-				if (!handlers.ContainsKey(messageType))
+				if (!_handlers.ContainsKey(messageType))
 				{
-					handlers.Add(messageType, new HashSet<Type> { handlerType });
+					_handlers.Add(messageType, new HashSet<Type> { handlerType });
 				}
-				handlers[messageType].Add(handlerType);
+				_handlers[messageType].Add(handlerType);
 			}
 		}
 
@@ -144,7 +144,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void RemoveHandler(Type handlerType)
 		{
-			foreach (var hashSet in handlers.Values)
+			foreach (var hashSet in _handlers.Values)
 			{
 				hashSet.Remove(handlerType);
 			}
@@ -155,7 +155,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public int CountHandlers()
 		{
-			return handlers.Values.Sum(hs=>hs.Count);
+			return _handlers.Values.Sum(hs=>hs.Count);
 		}
 
 		/// <summary>
@@ -163,7 +163,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public IEnumerable<Type> HandlersForType<T>() where T : class, IMessage
 		{
-			return handlers[typeof(T)]
+			return _handlers[typeof(T)]
 				.Select(t => Type.GetType(t.AssemblyQualifiedName ?? ""))
 				.ToList();
 		}
