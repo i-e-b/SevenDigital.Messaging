@@ -22,7 +22,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		[Test]
 		public void should_be_able_to_send_and_receive_1000_messages_per_minute()
 		{
-			using (var listener = _receiver.TakeFrom("ping-pong-endpoint"))
+			using (var listener = _receiver.TakeFrom("test_listener_ping-pong-endpoint"))
 			{
 				listener.Handle<IPing>().With<PingHandler>();
 				listener.Handle<IPong>().With<PongHandler>();

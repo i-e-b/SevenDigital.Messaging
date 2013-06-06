@@ -64,7 +64,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_react_when_a_registered_message_type_is_received_for_named_endpoint()
 		{
-			using (var receiverNode = _receiver.TakeFrom(new Endpoint("registered-message-endpoint")))
+			using (var receiverNode = _receiver.TakeFrom(new Endpoint("Test_listener_registered-message-endpoint")))
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
@@ -112,7 +112,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_named_endpoint()
 		{
 			ColourMessageHandler.AutoResetEvent.Reset();
-			using (var receiverNode = _receiver.TakeFrom(new Endpoint("unregistered-message-endpoint")))
+			using (var receiverNode = _receiver.TakeFrom(new Endpoint("Test_listener_unregistered-message-endpoint")))
 			{
 				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
@@ -126,8 +126,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test, Ignore("this doesn't work local-to-local right now")]
 		public void Only_one_handler_should_fire_when_competing_for_an_endpoint()
 		{
-			using (var namedReceiverNode1 = _receiver.TakeFrom(new Endpoint("shared-endpoint")))
-			using (var namedReceiverNode2 = _receiver.TakeFrom(new Endpoint("shared-endpoint")))
+			using (var namedReceiverNode1 = _receiver.TakeFrom(new Endpoint("Test_listener_shared-endpoint")))
+			using (var namedReceiverNode2 = _receiver.TakeFrom(new Endpoint("Test_listener_shared-endpoint")))
 			{
 				namedReceiverNode1.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
 				namedReceiverNode2.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();

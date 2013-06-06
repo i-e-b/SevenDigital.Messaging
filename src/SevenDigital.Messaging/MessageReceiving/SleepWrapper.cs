@@ -9,10 +9,13 @@ namespace SevenDigital.Messaging.MessageReceiving
 	{
 		int _sleep;
 		
-		int BurstSleep()
+		/// <summary>
+		/// Increase sleep duration, returning the new duration
+		/// </summary>
+		public int BurstSleep()
 		{
-			if (_sleep < 255) return (_sleep * 2) + 1;
-			return 255;
+			_sleep = (_sleep < 255) ? (_sleep * 2) + 1 : 255;
+			return _sleep;
 		}
 
 		/// <summary>
