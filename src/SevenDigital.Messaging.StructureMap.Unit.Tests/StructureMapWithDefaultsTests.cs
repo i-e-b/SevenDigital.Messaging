@@ -31,6 +31,12 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
+		public void should_get_polling_node_provider ()
+		{
+			Assert.That(ObjectFactory.GetInstance<IPollingNodeFactory>(), Is.InstanceOf<RabbitMqPollingNodeFactory>());
+		}
+
+		[Test]
 		public void Should_configure_messaging_base()
 		{
 			Assert.That(ObjectFactory.GetInstance<IMessagingBase>(), Is.Not.Null);

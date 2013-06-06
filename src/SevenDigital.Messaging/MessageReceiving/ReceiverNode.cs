@@ -22,7 +22,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IRoutingEndpoint _endpoint;
 		readonly IDispatch<IPendingMessage<object>> _receivingDispatcher;
 		readonly IHandlerManager _handler; // message type => [handler types]
-		readonly RabbitMqPollingNode _rabbitMqPollingNode;
+		readonly ITypedPollingNode _pollingNode;
 
 		/// <summary>
 		/// Create a new message receiver node. You do not need to create this yourself. Use `Messaging.Receiver()`
@@ -31,16 +31,15 @@ namespace SevenDigital.Messaging.MessageSending
 			IReceiverControl parent,
 			IRoutingEndpoint endpoint,
 			IHandlerManager handler,
-			IMessagingBase messagingBase,
-			ISleepWrapper sleeper)
+			IPollingNodeFactory pollerFactory)
 		{
 			_parent = parent;
 			_endpoint = endpoint;
 			_handler = handler;
-			_rabbitMqPollingNode = new RabbitMqPollingNode(endpoint, messagingBase, sleeper);
-
+			_pollingNode = pollerFactory.Create(endpoint);
+			
 			_receivingDispatcher = new Dispatch<IPendingMessage<object>>( 
-				_rabbitMqPollingNode,
+				_pollingNode,
 				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver")
 				);
 
@@ -88,7 +87,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <param name="handlerType">Handler that should be created and called</param>
 		public void BindHandler(Type messageType, Type handlerType)
 		{
-			_rabbitMqPollingNode.AddMessageType(messageType);
+			_pollingNode.AddMessageType(messageType);
 			_handler.AddHandler(messageType, handlerType);
 		}
 

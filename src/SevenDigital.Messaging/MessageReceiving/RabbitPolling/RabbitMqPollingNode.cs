@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// <summary>
 	/// A pull-based, polling, blocking RabbitMQ work item queue
 	/// </summary>
-	public class RabbitMqPollingNode : IWorkQueue<IPendingMessage<object>>
+	public class RabbitMqPollingNode : ITypedPollingNode
 	{
 		readonly string _endpoint;
 		readonly IMessagingBase _messagingBase;

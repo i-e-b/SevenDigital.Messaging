@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.Routing;
@@ -19,11 +18,10 @@ namespace SevenDigital.Messaging.MessageSending
 	public class Receiver : IReceiver, IReceiverControl
 	{
 		readonly IUniqueEndpointGenerator _uniqueEndPointGenerator;
-		readonly ISleepWrapper _sleeper;
-		readonly IMessagingBase _messageBase;
 		readonly IHandlerManager _handler;
 		readonly List<IReceiverNode> _registeredNodes;
 		readonly IMessageRouter _messageRouter;
+		readonly IPollingNodeFactory _pollerFactory;
 		readonly object _lockObject;
 
 		/// <summary>
@@ -32,15 +30,13 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public Receiver(
 			IUniqueEndpointGenerator uniqueEndPointGenerator,
-			ISleepWrapper sleeper,
-			IMessagingBase messageBase,
 			IHandlerManager handler,
-			IMessageRouter messageRouter)
+			IMessageRouter messageRouter,
+			IPollingNodeFactory pollerFactory)
 		{
 			_messageRouter = messageRouter;
+			_pollerFactory = pollerFactory;
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
-			_sleeper = sleeper;
-			_messageBase = messageBase;
 			_handler = handler;
 			_lockObject = new object();
 			_registeredNodes = new List<IReceiverNode>();
@@ -57,7 +53,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			lock (_lockObject)
 			{
-				var node = new ReceiverNode(this, endpoint, _handler, _messageBase, _sleeper);
+				var node = new ReceiverNode(this, endpoint, _handler, _pollerFactory);
 				_registeredNodes.Add(node);
 
 				if (PurgeOnConnect) PurgeEndpoint(endpoint);
