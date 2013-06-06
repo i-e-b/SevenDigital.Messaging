@@ -163,6 +163,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public IEnumerable<Type> HandlersForType<T>() where T : class, IMessage
 		{
+			if (!_handlers.ContainsKey(typeof(T))) return new Type[0];
 			return _handlers[typeof(T)]
 				.Select(t => Type.GetType(t.AssemblyQualifiedName ?? ""))
 				.ToList();

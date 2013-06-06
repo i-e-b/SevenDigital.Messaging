@@ -4,6 +4,108 @@
         <name>DispatchSharp</name>
     </assembly>
     <members>
+        <member name="T:DispatchSharp.Dispatch`1">
+            <summary>
+            Default dispatcher
+            </summary>
+            <typeparam name="T">Type of work item to be processed</typeparam>
+        </member>
+        <member name="T:DispatchSharp.IDispatch`1">
+            <summary>
+            Dispatcher co-ordinated a worker pool with a work item queue,
+            and keeps track of actions to be taken with work items.
+            </summary>
+            <typeparam name="T">Type of work items to be processed</typeparam>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.CurrentInflight">
+            <summary> Snapshot of number of work items being processed </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.AddConsumer(System.Action{`0})">
+            <summary> Add an action to take when work is processed </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.AddWork(`0)">
+            <summary> Add a work item to process </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.AddWork(System.Collections.Generic.IEnumerable{`0})">
+            <summary> Add multiple work items to process </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.AllConsumers">
+            <summary> All consumers added to this dispatcher </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.OnExceptions(System.Exception)">
+            <summary> Trigger to call when a consumer throws an exception </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.Start">
+            <summary> Start consuming work and continue until stopped </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.Stop">
+            <summary> Stop consuming work and return when all in-progress work is complete </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatch`1.WaitForEmptyQueueAndStop">
+            <summary>
+            Continue consuming work and return when the queue reports 0 items waiting. 
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.IDispatch`1.MaximumInflight">
+            <summary> Maximum number of work items being processed at any one time </summary>
+        </member>
+        <member name="E:DispatchSharp.IDispatch`1.Exceptions">
+            <summary> Event triggered when a consumer throws an exception </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.CreateDefaultMultithreaded(System.String)">
+            <summary>
+            Create a dispatcher with defaults for processing non-persistent items
+            using all the CPU cores on the local machine
+            </summary>
+            <param name="name">Name of the dispatcher (useful for debugging)</param>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.ProcessBatch(System.String,System.Collections.Generic.IEnumerable{`0},System.Action{`0},System.Action{System.Exception})">
+            <summary>
+            Process a batch of work with all defaults and a given action.
+            Blocks until all work complete.
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.#ctor(DispatchSharp.IWorkQueue{`0},DispatchSharp.IWorkerPool{`0})">
+            <summary>
+            Create a dispatcher with a specific queue and worker pool
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.CurrentInflight">
+            <summary> Snapshot of number of work items being processed </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.AddConsumer(System.Action{`0})">
+            <summary> Add an action to take when work is processed </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.AddWork(`0)">
+            <summary> Add a work item to process </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.AddWork(System.Collections.Generic.IEnumerable{`0})">
+            <summary> Add multiple work items to process </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.AllConsumers">
+            <summary> All consumers added to this dispatcher </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.OnExceptions(System.Exception)">
+            <summary> Trigger to call when a consumer throws an exception </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.Start">
+            <summary> Start consuming work and continue until stopped </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.Stop">
+            <summary> Stop consuming work and return when all in-progress work is complete </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.WaitForEmptyQueueAndStop">
+            <summary>
+            Continue consuming work and return when the queue reports 0 items waiting.
+            If you continue to add work, this method will continue to block.
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.Dispatch`1.MaximumInflight">
+            <summary> Maximum number of work items being processed at any one time </summary>
+        </member>
+        <member name="E:DispatchSharp.Dispatch`1.Exceptions">
+            <summary> Event triggered when a consumer throws an exception </summary>
+        </member>
         <member name="T:DispatchSharp.Internal.IWaitHandle">
             <summary>
             Contract for a wait signal
@@ -175,85 +277,6 @@
             Current number of workers running actions against queue items
             </summary>
         </member>
-        <member name="T:DispatchSharp.Dispatch`1">
-            <summary>
-            Default dispatcher
-            </summary>
-            <typeparam name="T">Type of work item to be processed</typeparam>
-        </member>
-        <member name="T:DispatchSharp.IDispatch`1">
-            <summary>
-            Dispatcher co-ordinated a worker pool with a work item queue,
-            and keeps track of actions to be taken with work items.
-            </summary>
-            <typeparam name="T">Type of work items to be processed</typeparam>
-        </member>
-        <member name="M:DispatchSharp.IDispatch`1.CurrentInflight">
-            <summary> Snapshot of number of work items being processed </summary>
-        </member>
-        <member name="M:DispatchSharp.IDispatch`1.AddConsumer(System.Action{`0})">
-            <summary> Add an action to take when work is processed </summary>
-        </member>
-        <member name="M:DispatchSharp.IDispatch`1.AddWork(`0)">
-            <summary> Add a work item to process </summary>
-        </member>
-        <member name="M:DispatchSharp.IDispatch`1.AllConsumers">
-            <summary> All consumers added to this dispatcher </summary>
-        </member>
-        <member name="M:DispatchSharp.IDispatch`1.OnExceptions(System.Exception)">
-            <summary> Trigger to call when a consumer throws an exception </summary>
-        </member>
-        <member name="M:DispatchSharp.IDispatch`1.Start">
-            <summary> Start consuming work and continue until stopped </summary>
-        </member>
-        <member name="M:DispatchSharp.IDispatch`1.Stop">
-            <summary> Stop consuming work and return when all in-progress work is complete </summary>
-        </member>
-        <member name="P:DispatchSharp.IDispatch`1.MaximumInflight">
-            <summary> Maximum number of work items being processed at any one time </summary>
-        </member>
-        <member name="E:DispatchSharp.IDispatch`1.Exceptions">
-            <summary> Event triggered when a consumer throws an exception </summary>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.CreateDefaultMultithreaded(System.String)">
-            <summary>
-            Create a dispatcher with defaults for processing non-persistent items
-            using all the CPU cores on the local machine
-            </summary>
-            <param name="name">Name of the dispatcher (useful for debugging)</param>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.#ctor(DispatchSharp.IWorkQueue{`0},DispatchSharp.IWorkerPool{`0})">
-            <summary>
-            Create a dispatcher with a specific queue and worker pool
-            </summary>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.CurrentInflight">
-            <summary> Snapshot of number of work items being processed </summary>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.AddConsumer(System.Action{`0})">
-            <summary> Add an action to take when work is processed </summary>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.AddWork(`0)">
-            <summary> Add a work item to process </summary>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.AllConsumers">
-            <summary> All consumers added to this dispatcher </summary>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.OnExceptions(System.Exception)">
-            <summary> Trigger to call when a consumer throws an exception </summary>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.Start">
-            <summary> Start consuming work and continue until stopped </summary>
-        </member>
-        <member name="M:DispatchSharp.Dispatch`1.Stop">
-            <summary> Stop consuming work and return when all in-progress work is complete </summary>
-        </member>
-        <member name="P:DispatchSharp.Dispatch`1.MaximumInflight">
-            <summary> Maximum number of work items being processed at any one time </summary>
-        </member>
-        <member name="E:DispatchSharp.Dispatch`1.Exceptions">
-            <summary> Event triggered when a consumer throws an exception </summary>
-        </member>
         <member name="T:DispatchSharp.ExceptionEventArgs">
             <summary>
             Arguments for events triggered by uncaught exceptions
@@ -312,7 +335,7 @@
         <member name="M:DispatchSharp.QueueTypes.InMemoryWorkQueue`1.BlockUntilReady">
             <summary>
             Blocks the current thread until an item is available on the queue.
-            Will block indefinitely. Does not guarantee an item will be dequeued successfully.
+            Will block for up to 500ms. Does not guarantee an item will be dequeued successfully.
             </summary>
         </member>
         <member name="T:DispatchSharp.WorkerPools.ThreadedWorkerPool`1">
