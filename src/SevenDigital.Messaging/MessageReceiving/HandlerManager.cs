@@ -82,7 +82,10 @@ namespace SevenDigital.Messaging.MessageReceiving
 			pendingMessage.Finish();
 		}
 
-		static bool ShouldRetry(Type exceptionType, Type handlerType)
+		/// <summary>
+		/// Determines if a Handler is marked for retry of the given exception type
+		/// </summary>
+		public static bool ShouldRetry(Type exceptionType, Type handlerType)
 		{
 			return handlerType.GetCustomAttributes(typeof(RetryMessageAttribute), false)
 				.OfType<RetryMessageAttribute>()
@@ -125,6 +128,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public IEnumerable<Type> GetMatchingHandlers(Type type)
 		{
+			if (_handlers.Count < 1) return new Type[0];
 			return _handlers.Keys.Where(k => k.IsAssignableFrom(type)).SelectMany(k => _handlers[k]);
 		}
 
