@@ -91,7 +91,10 @@ namespace SevenDigital.Messaging.MessageReceiving
 			_handler.AddHandler(messageType, handlerType);
 		}
 
-		void HandleIncomingMessage(IPendingMessage<object> incoming)
+		/// <summary>
+		/// Handles messages received from messaging base
+		/// </summary>
+		public void HandleIncomingMessage(IPendingMessage<object> incoming)
 		{
 			_handler.TryHandle(incoming);
 		}
