@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using DispatchSharp;
 using DispatchSharp.QueueTypes;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Logging;
+using SevenDigital.Messaging.MessageReceiving;
 using StructureMap;
 
 namespace SevenDigital.Messaging.MessageSending
@@ -17,18 +19,22 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		const int SingleThreaded = 1;
 		readonly IMessagingBase _messagingBase;
+		readonly ISleepWrapper _sleeper;
 		readonly IDispatch<IMessage> _sendingDispatcher;
 
 		/// <summary>
 		/// Create a new message sending node. You do not need to create this yourself. Use `Messaging.Sender()`
 		/// </summary>
-		public SenderNode(IMessagingBase messagingBase, IDispatcherFactory dispatchFactory)
+		public SenderNode(IMessagingBase messagingBase, IDispatcherFactory dispatchFactory, ISleepWrapper sleeper)
 		{
+
+
 			_messagingBase = messagingBase;
+			_sleeper = sleeper;
 			_sendingDispatcher = dispatchFactory.Create( 
 				new InMemoryWorkQueue<IMessage>(), // later, replace with Persistent Disk Queue
 				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
-				);
+			);
 
 			_sendingDispatcher.AddConsumer(SendWaitingMessage);
 			_sendingDispatcher.Start();
@@ -52,12 +58,22 @@ namespace SevenDigital.Messaging.MessageSending
 		void SendWaitingMessage(IMessage message)
 		{
 			TryFireHooks(message);
-			_messagingBase.SendMessage(message);
+			try
+			{
+				_messagingBase.SendMessage(message);
+				_sleeper.Reset();
+			}
+			catch
+			{
+				_sleeper.SleepMore();
+				SendMessage(message);
+			}
 		}
 
 		static void TryFireHooks(IMessage message)
 		{
-			var hooks = ObjectFactory.GetAllInstances<IEventHook>();
+			var hooks = GetEventHooks();
+
 			foreach (var hook in hooks)
 			{
 				try
@@ -68,6 +84,19 @@ namespace SevenDigital.Messaging.MessageSending
 				{
 					Log.Warning("An event hook failed during send " + ex.GetType() + "; " + ex.Message);
 				}
+			}
+		}
+
+		static IEnumerable<IEventHook> GetEventHooks()
+		{
+			try
+			{
+				return ObjectFactory.GetAllInstances<IEventHook>();
+			}
+			catch (Exception ex)
+			{
+				Log.Warning("Structuremap could not generate event hook list " + ex.GetType() + "; " + ex.Message);
+				return new IEventHook[0];
 			}
 		}
 

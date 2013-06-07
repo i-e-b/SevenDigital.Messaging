@@ -401,6 +401,11 @@
             </summary>
             <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
         </member>
+        <member name="M:SevenDigital.Messaging.Base.Routing.IMessageRouter.RemoveRouting(System.Func{System.String,System.Boolean})">
+            <summary>
+            Deletes all queues and exchanges created or used by this Router.
+            </summary>
+        </member>
         <member name="T:SevenDigital.Messaging.Base.Serialisation.ContractStack">
             <summary>
             Helper class to read the contract stack from incoming JSON messages
