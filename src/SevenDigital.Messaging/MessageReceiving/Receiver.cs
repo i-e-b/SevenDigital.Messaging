@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
+using SevenDigital.Messaging.MessageReceiving.Testing;
 using SevenDigital.Messaging.Routing;
-using StructureMap;
 
 namespace SevenDigital.Messaging.MessageReceiving
 {
@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// the API point to decide to use a unique endpoint name (Listen) or
 	/// a specific endpoint name (TakeFrom)
 	/// </remarks>
-	public class Receiver : IReceiver, IReceiverControl
+	public class Receiver : IReceiver, IReceiverControl, IReceiverTesting
 	{
 		readonly IUniqueEndpointGenerator _uniqueEndPointGenerator;
 		readonly IHandlerManager _handler;
@@ -87,6 +87,8 @@ namespace SevenDigital.Messaging.MessageReceiving
 				}
 				_registeredNodes.Clear();
 			}
+
+			if (DeleteIntegrationEndpointsOnShutdown) DeleteIntegrationEndpoints();
 		}
 
 		/// <summary>
@@ -134,19 +136,20 @@ namespace SevenDigital.Messaging.MessageReceiving
 		public void Dispose()
 		{
 			Shutdown();
-
-			if (DeleteIntegrationEndpointsOnShutdown) DeleteIntegrationEndpoints();
 		}
 
 		void DeleteIntegrationEndpoints()
 		{
 			lock (_lockObject)
 			{
-				((RabbitRouter) ObjectFactory.GetInstance<IMessageRouter>()).RemoveRouting(DeleteNameFilter);
+				_messageRouter.RemoveRouting(DeleteNameFilter);
 			}
 		}
 
-		static bool DeleteNameFilter(string queueName)
+		/// <summary>
+		/// Returns true if a queue name would be deleted is DIEOS is set
+		/// </summary>
+		public bool DeleteNameFilter(string queueName)
 		{
 			var name = queueName.ToLowerInvariant();
 			var delete = name.ToLowerInvariant().Contains(".integration.")
@@ -159,6 +162,29 @@ namespace SevenDigital.Messaging.MessageReceiving
 		{
 			_messageRouter.AddDestination(endpoint.ToString());
 			_messageRouter.Purge(endpoint.ToString());
+		}
+
+		List<IReceiverNode> IReceiverTesting.CurrentNodes()
+		{
+			return _registeredNodes;
+		}
+	}
+
+	namespace Testing
+	{
+		/// <summary>
+		/// Unit testing methods for IReceiver
+		/// </summary>
+		public interface IReceiverTesting
+		{
+			/// <summary> Registered node list </summary>
+			List<IReceiverNode> CurrentNodes();
+
+			/// <summary>
+			/// Returns true if a queue name would be deleted is DIEOS is set
+			/// </summary>
+			bool DeleteNameFilter(string queueName);
+
 		}
 	}
 }
