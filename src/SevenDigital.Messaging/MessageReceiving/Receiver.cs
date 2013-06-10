@@ -142,9 +142,17 @@ namespace SevenDigital.Messaging.MessageReceiving
 		{
 			lock (_lockObject)
 			{
-				_messageRouter.RemoveRouting(DeleteNameFilter);
+				try
+				{
+					_messageRouter.RemoveRouting(DeleteNameFilter);
+				} catch
+				{
+					Ignore();
+				}
 			}
 		}
+
+		static void Ignore() { }
 
 		/// <summary>
 		/// Returns true if a queue name would be deleted is DIEOS is set

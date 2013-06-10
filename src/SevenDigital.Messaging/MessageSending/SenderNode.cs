@@ -38,12 +38,18 @@ namespace SevenDigital.Messaging.MessageSending
 
 			_sendingDispatcher.AddConsumer(SendWaitingMessage);
 			_sendingDispatcher.Start();
-			_sendingDispatcher.Exceptions += _sendingDispatcher_Exceptions;
+			_sendingDispatcher.Exceptions += SendingExceptions;
 		}
 
-		void _sendingDispatcher_Exceptions(object sender, ExceptionEventArgs e)
+		/// <summary>
+		/// Handle exceptions thrown during sending.
+		/// </summary>
+		public void SendingExceptions(object sender, ExceptionEventArgs<IMessage> e)
 		{
-			 Log.Warning("Sender failed: " + e.SourceException.GetType() + "; " + e.SourceException.Message);
+			_sleeper.SleepMore();
+			e.WorkItem.Cancel();
+
+			Log.Warning("Sender failed: " + e.SourceException.GetType() + "; " + e.SourceException.Message);
 		}
 
 		/// <summary>
@@ -60,17 +66,9 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void SendWaitingMessage(IMessage message)
 		{
+			_messagingBase.SendMessage(message);
+			_sleeper.Reset();
 			TryFireHooks(message);
-			try
-			{
-				_messagingBase.SendMessage(message);
-				_sleeper.Reset();
-			}
-			catch
-			{
-				_sleeper.SleepMore();
-				SendMessage(message);
-			}
 		}
 
 		static void TryFireHooks(IMessage message)

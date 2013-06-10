@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
-		public void zHandler_should_react_for_all_message_types_it_is_handling()
+		public void Handler_should_react_for_all_message_types_it_is_handling()
 		{
 			using (var receiverNode = _receiver.Listen())
 			{

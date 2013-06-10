@@ -32,9 +32,9 @@
     <DocumentationFile>bin\Release\SevenDigital.Messaging.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DispatchSharp, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DispatchSharp, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\DispatchSharp.0.1.4\lib\net40\DispatchSharp.dll</HintPath>
+      <HintPath>..\..\packages\DispatchSharp.0.1.5\lib\net40\DispatchSharp.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=2.8.1.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
