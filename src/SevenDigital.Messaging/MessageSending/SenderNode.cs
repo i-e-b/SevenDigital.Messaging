@@ -55,7 +55,10 @@ namespace SevenDigital.Messaging.MessageSending
 			_sendingDispatcher.AddWork(message);
 		}
 
-		void SendWaitingMessage(IMessage message)
+		/// <summary>
+		/// Internal immediate send. Use SendMessage() instead.
+		/// </summary>
+		public void SendWaitingMessage(IMessage message)
 		{
 			TryFireHooks(message);
 			try
