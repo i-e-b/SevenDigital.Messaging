@@ -76,6 +76,7 @@
     <Compile Include="Logging\LoggingTest.cs" />
     <Compile Include="Loopback\LoopbackModeTests.cs" />
     <Compile Include="MessageSending\RetryReceivingTests.cs" />
+    <Compile Include="MessageSending\SendingRetryTests.cs" />
     <Compile Include="MessageSending\StressTests.cs" />
     <Compile Include="MessageSending\UnregisteringHandlersTests.cs" />
     <Compile Include="_Helpers\Handlers\FailingColourHandler.cs" />

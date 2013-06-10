@@ -42,12 +42,6 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		}
 
 		[Test]
-		public void TODO_DispatchSharp_could_do_with_a_failure_policy_or_other_way_to_pause_and_retry_work_after_failures ()
-		{
-			Assert.Inconclusive("TODO");
-		}
-
-		[Test]
 		public void creating_a_sender_node_should_create_a_single_threaded_dispatcher ()
 		{
 			_dispatcherFactory.Received().Create(
@@ -116,13 +110,18 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		[Test]
 		public void if_messaging_base_fails_to_send_then_the_sender_sleeps_and_requeues_the_message ()
 		{
-			var msg = new TestMessage();
-			_messagingBase.When(m=>m.SendMessage(Arg.Any<object>())).Do(c => { throw new Exception("test exception"); });
+			bool finished = false, cancelled = false;
 
-			((SenderNode)_subject).SendWaitingMessage(msg);
+			((SenderNode)_subject).SendingExceptions(this,
+				new ExceptionEventArgs<IMessage>
+				{
+					SourceException = new Exception("test exception"),
+					WorkItem = new WorkQueueItem<IMessage>(null, o => { finished = true; }, o => { cancelled = true; })
+				});
 
 			_sleeper.Received().SleepMore();
-			_dispatcher.Received().AddWork(msg);
+			Assert.That(finished, Is.False);
+			Assert.That(cancelled, Is.True);
 		}
 
 		[Test]

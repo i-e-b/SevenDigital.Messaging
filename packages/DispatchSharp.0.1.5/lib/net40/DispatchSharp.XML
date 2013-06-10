@@ -29,7 +29,12 @@
             <summary> Snapshot of number of work items being processed </summary>
         </member>
         <member name="M:DispatchSharp.IDispatch`1.AddConsumer(System.Action{`0})">
-            <summary> Add an action to take when work is processed </summary>
+            <summary>
+            Add an action to take when work is processed.
+            Simple actions have their work removed from the queue by default
+            after completion or failure. If you wish to cancel a failed work item,
+            use the Exceptions event
+            </summary>
         </member>
         <member name="M:DispatchSharp.IDispatch`1.AddWork(`0)">
             <summary> Add a work item to process </summary>
@@ -39,9 +44,6 @@
         </member>
         <member name="M:DispatchSharp.IDispatch`1.AllConsumers">
             <summary> All consumers added to this dispatcher </summary>
-        </member>
-        <member name="M:DispatchSharp.IDispatch`1.OnExceptions(System.Exception)">
-            <summary> Trigger to call when a consumer throws an exception </summary>
         </member>
         <member name="M:DispatchSharp.IDispatch`1.Start">
             <summary> Start consuming work and continue until stopped </summary>
@@ -56,6 +58,15 @@
         </member>
         <member name="E:DispatchSharp.IDispatch`1.Exceptions">
             <summary> Event triggered when a consumer throws an exception </summary>
+        </member>
+        <member name="T:DispatchSharp.IDispatchInternal`1">
+            <summary>
+            Interfaces for dispatcher internal methods.
+            These should not be used in production code.
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.IDispatchInternal`1.OnExceptions(System.Exception,DispatchSharp.IWorkQueueItem{`0})">
+            <summary> INTERNAL: Trigger to call when a consumer throws an exception </summary>
         </member>
         <member name="M:DispatchSharp.Dispatch`1.CreateDefaultMultithreaded(System.String,System.Int32)">
             <summary>
@@ -99,7 +110,7 @@
         <member name="M:DispatchSharp.Dispatch`1.AllConsumers">
             <summary> All consumers added to this dispatcher </summary>
         </member>
-        <member name="M:DispatchSharp.Dispatch`1.OnExceptions(System.Exception)">
+        <member name="M:DispatchSharp.Dispatch`1.OnExceptions(System.Exception,DispatchSharp.IWorkQueueItem{`0})">
             <summary> Trigger to call when a consumer throws an exception </summary>
         </member>
         <member name="M:DispatchSharp.Dispatch`1.Start">
@@ -208,7 +219,9 @@
         </member>
         <member name="M:DispatchSharp.QueueTypes.WorkQueueItem`1.Finish">
             <summary>
-            Call this to permanently remove an item from the queue
+            Call this to permanently remove an item from the queue.
+            This wrapper has a safety to ensure that only one of Finish/Cancel can be called, 
+            and that the underlying method is called only once.
             </summary>
         </member>
         <member name="M:DispatchSharp.QueueTypes.WorkQueueItem`1.Cancel">
@@ -298,14 +311,22 @@
             Returns number of worker threads in use
             </summary>
         </member>
-        <member name="T:DispatchSharp.ExceptionEventArgs">
+        <member name="T:DispatchSharp.ExceptionEventArgs`1">
             <summary>
             Arguments for events triggered by uncaught exceptions
             </summary>
         </member>
-        <member name="P:DispatchSharp.ExceptionEventArgs.SourceException">
+        <member name="P:DispatchSharp.ExceptionEventArgs`1.SourceException">
             <summary>
             Triggering exception
+            </summary>
+        </member>
+        <member name="P:DispatchSharp.ExceptionEventArgs`1.WorkItem">
+            <summary>
+            The work item that caused the exception.
+            You can use the Cancel or Finish methods to control work
+            rescheduling.
+            If you don't call Cancel, the work item will be Finished by default.
             </summary>
         </member>
         <member name="T:DispatchSharp.IWorkQueue`1">

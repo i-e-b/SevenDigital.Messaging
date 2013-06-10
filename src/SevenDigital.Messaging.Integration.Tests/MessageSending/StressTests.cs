@@ -8,7 +8,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 	public class StressTests
 	{
 		IReceiver _receiver;
-		ISenderNode sender;
+		ISenderNode _sender;
 
 		[SetUp]
 		public void SetUp()
@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			Helper.SetupTestMessaging();
 			MessagingSystem.Events.ClearEventHooks();
 			_receiver = MessagingSystem.Receiver();
-			sender = MessagingSystem.Sender();
+			_sender = MessagingSystem.Sender();
 		}
 
 		[Test]
@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 				listener.Handle<IPing>().With<PingHandler>();
 				listener.Handle<IPong>().With<PongHandler>();
 
-				sender.SendMessage(new PingMessage());
+				_sender.SendMessage(new PingMessage());
 
 				var result = PongHandler.Trigger.WaitOne(TimeSpan.FromSeconds(60));
 				Assert.True(result, "Only got " + (PongHandler.Count * 2) + " in a minute");
@@ -35,6 +35,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		}
 	}
 
+	#region Type junk
 	public class PongHandler : IHandle<IPong>
 	{
 		public static AutoResetEvent Trigger = new AutoResetEvent(false);
@@ -102,4 +103,5 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 	public interface IPing : IMessage
 	{
 	}
+	#endregion
 }

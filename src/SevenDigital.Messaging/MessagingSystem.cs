@@ -209,18 +209,23 @@ namespace SevenDigital.Messaging
 				Cooldown.Activate();
 
 				ObjectFactory.Configure(map => {
+					// Base messaging
 					map.For<IMessagingHost>().Use(() => new Host("localhost"));
 					map.For<IRabbitMqConnection>().Use(() => new RabbitMqConnection("localhost"));
 					map.For<IUniqueEndpointGenerator>().Singleton().Use<UniqueEndpointGenerator>();
 
+					// threading and dispatch
 					map.For<IHandlerManager>().Use<HandlerManager>();
-					map.For<ISleepWrapper>().Use<SleepWrapper>();
 					map.For<IPollingNodeFactory>().Use<RabbitMqPollingNodeFactory>();
 					map.For<IDispatcherFactory>().Use<DispatcherFactory>();
 
+					// singletons
+					map.For<ISleepWrapper>().Singleton().Use<SleepWrapper>();
 					map.For<IReceiver>().Singleton().Use<Receiver>();
-					map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
 					map.For<ISenderNode>().Singleton().Use<SenderNode>();
+
+					// aliases
+					map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
 				});
 
 				return new SDM_ConfigureOptions();
