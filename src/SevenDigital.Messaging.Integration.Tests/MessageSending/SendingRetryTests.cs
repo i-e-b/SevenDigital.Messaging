@@ -14,7 +14,6 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 	{
 		ISenderNode _subject;
 		IMessagingBase _failingMessagingBase;
-		ISleepWrapper _nonSleeper;
 
 		[SetUp]
 		public void setup()
