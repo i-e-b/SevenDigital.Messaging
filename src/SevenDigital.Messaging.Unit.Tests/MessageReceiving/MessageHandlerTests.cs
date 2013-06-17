@@ -17,7 +17,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		Type[] _handlers;
 		IPendingMessage<object> _pendingSubMessage, _pendingMessageOne, _pendingIMessage;
 		IMessagingBase _messageBase;
-		bool FinishCalled, CancelCalled;
+		bool FinishCalled, CancelCalled, LogWritten;
 		IEventHook _eventHook;
 
 		[SetUp]
@@ -26,6 +26,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 			_messageBase = Substitute.For<IMessagingBase>();
 			ObjectFactory.Configure(map=>map.For<IMessagingBase>().Use(_messageBase));
 
+			FinishCalled = CancelCalled = LogWritten = false;
 			_subject = new HandlerManager();
 			_types = new[] {typeof (IMessageOne), typeof (IMessageTwo), typeof (IMessageThree)};
 			_handlers = new[] {typeof (HandlerOne), typeof (HandlerTwo), typeof (HandlerThree)};
@@ -44,6 +45,10 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 			MessagingSystem.Events.ClearEventHooks();
 			_eventHook = Substitute.For<IEventHook>();
 			ObjectFactory.Configure(map=>map.For<IEventHook>().Use(_eventHook));
+			MessagingSystem.Control.OnInternalWarning(e => {
+				Console.WriteLine(e.Message);
+				LogWritten = true;
+			});
 		}
 
 		[Test]
@@ -158,7 +163,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 			_subject.TryHandle(_pendingSubMessage);
 
 			Assert.That(FinishCalled);
-			_messageBase.Received().SendMessage(Arg.Any<ILogMessage>());
+			Assert.That(LogWritten, Is.True);
 		}
 
 		[Test]
@@ -167,8 +172,8 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 			_subject.AddHandler(typeof (ISubMessage), typeof (SubMessageHandler));
 			_subject.TryHandle(_pendingSubMessage);
 
-			Assert.That(FinishCalled);
-			_messageBase.DidNotReceive().SendMessage(Arg.Any<ILogMessage>());
+			Assert.That(FinishCalled, "finish didn't call");
+			Assert.That(LogWritten, Is.False, "a warning was written");
 		}
 
 		[Test]

@@ -5,6 +5,7 @@ using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Infrastructure;
+using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.Loopback;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
@@ -108,6 +109,11 @@ namespace SevenDigital.Messaging
 		/// Use `SetConcurentHanders()` to resume.
 		/// </summary>
 		void Pause();
+
+		/// <summary>
+		/// Register an action to take on messaging warnings.
+		/// </summary>
+		void OnInternalWarning(Action<MessagingLogEventArgs> action);
 	}
 
 	/// <summary>
@@ -262,6 +268,7 @@ namespace SevenDigital.Messaging
 		{
 			lock (MessagingSystem.ConfigurationLock)
 			{
+				Log.Instance().Shutdown();
 				EjectAndDispose<IReceiverControl>();
 				EjectAndDispose<IReceiver>();
 				EjectAndDispose<ISenderNode>();
@@ -274,6 +281,11 @@ namespace SevenDigital.Messaging
 				EjectAndDispose<IRabbitMqConnection>();
 				EjectAndDispose<IChannelAction>();
 			}
+		}
+
+		public void OnInternalWarning(Action<MessagingLogEventArgs> action)
+		{
+			Log.Instance().RegisterAction(action);
 		}
 
 		static void EjectAndDispose<T>()
