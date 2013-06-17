@@ -131,7 +131,7 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Return a list of registered listeners for a message type. Only usable in loopback mode.
 		/// </summary>
-		IList<Type> LoopbackListenersForMessage<T>();
+		IEnumerable<Type> LoopbackListenersForMessage<T>();
 	}
 
 	/// <summary>
@@ -344,7 +344,7 @@ namespace SevenDigital.Messaging
 			return ObjectFactory.GetInstance<ITestEventHook>();
 		}
 
-		public IList<Type> LoopbackListenersForMessage<T>()
+		public IEnumerable<Type> LoopbackListenersForMessage<T>()
 		{
 			var lb = ObjectFactory.GetInstance<IReceiver>() as LoopbackReceiver;
 			if (lb == null) 

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using SevenDigital.Messaging.Loopback;
 
 namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
@@ -14,7 +15,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 			var listeners = subject.ListenersFor<RandomType>();
 
 			Assert.That(listeners, Is.Not.Null);
-			Assert.That(listeners.Count, Is.EqualTo(0));
+			Assert.That(listeners.Count(), Is.EqualTo(0));
 		}
 	}
 
