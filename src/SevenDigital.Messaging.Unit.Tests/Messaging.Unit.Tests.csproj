@@ -70,6 +70,7 @@
     <Compile Include="LoopbackMessaging\LoopbackConfigurationTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackNodeFactoryTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackRegistrationTests.cs" />
+    <Compile Include="LoopbackMessaging\LoopbackShutdownTests.cs" />
     <Compile Include="LoopbackMessaging\LoopbackStabilityTests.cs" />
     <Compile Include="MessageReceiving\MessageHandlerTests.cs" />
     <Compile Include="MessageReceiving\RabbitMqPollingNodeTests.cs" />

@@ -49,7 +49,7 @@ namespace SevenDigital.Messaging
 		public static IReceiver Receiver()
 		{
 			if (!UsingLoopbackMode() && !IsConfigured())
-				throw new InvalidOperationException("Receiver can't be provided: Messaging has not been configured. Try `Messaging.Configure.WithDefaults()`");
+				throw new InvalidOperationException("Receiver can't be provided: Messaging has not been configured. Try `MessagingSystem.Configure.WithDefaults()`");
 
 			return ObjectFactory.GetInstance<IReceiver>();
 		}
@@ -61,7 +61,7 @@ namespace SevenDigital.Messaging
 		public static ISenderNode Sender()
 		{
 			if (!UsingLoopbackMode() && !IsConfigured())
-				throw new InvalidOperationException("Sender can't be provided: Messaging has not been configured. Try `Messaging.Configure.WithDefaults()`");
+				throw new InvalidOperationException("Sender can't be provided: Messaging has not been configured. Try `MessagingSystem.Configure.WithDefaults()`");
 
 			return ObjectFactory.GetInstance<ISenderNode>();
 		}
@@ -71,7 +71,9 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		internal static bool UsingLoopbackMode()
 		{
-			return ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is LoopbackReceiver);
+			return 
+				ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is LoopbackReceiver)
+				&& ObjectFactory.TryGetInstance<ISenderNode>() != null;
 		}
 
 		/// <summary>
@@ -211,6 +213,9 @@ namespace SevenDigital.Messaging
 				if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
 					return new SDM_ConfigureOptions();
 
+				SDM_Control.EjectAndDispose<IReceiverControl>();
+				SDM_Control.EjectAndDispose<IReceiver>();
+
 				new MessagingBaseConfiguration().WithDefaults();
 				Cooldown.Activate();
 
@@ -269,8 +274,13 @@ namespace SevenDigital.Messaging
 			lock (MessagingSystem.ConfigurationLock)
 			{
 				Log.Instance().Shutdown();
-				EjectAndDispose<IReceiverControl>();
-				EjectAndDispose<IReceiver>();
+
+				if (!MessagingSystem.UsingLoopbackMode())
+				{
+					EjectAndDispose<IReceiverControl>();
+					EjectAndDispose<IReceiver>();
+				}
+
 				EjectAndDispose<ISenderNode>();
 
 				EjectAndDispose<IUniqueEndpointGenerator>();
@@ -288,7 +298,7 @@ namespace SevenDigital.Messaging
 			Log.Instance().RegisterAction(action);
 		}
 
-		static void EjectAndDispose<T>()
+		public static void EjectAndDispose<T>()
 		{
 			List<IDisposable> instances;
 
@@ -329,7 +339,7 @@ namespace SevenDigital.Messaging
 		public ITestEventHook LoopbackEvents()
 		{
 			if (!MessagingSystem.UsingLoopbackMode())
-				throw new InvalidOperationException("Loopback events are not available: Loopback mode has not be set. Try `Messaging.Configure.WithLoopbackMode()` before your service starts.");
+				throw new InvalidOperationException("Loopback events are not available: Loopback mode has not be set. Try `MessagingSystem.Configure.WithLoopbackMode()` before your service starts.");
 
 			return ObjectFactory.GetInstance<ITestEventHook>();
 		}
@@ -337,7 +347,9 @@ namespace SevenDigital.Messaging
 		public IList<Type> LoopbackListenersForMessage<T>()
 		{
 			var lb = ObjectFactory.GetInstance<IReceiver>() as LoopbackReceiver;
-			if (lb == null) throw new Exception("Loopback lister list is not available: Loopback mode has not be set. Try `Messaging.Configure.WithLoopbackMode()` before your service starts.");
+			if (lb == null) 
+				throw new Exception("Loopback lister list is not available: Loopback mode has not be set. Try `MessagingSystem.Configure.WithLoopbackMode()` before your service starts.");
+
 			return lb.ListenersFor<T>();
 		}
 	}
