@@ -73,7 +73,6 @@
     <Compile Include="EdgeCases\ShutDownBeforeConfiguration.cs" />
     <Compile Include="Hooks\FailingEventHookTests.cs" />
     <Compile Include="Hooks\FailingHandlerEventHookTests.cs" />
-    <Compile Include="Logging\LoggingTest.cs" />
     <Compile Include="Loopback\LoopbackModeTests.cs" />
     <Compile Include="MessageSending\RetryReceivingTests.cs" />
     <Compile Include="MessageSending\SendingRetryTests.cs" />

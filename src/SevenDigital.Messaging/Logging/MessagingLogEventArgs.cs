@@ -3,16 +3,17 @@ using System;
 namespace SevenDigital.Messaging.Logging
 {
 	/// <summary>
-	/// Log message concrete
+	/// Logging event message.
 	/// </summary>
-	public class LogMessage : ILogMessage
+	public class MessagingLogEventArgs : EventArgs
 	{
 		/// <summary>
 		/// Create a new log message
 		/// </summary>
-		public LogMessage()
+		public MessagingLogEventArgs(string message)
 		{
 			LogDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+			Message = message;
 		}
 
 		/// <summary>
@@ -24,20 +25,5 @@ namespace SevenDigital.Messaging.Logging
 		/// Date logged
 		/// </summary>
 		public string LogDate { get; set; }
-	}
-
-	/// <summary>
-	/// Log message contract
-	/// </summary>
-	public interface ILogMessage
-	{
-		/// <summary>
-		/// Message to log
-		/// </summary>
-		string Message { get; set; }
-		/// <summary>
-		/// Date logged
-		/// </summary>
-		string LogDate { get; set; }
 	}
 }

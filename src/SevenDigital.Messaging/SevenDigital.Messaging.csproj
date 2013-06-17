@@ -66,6 +66,7 @@
     <Compile Include="IMessage.cs" />
     <Compile Include="Infrastructure\DispatcherFactory.cs" />
     <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\MessagingLogEventArgs.cs" />
     <Compile Include="Loopback\DummyBinder.cs" />
     <Compile Include="Loopback\LoopbackBinding.cs" />
     <Compile Include="Loopback\LoopbackReceiver.cs" />
@@ -77,7 +78,6 @@
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
     <Compile Include="EventHooks\ITestEventHook.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />
-    <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="MessageSending\HandlerAction.cs" />
     <Compile Include="MessageReceiving\RabbitPolling\RabbitMqPollingNode.cs" />
     <Compile Include="IReceiverNode.cs" />
