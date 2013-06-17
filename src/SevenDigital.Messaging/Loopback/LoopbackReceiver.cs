@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,22 +13,22 @@ namespace SevenDigital.Messaging.Loopback
 	/// </summary>
 	public class LoopbackReceiver : IReceiver
 	{
-		readonly Dictionary<Type, List<Type>> listenerBindings;
-		readonly List<string> capturedEndpoints;
+		readonly Dictionary<Type, ConcurrentBag<Type>> listenerBindings;
+		readonly ConcurrentBag<string> capturedEndpoints;
 
 		/// <summary>
 		/// Create a loopback factory.
 		/// </summary>
 		public LoopbackReceiver()
 		{
-			listenerBindings = new Dictionary<Type, List<Type>>();
-			capturedEndpoints = new List<string>();
+			listenerBindings = new Dictionary<Type, ConcurrentBag<Type>>();
+			capturedEndpoints = new ConcurrentBag<string>();
 		}
 		
 		/// <summary>
 		/// List all handlers that have been registered on this node.
 		/// </summary>
-		public List<Type> ListenersFor<T>()
+		public IEnumerable<Type> ListenersFor<T>()
 		{
 			var key = typeof(T);
 			return listenerBindings.ContainsKey(key) ? listenerBindings[key].ToList() : new List<Type>();
@@ -74,7 +75,7 @@ namespace SevenDigital.Messaging.Loopback
 			var handler = typeof(THandler);
 
 			if (!listenerBindings.ContainsKey(msg))
-				listenerBindings.Add(msg, new List<Type>());
+				listenerBindings.Add(msg, new ConcurrentBag<Type>());
 
 			if (listenerBindings[msg].Contains(handler)) return;
 
@@ -141,11 +142,22 @@ namespace SevenDigital.Messaging.Loopback
 				{
 					if (kvp.Value.Any(t => t == typeof(T)))
 					{
-						var newList = kvp.Value.Where(t => t != typeof(T)).ToList();
+						var newList = BagOf(kvp.Value, t => t != typeof(T));
 						listenerBindings[kvp.Key] = newList;
 					}
 				}
 			}
+		}
+
+		static ConcurrentBag<T> BagOf<T>(ConcurrentBag<T> source, Func<T, bool> predicate)
+		{
+			var b = new ConcurrentBag<T>();
+			var s = source.ToArray();
+			foreach (var source1 in s.Where(predicate))
+			{
+				b.Add(source1);
+			}
+			return b;
 		}
 	}
 
