@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace SevenDigital.Messaging.EventHooks
@@ -8,9 +9,9 @@ namespace SevenDigital.Messaging.EventHooks
 	/// </summary>
 	public class TestEventHook : ITestEventHook
 	{
-		readonly List<IMessage> sentMessages = new List<IMessage>();
-		readonly List<IMessage> receivedMessages = new List<IMessage>();
-		readonly List<Exception> handlerExceptions = new List<Exception>();
+		ConcurrentBag<IMessage> sentMessages = new ConcurrentBag<IMessage>();
+		ConcurrentBag<IMessage> receivedMessages = new ConcurrentBag<IMessage>();
+		ConcurrentBag<Exception> handlerExceptions = new ConcurrentBag<Exception>();
 
 		/// <summary>
 		/// A message was sent from this process
@@ -61,9 +62,9 @@ namespace SevenDigital.Messaging.EventHooks
 		/// </summary>
 		public void Reset()
 		{
-			sentMessages.Clear();
-			receivedMessages.Clear();
-			handlerExceptions.Clear();
+			sentMessages = new ConcurrentBag<IMessage>();
+			receivedMessages = new ConcurrentBag<IMessage>();
+			handlerExceptions = new ConcurrentBag<Exception>();
 		}
 	}
 }
