@@ -10,7 +10,7 @@ namespace SevenDigital.Messaging.Integration.Tests.TestingEventHook
 	[TestFixture]
 	public class TestingEventHookStoresEvents
 	{
-		ITestEventHook subject;
+		ITestEvents subject;
 		IList<IMessage> expected_sent_messages;
 		IList<IMessage> expected_received_messages;
 		IList<Exception> expected_handler_exceptions;
@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Integration.Tests.TestingEventHook
 			MessagingSystem.Configure.WithLoopbackMode();
 			MessagingSystem.Testing.LoopbackEvents().Reset();
 
-			subject = ObjectFactory.GetInstance<ITestEventHook>();
+			subject = ObjectFactory.GetInstance<ITestEvents>();
 			
 			expected_sent_messages = new List<IMessage>{
 				new LevelOne(), new LevelOne(),

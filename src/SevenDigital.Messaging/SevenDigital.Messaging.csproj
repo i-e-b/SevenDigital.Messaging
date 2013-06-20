@@ -62,6 +62,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventHooks\TestEvents.cs" />
     <Compile Include="Infrastructure\Cooldown.cs" />
     <Compile Include="IMessage.cs" />
     <Compile Include="Infrastructure\DispatcherFactory.cs" />
@@ -81,7 +82,7 @@
     <Compile Include="MessageReceiving\RabbitPolling\ITypedPollingNode.cs" />
     <Compile Include="MessageReceiving\SleepWrapper.cs" />
     <Compile Include="EventHooks\ConsoleEventHook.cs" />
-    <Compile Include="EventHooks\ITestEventHook.cs" />
+    <Compile Include="EventHooks\ITestEvents.cs" />
     <Compile Include="EventHooks\TestEventHook.cs" />
     <Compile Include="MessageSending\HandlerAction.cs" />
     <Compile Include="MessageReceiving\RabbitPolling\RabbitMqPollingNode.cs" />
