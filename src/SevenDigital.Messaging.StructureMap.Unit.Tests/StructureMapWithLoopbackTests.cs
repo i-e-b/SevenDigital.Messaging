@@ -31,6 +31,14 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
+		public void Should_get_loopback_binding()
+		{
+			var factory = ObjectFactory.GetInstance<ILoopbackBinding>();
+			Assert.That(factory, Is.Not.Null);
+			Assert.That(factory, Is.InstanceOf<LoopbackBinding>());
+		}
+
+		[Test]
 		public void Should_get_sender_node_implementation()
 		{
 			var senderNode = ObjectFactory.GetInstance<ISenderNode>();

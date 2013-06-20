@@ -11,27 +11,18 @@ namespace SevenDigital.Messaging.Loopback
 	/// Node factory for loopback.
 	/// You don't need to create this yourself, use `Messaging.Receiver()` in loopback mode
 	/// </summary>
-	public class LoopbackReceiver : IReceiver
+	public class LoopbackReceiver : IReceiver, ILoopbackReceiver
 	{
-		readonly Dictionary<Type, ConcurrentBag<Type>> listenerBindings;
+		readonly ILoopbackBinding listenerBindings;
 		readonly ConcurrentBag<string> capturedEndpoints;
 
 		/// <summary>
 		/// Create a loopback factory.
 		/// </summary>
-		public LoopbackReceiver()
+		public LoopbackReceiver(ILoopbackBinding bindings)
 		{
-			listenerBindings = new Dictionary<Type, ConcurrentBag<Type>>();
+			listenerBindings = bindings;//new Dictionary<Type, ConcurrentBag<Type>>();
 			capturedEndpoints = new ConcurrentBag<string>();
-		}
-		
-		/// <summary>
-		/// List all handlers that have been registered on this node.
-		/// </summary>
-		public IEnumerable<Type> ListenersFor<T>()
-		{
-			var key = typeof(T);
-			return listenerBindings.ContainsKey(key) ? listenerBindings[key].ToList() : new List<Type>();
 		}
 
 		/// <summary>
@@ -74,8 +65,8 @@ namespace SevenDigital.Messaging.Loopback
 			var msg = typeof(TMessage);
 			var handler = typeof(THandler);
 
-			if (!listenerBindings.ContainsKey(msg))
-				listenerBindings.Add(msg, new ConcurrentBag<Type>());
+			if (!listenerBindings.IsMessageRegistered(msg))
+				listenerBindings.AddMessageType(msg);
 
 			if (listenerBindings[msg].Contains(handler)) return;
 
@@ -99,7 +90,7 @@ namespace SevenDigital.Messaging.Loopback
 		void FireCooperativeListeners<T>(T message) where T : IMessage
 		{
 			var msg = message.GetType();
-			var matches = listenerBindings.Keys.Where(k => k.IsAssignableFrom(msg));
+			var matches = listenerBindings.MessagesRegistered.Where(k => k.IsAssignableFrom(msg));
 			foreach (var key in matches)
 			{
 				var handlers = listenerBindings[key].Select(ObjectFactory.GetInstance);
@@ -160,5 +151,4 @@ namespace SevenDigital.Messaging.Loopback
 			return b;
 		}
 	}
-
 }

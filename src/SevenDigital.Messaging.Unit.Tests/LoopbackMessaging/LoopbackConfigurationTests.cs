@@ -127,7 +127,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 			using (var receiver = _receiver.Listen())
 			{
 				receiver.Handle<IMessage>().With<AHandler>();
-				var listeners = MessagingSystem.Testing.LoopbackListenersForMessage<IMessage>();
+				var listeners = MessagingSystem.Testing.LoopbackHandlers().ForMessage<IMessage>();
 
 				Assert.That(listeners, Contains.Item(typeof(AHandler)));
 			}

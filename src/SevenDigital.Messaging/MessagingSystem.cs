@@ -72,8 +72,7 @@ namespace SevenDigital.Messaging
 		internal static bool UsingLoopbackMode()
 		{
 			return 
-				ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is LoopbackReceiver)
-				&& ObjectFactory.TryGetInstance<ISenderNode>() != null;
+				ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is LoopbackReceiver);
 		}
 
 		/// <summary>
@@ -131,7 +130,13 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Return a list of registered listeners for a message type. Only usable in loopback mode.
 		/// </summary>
+		[Obsolete("Use `LoopbackHandlers().ForMessage<T>()` instead")]
 		IEnumerable<Type> LoopbackListenersForMessage<T>();
+
+		/// <summary>
+		/// Handler bindings that have been registered during loopback mode sessions.
+		/// </summary>
+		ILoopbackBinding LoopbackHandlers();
 	}
 
 	/// <summary>
@@ -254,10 +259,10 @@ namespace SevenDigital.Messaging
 				new MessagingBaseConfiguration().WithDefaults();
 				ObjectFactory.EjectAllInstancesOf<IReceiver>();
 
-				var factory = new LoopbackReceiver();
 				ObjectFactory.Configure(map => {
-					map.For<IReceiver>().Singleton().Use(factory);
-					map.For<ISenderNode>().Singleton().Use<LoopbackSender>().Ctor<LoopbackReceiver>().Is(factory);
+					map.For<ILoopbackBinding>().Singleton().Use<LoopbackBinding>();
+					map.For<IReceiver>().Singleton().Use<LoopbackReceiver>();
+					map.For<ISenderNode>().Singleton().Use<LoopbackSender>();
 					map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
 				});
 
@@ -275,17 +280,18 @@ namespace SevenDigital.Messaging
 			{
 				Log.Instance().Shutdown();
 
+				EjectAndDispose<IReceiverControl>();
+				EjectAndDispose<IReceiver>();
+
 				if (!MessagingSystem.UsingLoopbackMode())
 				{
-					EjectAndDispose<IReceiverControl>();
-					EjectAndDispose<IReceiver>();
+					EjectAndDispose<IEventHook>();
 				}
 
 				EjectAndDispose<ISenderNode>();
 
 				EjectAndDispose<IUniqueEndpointGenerator>();
 				EjectAndDispose<ISleepWrapper>();
-				EjectAndDispose<IEventHook>();
 
 				EjectAndDispose<IMessagingHost>();
 				EjectAndDispose<IRabbitMqConnection>();
@@ -338,19 +344,30 @@ namespace SevenDigital.Messaging
 	{
 		public ITestEventHook LoopbackEvents()
 		{
-			if (!MessagingSystem.UsingLoopbackMode())
-				throw new InvalidOperationException("Loopback events are not available: Loopback mode has not be set. Try `MessagingSystem.Configure.WithLoopbackMode()` before your service starts.");
+			var testHook = ObjectFactory.TryGetInstance<ITestEventHook>();
+			
+			if (testHook == null) throw new InvalidOperationException("Loopback events are not available: Loopback mode has not be set. Try `MessagingSystem.Configure.WithLoopbackMode()` before your service starts.");
 
-			return ObjectFactory.GetInstance<ITestEventHook>();
+			return testHook;
 		}
 
-		public IEnumerable<Type> LoopbackListenersForMessage<T>()
+		public ILoopbackBinding LoopbackHandlers()
 		{
-			var lb = ObjectFactory.GetInstance<IReceiver>() as LoopbackReceiver;
+			var lb = ObjectFactory.TryGetInstance<ILoopbackBinding>();
 			if (lb == null) 
 				throw new Exception("Loopback lister list is not available: Loopback mode has not be set. Try `MessagingSystem.Configure.WithLoopbackMode()` before your service starts.");
 
-			return lb.ListenersFor<T>();
+			return lb;
+		}
+
+		[Obsolete("Use `LoopbackHandlers().ForMessage<T>()` instead")]
+		public IEnumerable<Type> LoopbackListenersForMessage<T>()
+		{
+			var lb = ObjectFactory.TryGetInstance<ILoopbackBinding>();
+			if (lb == null) 
+				throw new Exception("Loopback lister list is not available: Loopback mode has not be set. Try `MessagingSystem.Configure.WithLoopbackMode()` before your service starts.");
+
+			return lb.ForMessage<T>();
 		}
 	}
 

@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_not_throw_exception_if_in_loopback_mode()
 		{
-			Assert.DoesNotThrow(() => MessagingSystem.Testing.LoopbackListenersForMessage<IMessage>());
+			Assert.DoesNotThrow(() => MessagingSystem.Testing.LoopbackHandlers().ForMessage<IMessage>());
 		}
 	}
 

@@ -7,12 +7,12 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 	[TestFixture]
 	public class LoopbackNodeFactoryTests
 	{
-		readonly LoopbackReceiver subject = new LoopbackReceiver();
+		readonly ILoopbackBinding subject = new LoopbackBinding();
 
 		[Test]
 		public void Should_return_empty_list_if_no_listeners_are_registered_for_type()
 		{
-			var listeners = subject.ListenersFor<RandomType>();
+			var listeners = subject.ForMessage<RandomType>();
 
 			Assert.That(listeners, Is.Not.Null);
 			Assert.That(listeners.Count(), Is.EqualTo(0));
