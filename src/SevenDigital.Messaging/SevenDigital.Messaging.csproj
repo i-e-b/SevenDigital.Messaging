@@ -68,8 +68,13 @@
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\MessagingLogEventArgs.cs" />
     <Compile Include="Loopback\DummyBinder.cs" />
+    <Compile Include="Loopback\ILoopbackBinding.cs" />
+    <Compile Include="Loopback\ILoopbackReceiver.cs" />
+    <Compile Include="Loopback\LoopbackBinder.cs" />
     <Compile Include="Loopback\LoopbackBinding.cs" />
     <Compile Include="Loopback\LoopbackReceiver.cs" />
+    <Compile Include="Loopback\LoopbackReceiverNode.cs" />
+    <Compile Include="Loopback\LoopbackSender.cs" />
     <Compile Include="MessageReceiving\IHandlerManager.cs" />
     <Compile Include="MessageReceiving\HandlerManager.cs" />
     <Compile Include="MessageReceiving\RabbitPolling\IPollingNodeFactory.cs" />
