@@ -1,17 +1,22 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace SevenDigital.Messaging.EventHooks
 {
 	/// <summary>
 	/// Standard event hook for capturing events
 	/// </summary>
-	public class TestEventHook : ITestEventHook
+	public class TestEventHook : IEventHook
 	{
-		ConcurrentBag<IMessage> sentMessages = new ConcurrentBag<IMessage>();
-		ConcurrentBag<IMessage> receivedMessages = new ConcurrentBag<IMessage>();
-		ConcurrentBag<Exception> handlerExceptions = new ConcurrentBag<Exception>();
+		readonly ITestEvents _testEvents;
+
+		/// <summary>
+		/// Creates a test event hook. Don't do this yourself -- use
+		/// `MessagingSystem.Configure.WithLoopbackMode()`
+		/// </summary>
+		public TestEventHook(ITestEvents testEvents)
+		{
+			_testEvents = testEvents;
+		}
 
 		/// <summary>
 		/// A message was sent from this process
@@ -19,7 +24,7 @@ namespace SevenDigital.Messaging.EventHooks
 		/// <param name="message">The message sent</param>
 		public void MessageSent(IMessage message)
 		{
-			sentMessages.Add(message);
+			((TestEvents)_testEvents).sentMessages.Add(message);
 		}
 
 		/// <summary>
@@ -28,7 +33,7 @@ namespace SevenDigital.Messaging.EventHooks
 		/// <param name="message">The incoming message</param>
 		public void MessageReceived(IMessage message)
 		{
-			receivedMessages.Add(message);
+			((TestEvents)_testEvents).receivedMessages.Add(message);
 		}
 
 		/// <summary>
@@ -39,32 +44,7 @@ namespace SevenDigital.Messaging.EventHooks
 		/// <param name="ex">Exception thrown</param>
 		public void HandlerFailed(IMessage message, Type handler, Exception ex)
 		{
-			handlerExceptions.Add(ex);
-		}
-
-		/// <summary>
-		/// All messages sent since last reset
-		/// </summary>
-		public IEnumerable<IMessage> SentMessages { get { return sentMessages; } }
-
-		/// <summary>
-		/// All messages received since last reset
-		/// </summary>
-		public IEnumerable<IMessage> ReceivedMessages { get { return receivedMessages; } }
-
-		/// <summary>
-		/// All exceptions thrown by handlers since last reset
-		/// </summary>
-		public IEnumerable<Exception> HandlerExceptions { get { return handlerExceptions; } }
-
-		/// <summary>
-		/// Clear all events
-		/// </summary>
-		public void Reset()
-		{
-			sentMessages = new ConcurrentBag<IMessage>();
-			receivedMessages = new ConcurrentBag<IMessage>();
-			handlerExceptions = new ConcurrentBag<Exception>();
+			((TestEvents)_testEvents).handlerExceptions.Add(ex);
 		}
 	}
 }

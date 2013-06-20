@@ -6,7 +6,7 @@ namespace SevenDigital.Messaging.EventHooks
 	/// <summary>
 	/// Contract for event hooks that store events 
 	/// </summary>
-	public interface ITestEventHook : IEventHook
+	public interface ITestEvents
 	{
 		/// <summary>
 		/// All messages sent since last reset

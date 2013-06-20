@@ -90,7 +90,7 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Return a hook which captures all events in a loopback session
 		/// </summary>
-		public ITestEventHook LoopbackEvents()
+		public ITestEvents LoopbackEvents()
 		{
 			return MessagingSystem.Testing.LoopbackEvents();
 		}

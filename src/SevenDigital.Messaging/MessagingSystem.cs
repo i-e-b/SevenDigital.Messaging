@@ -125,7 +125,7 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Return a set of all events (send, received, errors) since loopback mode was configured
 		/// </summary>
-		ITestEventHook LoopbackEvents();
+		ITestEvents LoopbackEvents();
 
 		/// <summary>
 		/// Return a list of registered listeners for a message type. Only usable in loopback mode.
@@ -263,11 +263,10 @@ namespace SevenDigital.Messaging
 					map.For<ILoopbackBinding>().Singleton().Use<LoopbackBinding>();
 					map.For<IReceiver>().Singleton().Use<LoopbackReceiver>();
 					map.For<ISenderNode>().Singleton().Use<LoopbackSender>();
-					map.For<ITestEventHook>().Singleton().Use<TestEventHook>();
+					map.For<ITestEvents>().Singleton().Use<TestEvents>();
 				});
 
-
-				ObjectFactory.Configure(map => map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));
+				MessagingSystem.Events.AddEventHook<TestEventHook>();
 			}
 		}
 	}
@@ -283,10 +282,7 @@ namespace SevenDigital.Messaging
 				EjectAndDispose<IReceiverControl>();
 				EjectAndDispose<IReceiver>();
 
-				if (!MessagingSystem.UsingLoopbackMode())
-				{
-					EjectAndDispose<IEventHook>();
-				}
+				EjectAndDispose<IEventHook>();
 
 				EjectAndDispose<ISenderNode>();
 
@@ -342,9 +338,9 @@ namespace SevenDigital.Messaging
 
 	class SDM_Testing : IMessagingLoopbackInformation
 	{
-		public ITestEventHook LoopbackEvents()
+		public ITestEvents LoopbackEvents()
 		{
-			var testHook = ObjectFactory.TryGetInstance<ITestEventHook>();
+			var testHook = ObjectFactory.TryGetInstance<ITestEvents>();
 			
 			if (testHook == null) throw new InvalidOperationException("Loopback events are not available: Loopback mode has not be set. Try `MessagingSystem.Configure.WithLoopbackMode()` before your service starts.");
 
@@ -421,8 +417,7 @@ namespace SevenDigital.Messaging
 
 			if (loopback)
 			{
-				ObjectFactory.Configure(map =>
-					map.For<IEventHook>().Use(ObjectFactory.GetInstance<ITestEventHook>()));
+				MessagingSystem.Events.AddEventHook<TestEventHook>();
 			}
 			return this;
 		}

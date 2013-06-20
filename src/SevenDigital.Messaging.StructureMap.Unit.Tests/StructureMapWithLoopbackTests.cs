@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Loopback;
 using StructureMap;
 
@@ -36,6 +37,14 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 			var factory = ObjectFactory.GetInstance<ILoopbackBinding>();
 			Assert.That(factory, Is.Not.Null);
 			Assert.That(factory, Is.InstanceOf<LoopbackBinding>());
+		}
+
+		[Test]
+		public void Should_get_test_events_container()
+		{
+			var factory = ObjectFactory.GetInstance<ITestEvents>();
+			Assert.That(factory, Is.Not.Null);
+			Assert.That(factory, Is.InstanceOf<TestEvents>());
 		}
 
 		[Test]
