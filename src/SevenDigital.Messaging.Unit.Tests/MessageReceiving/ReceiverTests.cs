@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using NSubstitute;
@@ -213,9 +214,12 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 							, Substitute.For<IReceiverNode>()
 							};
 
-			SubjectReceiverNodes().AddRange(x);
+			foreach (var receiverNode in x)
+			{
+				SubjectReceiverNodes().Add(receiverNode);
+			}
 			return x;
 		}
-		List<IReceiverNode> SubjectReceiverNodes() { return ((IReceiverTesting)_subject).CurrentNodes(); }
+		ConcurrentBag<IReceiverNode> SubjectReceiverNodes() { return ((IReceiverTesting)_subject).CurrentNodes() as ConcurrentBag<IReceiverNode>; }
 	}
 }
