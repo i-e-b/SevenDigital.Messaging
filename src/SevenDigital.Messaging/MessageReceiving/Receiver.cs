@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
@@ -20,7 +22,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 	{
 		readonly IUniqueEndpointGenerator _uniqueEndPointGenerator;
 		readonly IHandlerManager _handler;
-		readonly List<IReceiverNode> _registeredNodes;
+		ConcurrentBag<IReceiverNode> _registeredNodes;
 		readonly IMessageRouter _messageRouter;
 		readonly IPollingNodeFactory _pollerFactory;
 		readonly IDispatcherFactory _dispatchFactory;
@@ -43,7 +45,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 			_uniqueEndPointGenerator = uniqueEndPointGenerator;
 			_handler = handler;
 			_lockObject = new object();
-			_registeredNodes = new List<IReceiverNode>();
+			_registeredNodes = new ConcurrentBag<IReceiverNode>();
 			PurgeOnConnect = false;
 			DeleteIntegrationEndpointsOnShutdown = false;
 		}
@@ -85,7 +87,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 				{
 					node.Dispose();
 				}
-				_registeredNodes.Clear();
+				_registeredNodes = new ConcurrentBag<IReceiverNode>();
 			}
 
 			if (DeleteIntegrationEndpointsOnShutdown) DeleteIntegrationEndpoints();
@@ -98,8 +100,8 @@ namespace SevenDigital.Messaging.MessageReceiving
 		{
 			lock (_lockObject)
 			{
-				if (_registeredNodes.Contains(node))
-					_registeredNodes.RemoveAll(n=> Equals(n, node));
+				var next = new ConcurrentBag<IReceiverNode>(_registeredNodes.Where(n=> !Equals(n, node)));
+				_registeredNodes = next;
 			}
 		}
 
@@ -172,7 +174,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 			_messageRouter.Purge(endpoint.ToString());
 		}
 
-		List<IReceiverNode> IReceiverTesting.CurrentNodes()
+		IEnumerable<IReceiverNode> IReceiverTesting.CurrentNodes()
 		{
 			return _registeredNodes;
 		}
@@ -186,7 +188,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		public interface IReceiverTesting
 		{
 			/// <summary> Registered node list </summary>
-			List<IReceiverNode> CurrentNodes();
+			IEnumerable<IReceiverNode> CurrentNodes();
 
 			/// <summary>
 			/// Returns true if a queue name would be deleted is DIEOS is set
