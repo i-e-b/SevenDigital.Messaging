@@ -650,7 +650,7 @@
             Very simple synchronous message routing over RabbitMq
             </summary>
         </member>
-        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.#ctor(SevenDigital.Messaging.Base.RabbitMq.IChannelAction)">
+        <member name="M:SevenDigital.Messaging.Base.Routing.RabbitRouter.#ctor(SevenDigital.Messaging.Base.RabbitMq.IChannelAction,SevenDigital.Messaging.Base.RabbitMq.IRabbitMqConnection)">
             <summary>
             Create a new router from config settings
             </summary>

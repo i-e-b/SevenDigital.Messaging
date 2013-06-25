@@ -76,7 +76,23 @@
             <param name="name">Name of the dispatcher (useful for debugging)</param>
             <param name="threadCount">Number of thread to use. Default is number of cores in the host.</param>
         </member>
+        <member name="M:DispatchSharp.Dispatch`1.PollAndProces(System.String,DispatchSharp.QueueTypes.IPollSource{`0},System.Int32)">
+            <summary>
+            Poll a source object for data and act on it.
+            You must add a consumer to the returned dispatcher, then start
+            the dispatcher.
+            </summary>
+            <param name="name">Name of the dispatcher (useful for debugging)</param>
+            <param name="source">object to poll for data</param>
+            <param name="threadCount">Number of thread to use. Default is number of cores in the host.</param>
+        </member>
         <member name="M:DispatchSharp.Dispatch`1.ProcessBatch(System.String,System.Collections.Generic.IEnumerable{`0},System.Action{`0},System.Int32,System.Action{System.Exception})">
+            <summary>
+            Process a batch of work with all defaults and a given action.
+            Blocks until all work complete.
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.ProcessBatch(System.String,System.Collections.Generic.IEnumerable{`0},System.Action{`0},System.Action{DispatchSharp.ExceptionEventArgs{`0}},System.Int32)">
             <summary>
             Process a batch of work with all defaults and a given action.
             Blocks until all work complete.
@@ -196,6 +212,87 @@
         <member name="P:DispatchSharp.IWorkQueueItem`1.Item">
             <summary>
             Queue item if one was available
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.QueueTypes.IPollSource`1">
+            <summary>
+            Contract for polling queue sources
+            </summary>
+            <typeparam name="T">Type of item produced</typeparam>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.IPollSource`1.TryGet(`0@)">
+            <summary>
+            Try to get a new item
+            </summary>
+            <param name="item">item produced, or default</param>
+            <returns>true if item produced, false if no item</returns>
+        </member>
+        <member name="T:DispatchSharp.QueueTypes.PollingWorkQueue`1">
+            <summary>
+            A wrapper around a polling method to produce a work queue.
+            This auto-rate limits the queue using thread sleeps.
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.QueueTypes.ISleeper">
+            <summary>
+            Interface for reading sleeper progress
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.ISleeper.BurstSleep">
+            <summary>
+            Increments sleep duration and returns new sleep duration
+            </summary>
+        </member>
+        <member name="T:DispatchSharp.IWorkQueue`1">
+            <summary>
+            Contract for an ordered queue of work to be acted upon.
+            All implementations should be thread-safe.
+            </summary>
+            <typeparam name="T">Type of item to be stored</typeparam>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueue`1.Enqueue(`0)">
+            <summary> Add an item to the queue </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueue`1.TryDequeue">
+            <summary> Try and get an item from this queue. Success is encoded in the WQI result 'HasItem' </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueue`1.Length">
+            <summary> Approximate snapshot length </summary>
+        </member>
+        <member name="M:DispatchSharp.IWorkQueue`1.BlockUntilReady">
+            <summary>
+            Advisory method: block if the queue is waiting to be populated.
+            Should return true when items are available.
+            Implementations may return false if polling and no items are available.
+            Implementations are free to return immediately.
+            Implementations are free to return true even if no items are available.
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.PollingWorkQueue`1.#ctor(DispatchSharp.QueueTypes.IPollSource{`0})">
+            <summary>
+            Create a new polling work queue with a given item source
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.PollingWorkQueue`1.Enqueue(`0)">
+            <summary>
+            Enqueue extra work to the queue.
+            local work will be used before the polling queue is used.
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.PollingWorkQueue`1.TryDequeue">
+            <summary> Try and get an item from this queue. Success is encoded in the WQI result 'HasItem' </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.PollingWorkQueue`1.BurstSleep">
+            <summary>
+            Increments sleep duration and returns new sleep duration
+            </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.PollingWorkQueue`1.Length">
+            <summary> Returns length of extra queue items </summary>
+        </member>
+        <member name="M:DispatchSharp.QueueTypes.PollingWorkQueue`1.BlockUntilReady">
+            <summary>
+            Immediately returns true
             </summary>
         </member>
         <member name="T:DispatchSharp.QueueTypes.WorkQueueItem`1">
@@ -327,31 +424,6 @@
             You can use the Cancel or Finish methods to control work
             rescheduling.
             If you don't call Cancel, the work item will be Finished by default.
-            </summary>
-        </member>
-        <member name="T:DispatchSharp.IWorkQueue`1">
-            <summary>
-            Contract for an ordered queue of work to be acted upon.
-            All implementations should be thread-safe.
-            </summary>
-            <typeparam name="T">Type of item to be stored</typeparam>
-        </member>
-        <member name="M:DispatchSharp.IWorkQueue`1.Enqueue(`0)">
-            <summary> Add an item to the queue </summary>
-        </member>
-        <member name="M:DispatchSharp.IWorkQueue`1.TryDequeue">
-            <summary> Try and get an item from this queue. Success is encoded in the WQI result 'HasItem' </summary>
-        </member>
-        <member name="M:DispatchSharp.IWorkQueue`1.Length">
-            <summary> Approximate snapshot length </summary>
-        </member>
-        <member name="M:DispatchSharp.IWorkQueue`1.BlockUntilReady">
-            <summary>
-            Advisory method: block if the queue is waiting to be populated.
-            Should return true when items are available.
-            Implementations may return false if polling and no items are available.
-            Implementations are free to return immediately.
-            Implementations are free to return true even if no items are available.
             </summary>
         </member>
         <member name="T:DispatchSharp.QueueTypes.InMemoryWorkQueue`1">
