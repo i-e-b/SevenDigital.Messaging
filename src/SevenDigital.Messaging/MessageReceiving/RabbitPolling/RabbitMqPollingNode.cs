@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
 using DispatchSharp;
 using DispatchSharp.QueueTypes;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.Routing;
 
@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 		readonly string _endpoint;
 		readonly IMessagingBase _messagingBase;
 		readonly ISleepWrapper _sleeper;
-		readonly HashSet<Type> _boundMessageTypes;
+		readonly ConcurrentSet<Type> _boundMessageTypes;
 
 		/// <summary>
 		/// Create a work item queue that will try to pull items from a named RabbitMQ endpoint
@@ -29,7 +29,7 @@ namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 			_endpoint = endpoint.ToString();
 			_messagingBase = messagingBase;
 			_sleeper = sleeper;
-			_boundMessageTypes = new HashSet<Type>();
+			_boundMessageTypes = new ConcurrentSet<Type>();
 		}
 
 		/// <summary>
@@ -144,7 +144,8 @@ namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 		void TryRebuildQueues()
 		{
 			_messagingBase.ResetCaches();
-			foreach (var sourceMessage in _boundMessageTypes)
+			var boundTypes = _boundMessageTypes.ToArray();
+			foreach (var sourceMessage in boundTypes)
 			{
 				_messagingBase.CreateDestination(sourceMessage, _endpoint);
 			}
