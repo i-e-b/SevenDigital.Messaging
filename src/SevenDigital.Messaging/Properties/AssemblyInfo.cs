@@ -2,8 +2,10 @@
 using System.Resources;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyFileVersion("1.2.6")]
-[assembly: AssemblyVersion("1.2.6")]
+// Note: the assembly version is always 0, because otherwise .Net's 
+// stupid versioning breaks interface equivalence.
+[assembly: AssemblyFileVersion("0.0.0")]
+[assembly: AssemblyVersion("0.0.0")]
 
 [assembly: AssemblyTitle("SevenDigital.Messaging")]
 [assembly: AssemblyDescription("A distributed contracts-based sender/handler messaging system")]
