@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Logging;
 using StructureMap;
 
@@ -17,14 +18,14 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// </summary>
 	public class HandlerManager : IHandlerManager
 	{
-		readonly Dictionary<Type, HashSet<Type>> _handlers; // message type => [handler types]
+		readonly Dictionary<Type, ISet<Type>> _handlers; // message type => [handler types]
 
 		/// <summary>
 		/// New dispatcher
 		/// </summary>
 		public HandlerManager()
 		{
-			_handlers = new Dictionary<Type, HashSet<Type>>();
+			_handlers = new Dictionary<Type, ISet<Type>>();
 		}
 
 		/// <summary>
@@ -141,7 +142,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 			{
 				if (!_handlers.ContainsKey(messageType))
 				{
-					_handlers.Add(messageType, new HashSet<Type> { handlerType });
+					_handlers.Add(messageType, new ConcurrentSet<Type> { handlerType });
 				}
 				_handlers[messageType].Add(handlerType);
 			}
@@ -152,9 +153,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void RemoveHandler(Type handlerType)
 		{
-			foreach (var hashSet in _handlers.Values)
+			foreach (var set in _handlers.Values)
 			{
-				hashSet.Remove(handlerType);
+				set.Remove(handlerType);
 			}
 		}
 
