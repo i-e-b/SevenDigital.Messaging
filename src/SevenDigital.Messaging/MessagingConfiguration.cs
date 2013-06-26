@@ -98,7 +98,7 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Return registered listeners for a message type. Only usable in loopback mode.
 		/// </summary>
-		public List<Type> LoopbackListenersForMessage<T>()
+		public IList<Type> LoopbackListenersForMessage<T>()
 		{
 			return MessagingSystem.Testing.LoopbackListenersForMessage<T>().ToList();
 		}

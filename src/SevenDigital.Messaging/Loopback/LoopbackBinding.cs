@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SevenDigital.Messaging.Loopback
 {
@@ -27,7 +26,7 @@ namespace SevenDigital.Messaging.Loopback
 		public IEnumerable<Type> ForMessage<T>()
 		{
 			var key = typeof(T);
-			return _bagOfHolding.ContainsKey(key) ? _bagOfHolding[key].ToList() : new List<Type>();
+			return _bagOfHolding.ContainsKey(key) ? _bagOfHolding[key].ToArray() : new Type[0];
 		}
 
 		/// <summary>

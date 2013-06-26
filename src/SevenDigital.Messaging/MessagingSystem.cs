@@ -302,19 +302,19 @@ namespace SevenDigital.Messaging
 
 		public static void EjectAndDispose<T>()
 		{
-			List<IDisposable> instances;
+			IDisposable[] instances;
 
 			try
 			{
-				instances = ObjectFactory.GetAllInstances<T>().OfType<IDisposable>().ToList();
+				instances = ObjectFactory.GetAllInstances<T>().OfType<IDisposable>().ToArray();
 			}
 			catch
 			{
-				instances = new List<IDisposable>();
+				instances = new IDisposable[0];
 			}
 
 			ObjectFactory.EjectAllInstancesOf<T>();
-			if (instances.Count < 1) return;
+			if (instances.Length < 1) return;
 
 			foreach (var disposable in instances) disposable.Dispose();
 		}

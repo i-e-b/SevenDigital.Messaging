@@ -23,9 +23,7 @@ namespace SevenDigital.Messaging.Infrastructure
 		/// </summary>
 		public IDispatch<T> Create<T>(IWorkQueue<T> queue, IWorkerPool<T> pool)
 		{
-			return new Dispatch<T>(
-				queue, pool
-				);
+			return new Dispatch<T>(queue, pool);
 		}
 	}
 }
