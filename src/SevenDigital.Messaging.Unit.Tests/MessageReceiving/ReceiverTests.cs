@@ -10,6 +10,7 @@ using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.MessageReceiving.Testing;
 using SevenDigital.Messaging.Routing;
+using StructureMap;
 
 namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 {
@@ -32,11 +33,12 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 			_pollerFactory = Substitute.For<IPollingNodeFactory>();
 			_dispatchFactory = Substitute.For<IDispatcherFactory>();
 
+			ObjectFactory.Configure(map=>map.For<IHandlerManager>().Use(_handlerManager));
 			_endpointGenerator.Generate().Returns(new Endpoint("zoso"));
+
 
 			_subject = new Receiver(
 				_endpointGenerator,
-				_handlerManager,
 				_messageRouter, _pollerFactory, _dispatchFactory);
 		}
 
