@@ -88,9 +88,8 @@ namespace SevenDigital.Messaging.MessageReceiving
 					node.Dispose();
 				}
 				_registeredNodes = new ConcurrentBag<IReceiverNode>();
+				if (DeleteIntegrationEndpointsOnShutdown) DeleteIntegrationEndpoints();
 			}
-
-			if (DeleteIntegrationEndpointsOnShutdown) DeleteIntegrationEndpoints();
 		}
 
 		/// <summary>
