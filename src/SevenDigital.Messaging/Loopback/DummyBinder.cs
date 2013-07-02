@@ -1,3 +1,5 @@
+using System;
+
 namespace SevenDigital.Messaging.Loopback
 {
 	/// <summary>
@@ -13,9 +15,16 @@ namespace SevenDigital.Messaging.Loopback
 		/// <summary>
 		/// Does nothing.
 		/// </summary>
-		public IMessageBinding<T> Handle<T>() where T : class, IMessage
+		public IHandlerBinding<T> Handle<T>() where T : class, IMessage
 		{
 			return new DummyBinding<T>();
+		}
+		
+		/// <summary>
+		/// Does nothing.
+		/// </summary>
+		public void Register(params Action<IMessageBinding>[] bindings)
+		{
 		}
 
 		/// <summary>
@@ -37,7 +46,7 @@ namespace SevenDigital.Messaging.Loopback
 	/// <summary>
 	/// Binder for dummy node that does nothing.
 	/// </summary>
-	public class DummyBinding<T> : IMessageBinding<T> where T : class, IMessage
+	public class DummyBinding<T> : IHandlerBinding<T> where T : class, IMessage
 	{
 		/// <summary>
 		/// Does nothing.

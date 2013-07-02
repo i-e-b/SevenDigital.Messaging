@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DispatchSharp;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
@@ -46,7 +47,6 @@ namespace SevenDigital.Messaging.MessageReceiving
 				);
 
 			_receivingDispatcher.AddConsumer(HandleIncomingMessage);
-			_receivingDispatcher.Start();
 		}
 
 		/// <summary>
@@ -54,10 +54,30 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		/// <typeparam name="T">Type of message to handle. This should be an interface that implements IMessage.</typeparam>
 		/// <returns>A message binding, use this to specify the handler type</returns>
-		public IMessageBinding<T> Handle<T>() where T : class, IMessage
+		public IHandlerBinding<T> Handle<T>() where T : class, IMessage
 		{
 			if (!typeof(T).IsInterface) throw new ArgumentException("Handler type must be an interface that implements IMessage");
-			return new MessageBinder<T>(this);
+			return new HandlerBinder<T>(this);
+		}
+
+		/// <summary>
+		/// Bind messages to handler types.
+		/// </summary>
+		public void Register(params Action<IMessageBinding>[] bindings)
+		{
+			foreach (var binding in bindings)
+			{
+				var bindHost = new BindHost();
+				binding(bindHost);
+				if (!bindHost.HasBinding) continue;
+
+				Type messageType, handlerType;
+				bindHost.Binding(out messageType, out handlerType);
+
+				_pollingNode.AddMessageType(messageType);
+				_handler.AddHandler(messageType, handlerType);
+			}
+			_receivingDispatcher.Start();
 		}
 
 		/// <summary>
@@ -85,12 +105,26 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// <summary>
 		/// Bind a message to a handler (non-exclusively)
 		/// </summary>
-		/// <param name="messageType">Type of incoming message</param>
-		/// <param name="handlerType">Handler that should be created and called</param>
+		public void BindHandlers(Tuple<Type, Type>[] messageType_handlerType)
+		{
+			foreach (var tuple in messageType_handlerType)
+			{
+				var messageType = tuple.Item1;
+				var handlerType = tuple.Item2;
+				_pollingNode.AddMessageType(messageType);
+				_handler.AddHandler(messageType, handlerType);
+			}
+			_receivingDispatcher.Start();
+		}
+
+		/// <summary>
+		/// Bind a messages to a handlers (non-exclusively)
+		/// </summary>
 		public void BindHandler(Type messageType, Type handlerType)
 		{
-			_pollingNode.AddMessageType(messageType);
+			/*_pollingNode.AddMessageType(messageType);
 			_handler.AddHandler(messageType, handlerType);
+			_receivingDispatcher.Start();*/
 		}
 
 		/// <summary>
@@ -106,7 +140,11 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void Dispose()
 		{
+			_pollingNode.Stop();
+
+			Console.WriteLine("CLOSE");
 			_receivingDispatcher.Stop();
+			Console.WriteLine("CLOSED");
 			_parent.Remove(this);
 		}
 
@@ -140,14 +178,14 @@ namespace SevenDigital.Messaging.MessageReceiving
 		#endregion
 
 		#region Message to Handler binding API
-		class MessageBinder<TMessage> : IMessageBinding<TMessage> where TMessage : class, IMessage
+		class HandlerBinder<TMessage> : IHandlerBinding<TMessage> where TMessage : class, IMessage
 		{
 			readonly IBindingHost _host;
 
 			/// <summary>
 			/// create a handler binding api point
 			/// </summary>
-			public MessageBinder(IBindingHost host)
+			public HandlerBinder(IBindingHost host)
 			{
 				_host = host;
 			}
@@ -159,8 +197,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 			/// </summary>
 			public void With<THandler>() where THandler : IHandle<TMessage>
 			{
-				_host.BindHandler(typeof(TMessage), typeof(THandler));
+				_host.BindHandlers(new []{new Tuple<Type,Type>(typeof(TMessage), typeof(THandler))});
 			}
+			
 		}
 		#endregion
 	}
