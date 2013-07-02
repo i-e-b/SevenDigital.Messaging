@@ -8,15 +8,15 @@ namespace SevenDigital.Messaging
 	public interface IReceiverNode : IDisposable
 	{
 		/// <summary>
-		/// Bind a message type to a handler type
+		/// Bind a single message type to a single handler type.
+		/// If you are registering more than one handler to this endpoint, use Register(...);
 		/// </summary>
 		/// <typeparam name="TMessage">Type of message to handle. This should be an interface that implements IMessage.</typeparam>
 		/// <returns>A message binding, use this to specify the handler type</returns>
-		[Obsolete("This configuration method has a race condition. Please use `Register(b=>b.Handle<message>().With<>())` instead")]
 		IHandlerBinding<TMessage> Handle<TMessage>() where TMessage : class, IMessage;
 
 		/// <summary>
-		/// Bind messages to handler types.
+		/// Bind multiple messages to handler types.
 		/// </summary>
 		void Register(params Action<IMessageBinding>[] bindings);
 
