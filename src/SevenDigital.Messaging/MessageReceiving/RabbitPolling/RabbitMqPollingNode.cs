@@ -67,6 +67,17 @@ namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 		}
 
 		/// <summary>
+		/// Stop receiving messages
+		/// </summary>
+		public void Stop()
+		{
+			lock (_boundMessageTypes)
+			{
+				_boundMessageTypes.Clear();
+			}
+		}
+
+		/// <summary>
 		/// Approximate snapshot length 
 		/// </summary>
 		public int Length()

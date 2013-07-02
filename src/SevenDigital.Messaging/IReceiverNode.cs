@@ -12,7 +12,13 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		/// <typeparam name="TMessage">Type of message to handle. This should be an interface that implements IMessage.</typeparam>
 		/// <returns>A message binding, use this to specify the handler type</returns>
-		IMessageBinding<TMessage> Handle<TMessage>() where TMessage : class, IMessage;
+		[Obsolete("This configuration method has a race condition. Please use `Register(b=>b.Handle<message>().With<>())` instead")]
+		IHandlerBinding<TMessage> Handle<TMessage>() where TMessage : class, IMessage;
+
+		/// <summary>
+		/// Bind messages to handler types.
+		/// </summary>
+		void Register(params Action<IMessageBinding>[] bindings);
 
 		/// <summary>
 		/// Gets the name of the destination queue used by messaging
@@ -30,12 +36,25 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		void SetConcurrentHandlers(int max);
 	}
-	
+
+	/// <summary>
+	/// Bind messages to handlers
+	/// </summary>
+	public interface IMessageBinding
+	{
+		/// <summary>
+		/// Bind a message type to a handler type
+		/// </summary>
+		/// <typeparam name="TMessage">Type of message to handle. This should be an interface that implements IMessage.</typeparam>
+		/// <returns>A message binding, use this to specify the handler type</returns>
+		IHandlerBinding<TMessage> Handle<TMessage>() where TMessage : class, IMessage;
+	}
+
 	/// <summary>
 	/// A message binder, used to bind handlers to message types in a receiver node
 	/// </summary>
 	/// <typeparam name="TMessage">Message type to be bound</typeparam>
-	public interface IMessageBinding<TMessage> where TMessage : class, IMessage
+	public interface IHandlerBinding<TMessage> where TMessage : class, IMessage
 	{
 		/// <summary>
 		/// Bind this handler to receive the selected message type.
@@ -53,8 +72,11 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Bind a message to a handler (non-exclusively)
 		/// </summary>
-		/// <param name="messageType">Type of incoming message</param>
-		/// <param name="handlerType">Handler that should be created and called</param>
+		void BindHandlers(Tuple<Type, Type>[] messageType_handlerType);
+		
+		/// <summary>
+		/// Bind a message to a handler (non-exclusively)
+		/// </summary>
 		void BindHandler(Type messageType, Type handlerType);
 	}
 }

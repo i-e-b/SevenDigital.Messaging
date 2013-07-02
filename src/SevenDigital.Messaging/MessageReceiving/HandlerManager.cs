@@ -34,7 +34,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		public void TryHandle(IPendingMessage<object> pendingMessage)
 		{
 			var messageObject = pendingMessage.Message;
-			var type = messageObject.GetType().DirectlyImplementedInterfaces().Single();
+			var type = TypeExtensions.DirectlyImplementedInterfaces(messageObject.GetType()).Single();
 
 			var matchingHandlers = GetMatchingHandlers(type).ToList();
 

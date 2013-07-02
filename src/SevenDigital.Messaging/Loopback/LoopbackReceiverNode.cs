@@ -1,3 +1,5 @@
+using System;
+
 namespace SevenDigital.Messaging.Loopback
 {
 	/// <summary>
@@ -27,9 +29,21 @@ namespace SevenDigital.Messaging.Loopback
 		/// </summary>
 		/// <typeparam name="T">Type of message to handle. This should be an interface that implements IMessage.</typeparam>
 		/// <returns>A message binding, use this to specify the handler type</returns>
-		public IMessageBinding<T> Handle<T>() where T : class, IMessage
+		[Obsolete("This configuration method has a race condition. Please use `Register(b=>b.Handle<message>().With<>())` instead")]
+		public IHandlerBinding<T> Handle<T>() where T : class, IMessage
 		{
 			return new LoopbackBinder<T>(_loopbackReceiver);
+		}
+
+		/// <summary>
+		/// Bind messages to handler types.
+		/// </summary>
+		public void Register(params Action<IMessageBinding>[] bindings)
+		{
+			foreach (var binding in bindings)
+			{
+				binding(new LoopbackBindHost(_loopbackReceiver));
+			}
 		}
 
 		/// <summary>

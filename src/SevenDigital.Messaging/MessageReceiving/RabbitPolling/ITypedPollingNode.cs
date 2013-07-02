@@ -13,5 +13,10 @@ namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 		/// A message type for which to poll
 		/// </summary>
 		void AddMessageType(Type type);
+
+		/// <summary>
+		/// Stop receiving messages
+		/// </summary>
+		void Stop();
 	}
 }

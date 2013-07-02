@@ -3,7 +3,7 @@ namespace SevenDigital.Messaging.Loopback
 	/// <summary>
 	/// Loopback message binder
 	/// </summary>
-	public class LoopbackBinder<T> : IMessageBinding<T> where T : class, IMessage
+	public class LoopbackBinder<T> : IHandlerBinding<T> where T : class, IMessage
 	{
 		readonly LoopbackReceiver _loopbackReceiver;
 		
