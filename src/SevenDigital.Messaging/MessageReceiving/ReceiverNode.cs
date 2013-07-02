@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DispatchSharp;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
@@ -122,9 +123,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void BindHandler(Type messageType, Type handlerType)
 		{
-			/*_pollingNode.AddMessageType(messageType);
+			_pollingNode.AddMessageType(messageType);
 			_handler.AddHandler(messageType, handlerType);
-			_receivingDispatcher.Start();*/
+			_receivingDispatcher.Start();
 		}
 
 		/// <summary>
@@ -141,10 +142,12 @@ namespace SevenDigital.Messaging.MessageReceiving
 		public void Dispose()
 		{
 			_pollingNode.Stop();
-
-			Console.WriteLine("CLOSE");
+			var handlers = _handler.GetMatchingHandlers(typeof(IMessage)).ToArray();
+			foreach (var handler in handlers)
+			{
+				_handler.RemoveHandler(handler);
+			}
 			_receivingDispatcher.Stop();
-			Console.WriteLine("CLOSED");
 			_parent.Remove(this);
 		}
 
