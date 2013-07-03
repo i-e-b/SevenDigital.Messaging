@@ -47,6 +47,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 				);
 
 			_receivingDispatcher.AddConsumer(HandleIncomingMessage);
+			_receivingDispatcher.SetMaximumInflight(MessagingSystem.Concurrency);
 		}
 
 		/// <summary>
