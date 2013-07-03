@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SevenDigital.Messaging.Loopback
 {
@@ -11,21 +12,11 @@ namespace SevenDigital.Messaging.Loopback
 		/// No action in dummy
 		/// </summary>
 		public void Dispose(){}
-		
+
 		/// <summary>
 		/// Does nothing.
 		/// </summary>
-		public IHandlerBinding<T> Handle<T>() where T : class, IMessage
-		{
-			return new DummyBinding<T>();
-		}
-		
-		/// <summary>
-		/// Does nothing.
-		/// </summary>
-		public void Register(params Action<IMessageBinding>[] bindings)
-		{
-		}
+		public void Register(IEnumerable<Tuple<Type, Type>> bindings) { }
 
 		/// <summary>
 		/// Gets the name of the destination queue used by messaging
@@ -41,16 +32,5 @@ namespace SevenDigital.Messaging.Loopback
 		/// Does nothing.
 		/// </summary>
 		public void SetConcurrentHandlers(int max) { }
-	}
-	
-	/// <summary>
-	/// Binder for dummy node that does nothing.
-	/// </summary>
-	public class DummyBinding<T> : IHandlerBinding<T> where T : class, IMessage
-	{
-		/// <summary>
-		/// Does nothing.
-		/// </summary>
-		public void With<THandler>() where THandler : IHandle<T>{}
 	}
 }

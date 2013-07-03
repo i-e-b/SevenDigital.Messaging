@@ -12,14 +12,36 @@ namespace SevenDigital.Messaging
 		/// All other listeners on this endpoint will compete for messages
 		/// (i.e. only one listener will get a given message)
 		/// </summary>
-		IReceiverNode TakeFrom(Endpoint endpoint);
+		IReceiverNode TakeFrom(Endpoint endpoint, Action<IMessageBinding> bindings);
 
 		/// <summary>
 		/// Map handlers to a listener on a unique endpoint.
 		/// All listeners mapped this way will receive all messages.
 		/// </summary>
-		IReceiverNode Listen();
+		IReceiverNode Listen(Action<IMessageBinding> bindings);
+	}
 
+
+	/// <summary>
+	/// Interface for binding message types to handlers
+	/// </summary>
+	public interface IMessageBinding
+	{
+		/// <summary>
+		/// Handle a message type. Must complete With&lt;&gt;() to bind to a handler.
+		/// </summary>
+		IHandlerBinding<TMessage> Handle<TMessage>() where TMessage:IMessage;
+	}
+	
+	/// <summary>
+	/// Interface for binding message types to handlers
+	/// </summary>
+	public interface IHandlerBinding<TMessage>where TMessage:IMessage
+	{
+		/// <summary>
+		/// Bind a handler to the selected message
+		/// </summary>
+		IMessageBinding With<THandler>() where THandler : IHandle<TMessage>;
 	}
 
 	/// <summary>

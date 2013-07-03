@@ -45,7 +45,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		[Test]
 		public void take_from_returns_a_new_receiver_bound_to_the_given_endpoint()
 		{
-			var result = _subject.TakeFrom("an endpoint");
+			var result = _subject.TakeFrom("an endpoint", map => { });
 
 			Assert.That(result, Is.InstanceOf<ReceiverNode>());
 			Assert.That(result.DestinationName, Is.EqualTo("an endpoint"));
@@ -55,7 +55,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		[Test]
 		public void listen_returns_a_new_receiver_bound_to_a_generated_endpoint()
 		{
-			var result = _subject.Listen();
+			var result = _subject.Listen(map => { });
 
 			_endpointGenerator.Received().Generate();
 
@@ -120,7 +120,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		public void if_PurgeOnConnect_is_set_then_TakeFrom_creates_and_purges_the_endpoint ()
 		{
 			_subject.PurgeOnConnect = true;
-			_subject.TakeFrom("an endpoint");
+			_subject.TakeFrom("an endpoint", map=> { });
 
 			_messageRouter.Received().AddDestination("an endpoint");
 			_messageRouter.Received().Purge("an endpoint");
@@ -129,7 +129,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		[Test]
 		public void if_PurgeOnConnect_is_not_set_then_Listen_does_not_purge ()
 		{
-			_subject.Listen();
+			_subject.Listen(map=> { });
 
 			_messageRouter.DidNotReceive().Purge(Arg.Any<string>());
 		}
@@ -138,7 +138,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		public void if_PurgeOnConnect_is_set_then_Listen_creates_and_purges_the_endpoint ()
 		{
 			_subject.PurgeOnConnect = true;
-			_subject.Listen();
+			_subject.Listen(map=> { });
 
 			_messageRouter.Received().AddDestination("zoso");
 			_messageRouter.Received().Purge("zoso");
@@ -147,7 +147,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		[Test]
 		public void if_PurgeOnConnect_is_not_set_then_TakeFrom_does_not_purge ()
 		{
-			_subject.TakeFrom("an endpoint");
+			_subject.TakeFrom("an endpoint", map=> { });
 
 			_messageRouter.DidNotReceive().Purge("an endpoint");
 		}

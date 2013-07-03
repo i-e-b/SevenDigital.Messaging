@@ -20,8 +20,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			MessagingSystem.Control.Shutdown();
 			Helper.SetupTestMessaging();
-			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.A");
-			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.B");
+			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.A",_=> { });
+			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.B",_=> { });
 			MessagingSystem.Control.Shutdown();
 		}
 
@@ -29,9 +29,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void when_registering_multiple_handlers_messages_should_not_be_lost()
 		{
 			Helper.SetupTestMessagingWithoutPurging();
-			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.A").Register(
-				map => map.Handle<IAMessage>().With<ABHandler>(),
-				map => map.Handle<IBMessage>().With<ABHandler>()
+			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.A", map => map
+				.Handle<IAMessage>().With<ABHandler>()
+				.Handle<IBMessage>().With<ABHandler>()
 			);
 
 			MessagingSystem.Control.Shutdown();
@@ -39,29 +39,26 @@ namespace SevenDigital.Messaging.Integration.Tests
 			Helper.SetupTestMessagingWithoutPurging();
 
 			Thread.Sleep(200);
-			var node = MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.A");
 			for (var i = 0; i < _messageCount; i++)
 			{
 				MessagingSystem.Sender().SendMessage(new BMessage());
 			}
-
-			node.Register(
-				map => map.Handle<IAMessage>().With<AHandler>(),
-				map => map.Handle<IBMessage>().With<BHandler>()
-				);
-
+			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.A", map => map
+				.Handle<IAMessage>().With<AHandler>()
+				.Handle<IBMessage>().With<BHandler>()
+			);
+	
 			Thread.Sleep(500);
 			Assert.That(BHandler.Count, Is.EqualTo(_messageCount));
-
 		}
 
 		[Test]
 		public void when_registering_single_handler_for_multiple_message_types_then_messages_should_not_be_lost()
 		{
 			Helper.SetupTestMessagingWithoutPurging();
-			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.B").Register(
-				map => map.Handle<IAMessage>().With<ABHandler>(),
-				map => map.Handle<IBMessage>().With<ABHandler>()
+			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.B", map => map
+				.Handle<IAMessage>().With<ABHandler>()
+				.Handle<IBMessage>().With<ABHandler>()
 			);
 			MessagingSystem.Control.Shutdown();
 			
@@ -74,9 +71,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 				MessagingSystem.Sender().SendMessage(new BMessage());
 			}
 
-			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.B").Register(
-				map => map.Handle<IAMessage>().With<ABHandler>(),
-				map => map.Handle<IBMessage>().With<ABHandler>()
+			MessagingSystem.Receiver().TakeFrom("MultipleHandlers.Integration.Test.B", map => map
+				.Handle<IAMessage>().With<ABHandler>()
+				.Handle<IBMessage>().With<ABHandler>()
 			);
 
 			Thread.Sleep(500);

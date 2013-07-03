@@ -29,13 +29,13 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_react_for_all_message_types_it_is_handling()
 		{
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_=>_
+				.Handle<IColourMessage>().With<AllColourMessagesHandler>()
+				.Handle<ITwoColoursMessage>().With<AllColourMessagesHandler>()
+				))
 			{
 				AllColourMessagesHandler.Prepare();
-
-				receiverNode.Handle<IColourMessage>().With<AllColourMessagesHandler>();
-				receiverNode.Handle<ITwoColoursMessage>().With<AllColourMessagesHandler>();
-
+	
 				_sender.SendMessage(new RedMessage());
 				var signal1 = AllColourMessagesHandler.AutoResetEventForColourMessage.WaitOne(LongInterval);
 				_sender.SendMessage(new GreenWhiteMessage());
@@ -49,11 +49,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_react_when_a_registered_message_type_is_received_for_unnamed_endpoint()
 		{
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_=>_
+				.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-
-
 				_sender.SendMessage(new RedMessage());
 
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -64,10 +62,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_react_when_a_registered_message_type_is_received_for_named_endpoint()
 		{
-			using (var receiverNode = _receiver.TakeFrom(new Endpoint("Test_listener_registered-message-endpoint")))
+			using (_receiver.TakeFrom(
+				new Endpoint("Test_listener_registered-message-endpoint"),
+				_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()
+				))
 			{
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-
 				_sender.SendMessage(new RedMessage());
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
@@ -78,12 +77,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_get_message_with_proper_correlation_id()
 		{
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_=>_
+				.Handle<ITwoColoursMessage>().With<TwoColourMessageHandler>()))
 			{
 				var message = new GreenWhiteMessage();
 				TwoColourMessageHandler.Prepare();
-				receiverNode.Handle<ITwoColoursMessage>().With<TwoColourMessageHandler>();
-
 
 				_sender.SendMessage(message);
 				var colourSignal = TwoColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
@@ -97,10 +95,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_unnamed_endpoint()
 		{
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_ => _.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-
 				_sender.SendMessage(new JokerMessage());
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
@@ -112,10 +108,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Handler_should_not_react_when_an_unregistered_message_type_is_received_for_named_endpoint()
 		{
 			ColourMessageHandler.AutoResetEvent.Reset();
-			using (var receiverNode = _receiver.TakeFrom(new Endpoint("Test_listener_unregistered-message-endpoint")))
+			using (_receiver.TakeFrom(
+				new Endpoint("Test_listener_unregistered-message-endpoint"),
+				_ => _.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-
 				_sender.SendMessage(new JokerMessage());
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
@@ -126,12 +122,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test, Ignore("this doesn't work local-to-local right now")]
 		public void Only_one_handler_should_fire_when_competing_for_an_endpoint()
 		{
-			using (var namedReceiverNode1 = _receiver.TakeFrom(new Endpoint("Test_listener_shared-endpoint")))
-			using (var namedReceiverNode2 = _receiver.TakeFrom(new Endpoint("Test_listener_shared-endpoint")))
+			using (_receiver.TakeFrom("Test_listener_shared-endpoint", _ => _.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>()))
+			using (_receiver.TakeFrom("Test_listener_shared-endpoint", _ => _.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>()))
 			{
-				namedReceiverNode1.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
-				namedReceiverNode2.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
-
 				_sender.SendMessage(new BatmanMessage());
 				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 				var villanSignal = VillainMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
@@ -144,11 +137,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_use_all_registered_handlers_when_a_message_is_received()
 		{
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_ => _
+				.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>()
+				.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>()
+				))
 			{
-				receiverNode.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
-				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
-
 				_sender.SendMessage(new JokerMessage());
 				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -161,11 +154,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Handler_which_sends_a_new_message_should_get_that_message_handled()
 		{
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_ => _
+				.Handle<IColourMessage>().With<ChainHandler>()
+				.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>()
+				))
 			{
-				receiverNode.Handle<IColourMessage>().With<ChainHandler>();
-				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
-
 				_sender.SendMessage(new GreenMessage());
 
 				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -175,16 +168,21 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 		
 		[Test]
-		public void should_be_able_to_register_handlers_with_lot_of_messages_on_a_queue ()
+		public void should_be_able_to_register_handlers_with_lot_of_messages_on_a_queue()
 		{
-			using (var receiverNode = _receiver.Listen())
+			using (var receiverNode = _receiver.Listen(_=> { }))
 			{
-				for (int i = 0; i < 1000; i++)
-				{
-					_sender.SendMessage(new JokerMessage());
-				}
-				receiverNode.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>();
-				receiverNode.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>();
+
+			for (int i = 0; i < 1000; i++)
+			{
+				_sender.SendMessage(new JokerMessage());
+			}
+
+				receiverNode.Register(
+					new[]{
+						new Tuple<Type,Type>(typeof(IComicBookCharacterMessage),typeof(SuperHeroMessageHandler)),
+						new Tuple<Type,Type>(typeof(IComicBookCharacterMessage),typeof(VillainMessageHandler))}
+					);
 
 				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);

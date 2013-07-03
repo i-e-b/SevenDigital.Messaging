@@ -25,8 +25,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 			CountingHandler.MaxCount = 0;
 			CountingHandler.Count = 0;
-			MessagingSystem.Receiver().Listen().Register(
-				with => with.Handle<IMessage>().With<CountingHandler>());
+			RegisteringExamples();
 
 			for (int i = 0; i < 20; i++)
 			{
@@ -38,17 +37,30 @@ namespace SevenDigital.Messaging.Integration.Tests
 			Assert.That(CountingHandler.MaxCount, Is.EqualTo(1));
 		}
 
-		public class CountingHandler:IHandle<IMessage>
+		static void RegisteringExamples()
+		{
+			MessagingSystem.Receiver().Listen(_=>_
+				.Handle<IMessage>().With<CountingHandler>()
+				.Handle<IColourMessage>().With<CountingHandler>()
+			);
+		}
+
+
+		public class CountingHandler:IHandle<IMessage>, IHandle<IColourMessage>
 		{
 			public static volatile int Count, MaxCount;
 
 			public void Handle(IMessage message)
 			{
+#pragma warning disable 420
 				Interlocked.Increment(ref Count);
 				Thread.Sleep(200);
 				if (Count > MaxCount) MaxCount = Count;
 				Interlocked.Decrement(ref Count);
+#pragma warning restore 420
 			}
+
+			public void Handle(IColourMessage message) { }
 		}
 
 		[Test]

@@ -29,10 +29,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Listener_endpoint_should_survive_queue_destruction()
 		{
-			using (var receiverNode = _receiver.TakeFrom(new Endpoint(TestQueue)))
+			using (_receiver.TakeFrom(
+				new Endpoint(TestQueue),
+				_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-
 				Helper.DeleteQueue(TestQueue);
 				Thread.Sleep(500);
 
