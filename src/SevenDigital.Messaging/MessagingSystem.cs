@@ -86,6 +86,7 @@ namespace SevenDigital.Messaging
 		}
 
 		internal static readonly object ConfigurationLock = new object();
+		internal static int Concurrency;
 	}
 
 	#region Config interfaces
@@ -329,6 +330,7 @@ namespace SevenDigital.Messaging
 			if (controller == null) throw new InvalidOperationException("Messaging is not configured");
 
 			controller.SetConcurrentHandlers(max);
+			MessagingSystem.Concurrency = max;
 		}
 
 		public void Pause()
