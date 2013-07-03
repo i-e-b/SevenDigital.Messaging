@@ -38,9 +38,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_be_able_to_send_and_receive_messages_without_waiting()
 		{
-			using (var receiver = _receiver.Listen())
+			using (_receiver.Listen(_=>_.Handle<IDummyMessage>().With<DummyHandler>()))
 			{
-				receiver.Handle<IDummyMessage>().With<DummyHandler>();
 				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 
 				Assert.That(DummyHandler.CallCount, Is.EqualTo(1));
@@ -50,9 +49,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_provide_thrown_exception_from_failing_handler()
 		{
-			using (var receiver = _receiver.Listen())
+			using (_receiver.Listen(_=>_.Handle<IDummyMessage>().With<CrappyHandler>()))
 			{
-				receiver.Handle<IDummyMessage>().With<CrappyHandler>();
 				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 
 				mock_event_hook.Received().HandlerFailed(Arg.Any<IMessage>(),
@@ -64,12 +62,12 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_receive_messages_at_every_applicable_handler()
 		{
-			using (var receiver = _receiver.Listen())
+			using (_receiver.Listen(_ => _
+				.Handle<IDummyMessage>().With<DummyHandler>()
+				.Handle<IDummyMessage>().With<OtherHandler>()
+				.Handle<IDifferentMessage>().With<DifferentHandler>()
+				))
 			{
-				receiver.Handle<IDummyMessage>().With<DummyHandler>();
-				receiver.Handle<IDummyMessage>().With<OtherHandler>();
-				receiver.Handle<IDifferentMessage>().With<DifferentHandler>();
-
 				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 
 				Assert.That(DummyHandler.CallCount, Is.EqualTo(1));
@@ -81,11 +79,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_receive_competing_messages_at_only_one_handler()
 		{
-			var receiver1 = _receiver.TakeFrom("Compete");
-			var receiver2 = _receiver.TakeFrom("Compete");
-
-			receiver1.Handle<IDummyMessage>().With<DummyHandler>();
-			receiver2.Handle<IDummyMessage>().With<DummyHandler>();
+			var receiver1 = _receiver.TakeFrom("Compete", _=>_.Handle<IDummyMessage>().With<DummyHandler>());
+			var receiver2 = _receiver.TakeFrom("Compete", _=>_.Handle<IDummyMessage>().With<DummyHandler>());
 
 			_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 
@@ -98,9 +93,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_fire_sent_and_received_event_hooks()
 		{
-			using (var receiver = _receiver.Listen())
+			using (_receiver.Listen(_=>_.Handle<IDummyMessage>().With<DummyHandler>()))
 			{
-				receiver.Handle<IDummyMessage>().With<DummyHandler>();
 				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 			}
 
@@ -111,9 +105,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_fire_failure_hook_on_failure()
 		{
-			using (var receiver = _receiver.Listen())
+			using (_receiver.Listen(_=>_.Handle<IDummyMessage>().With<CrappyHandler>()))
 			{
-				receiver.Handle<IDummyMessage>().With<CrappyHandler>();
 				_senderNode.SendMessage(new DummyMessage { CorrelationId = Guid.NewGuid() });
 			}
 
@@ -124,9 +117,8 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		[Test]
 		public void Should_get_registered_listener_for_type()
 		{
-			using (var receiver = _receiver.Listen())
+			using (_receiver.Listen(_=>_.Handle<IMessage>().With<AHandler>()))
 			{
-				receiver.Handle<IMessage>().With<AHandler>();
 				var listeners = MessagingSystem.Testing.LoopbackHandlers().ForMessage<IMessage>();
 
 				Assert.That(listeners, Contains.Item(typeof(AHandler)));

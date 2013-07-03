@@ -62,6 +62,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageReceiving\Binding.cs" />
     <Compile Include="EventHooks\TestEvents.cs" />
     <Compile Include="Infrastructure\ConcurrentHashSet.cs" />
     <Compile Include="Infrastructure\Cooldown.cs" />
@@ -72,13 +73,10 @@
     <Compile Include="Loopback\DummyBinder.cs" />
     <Compile Include="Loopback\ILoopbackBinding.cs" />
     <Compile Include="Loopback\ILoopbackReceiver.cs" />
-    <Compile Include="Loopback\LoopbackBinder.cs" />
-    <Compile Include="Loopback\LoopbackBindHost.cs" />
     <Compile Include="Loopback\LoopbackBinding.cs" />
     <Compile Include="Loopback\LoopbackReceiver.cs" />
     <Compile Include="Loopback\LoopbackReceiverNode.cs" />
     <Compile Include="Loopback\LoopbackSender.cs" />
-    <Compile Include="MessageReceiving\BindHost.cs" />
     <Compile Include="MessageReceiving\IHandlerManager.cs" />
     <Compile Include="MessageReceiving\HandlerManager.cs" />
     <Compile Include="MessageReceiving\RabbitPolling\IPollingNodeFactory.cs" />

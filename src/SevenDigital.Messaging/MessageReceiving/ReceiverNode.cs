@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DispatchSharp;
 using DispatchSharp.WorkerPools;
@@ -18,7 +19,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// When the user binds a message type to a handler, this gets added to the
 	/// handler and the rabbit work queue.
 	/// </remarks>
-	public class ReceiverNode : IReceiverNode, IBindingHost
+	public class ReceiverNode : IReceiverNode
 	{
 		readonly IReceiverControl _parent;
 		readonly IRoutingEndpoint _endpoint;
@@ -51,29 +52,13 @@ namespace SevenDigital.Messaging.MessageReceiving
 		}
 
 		/// <summary>
-		/// Bind a message type to a handler type
-		/// </summary>
-		/// <typeparam name="T">Type of message to handle. This should be an interface that implements IMessage.</typeparam>
-		/// <returns>A message binding, use this to specify the handler type</returns>
-		public IHandlerBinding<T> Handle<T>() where T : class, IMessage
-		{
-			if (!typeof(T).IsInterface) throw new ArgumentException("Handler type must be an interface that implements IMessage");
-			return new HandlerBinder<T>(this);
-		}
-
-		/// <summary>
 		/// Bind messages to handler types.
 		/// </summary>
-		public void Register(params Action<IMessageBinding>[] bindings)
+		public void Register(IEnumerable<Tuple<Type,Type>> bindings)
 		{
 			foreach (var binding in bindings)
-			{
-				var bindHost = new BindHost();
-				binding(bindHost);
-				if (!bindHost.HasBinding) continue;
-
-				Type messageType, handlerType;
-				bindHost.Binding(out messageType, out handlerType);
+			{	
+				Type messageType = binding.Item1, handlerType = binding.Item2;
 
 				_pollingNode.AddMessageType(messageType);
 				_handler.AddHandler(messageType, handlerType);
@@ -178,32 +163,6 @@ namespace SevenDigital.Messaging.MessageReceiving
 		}
 #pragma warning restore 1591
 
-		#endregion
-
-		#region Message to Handler binding API
-		class HandlerBinder<TMessage> : IHandlerBinding<TMessage> where TMessage : class, IMessage
-		{
-			readonly IBindingHost _host;
-
-			/// <summary>
-			/// create a handler binding api point
-			/// </summary>
-			public HandlerBinder(IBindingHost host)
-			{
-				_host = host;
-			}
-
-			/// <summary>
-			/// Bind this handler to receive the selected message type.
-			/// The handler may receive any number of messages immediately after calling this method
-			/// until unbound or messaging is paused or shutdown.
-			/// </summary>
-			public void With<THandler>() where THandler : IHandle<TMessage>
-			{
-				_host.BindHandlers(new []{new Tuple<Type,Type>(typeof(TMessage), typeof(THandler))});
-			}
-			
-		}
 		#endregion
 	}
 }

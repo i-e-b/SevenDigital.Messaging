@@ -26,13 +26,11 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		{
 			var cid = Guid.Parse("05c90feb5c1041799fc0d26dda5fd1c6");
 
-			using (var listener = _receiver.TakeFrom("TestListener.Integration.edgecases"))
+			using (_receiver.TakeFrom("TestListener.Integration.edgecases",_=>_
+				.Handle<ISpecificMessage>().With<SampleHandler>()))
 			{
-
 				// Simulate sending a message with an unavailable type
 				SimulateUnknownMessage(cid);
-
-				listener.Handle<ISpecificMessage>().With<SampleHandler>();
 
 				var result = SampleHandler.Trigger.WaitOne(TimeSpan.FromSeconds(2));
 				Assert.That(result, Is.True, "Did not pick up message");
@@ -46,13 +44,11 @@ namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 		{
 			var cid = Guid.Parse("05c90feb5c1041799fc0d26dda5fd1c6");
 
-			using (var listener = _receiver.TakeFrom("TestListener.Integration.edgecases"))
+			using (_receiver.TakeFrom("TestListener.Integration.edgecases",
+				_=>_.Handle<ISpecificMessage>().With<SampleHandler>()))
 			{
-
 				// Simulate sending a message with an unavailable type
 				SimulateOldStyleMessage(cid);
-
-				listener.Handle<ISpecificMessage>().With<SampleHandler>();
 
 				var result = SampleHandler.Trigger.WaitOne(TimeSpan.FromSeconds(2));
 				Assert.That(result, Is.True, "Did not pick up message");

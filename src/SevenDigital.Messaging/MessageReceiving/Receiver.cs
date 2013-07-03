@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// All other listeners on this endpoint will compete for messages
 		/// (i.e. only one listener will get a given message)
 		/// </summary>
-		public IReceiverNode TakeFrom(Endpoint endpoint)
+		public IReceiverNode TakeFrom(Endpoint endpoint, Action<IMessageBinding> bindings)
 		{
 			lock (_lockObject)
 			{
@@ -64,6 +65,10 @@ namespace SevenDigital.Messaging.MessageReceiving
 					_pollerFactory, _dispatchFactory);
 				_registeredNodes.Add(node);
 
+				var binding = new Binding();
+				if (bindings != null) bindings(binding);
+				node.Register(binding.AllBindings());
+
 				return node;
 			}
 		}
@@ -72,9 +77,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// Map handlers to a listener on a unique endpoint.
 		/// All listeners mapped this way will receive all messages.
 		/// </summary>
-		public IReceiverNode Listen()
+		public IReceiverNode Listen(Action<IMessageBinding> bindings)
 		{
-			return TakeFrom(_uniqueEndPointGenerator.Generate());
+			return TakeFrom(_uniqueEndPointGenerator.Generate(), bindings);
 		}
 
 		/// <summary>

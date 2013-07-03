@@ -10,7 +10,7 @@ namespace SevenDigital.Messaging.Unit.Tests.LoopbackMessaging
 		{
 			MessagingSystem.Configure.WithLoopbackMode();
 
-			MessagingSystem.Receiver().Listen().Handle<IMessage>().With<AHandler>();
+			MessagingSystem.Receiver().Listen(_=>_.Handle<IMessage>().With<AHandler>());
 		}
 
 		[Test]

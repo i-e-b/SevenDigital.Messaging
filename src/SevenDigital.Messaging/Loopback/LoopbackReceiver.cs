@@ -30,14 +30,14 @@ namespace SevenDigital.Messaging.Loopback
 		/// All other listeners on this endpoint will compete for messages
 		/// (i.e. only one listener will get a given message)
 		/// </summary>
-		public IReceiverNode TakeFrom(Endpoint endpoint)
+		public IReceiverNode TakeFrom(Endpoint endpoint, Action<IMessageBinding> bindings)
 		{
 			// In the real version, agents compete for incoming messages.
 			// In this test version, we only really bind the first listener for a given endpoint -- roughly the same effect!
 			if (capturedEndpoints.Contains(endpoint.ToString())) return new DummyReceiver();
 
 			capturedEndpoints.Add(endpoint.ToString());
-			return new LoopbackReceiverNode(this);
+			return Listen(bindings);
 		}
 
 		/// <summary>
@@ -52,19 +52,22 @@ namespace SevenDigital.Messaging.Loopback
 		/// Map handlers to a listener on a unique endpoint.
 		/// All listeners mapped this way will receive all messages.
 		/// </summary>
-		public IReceiverNode Listen()
+		public IReceiverNode Listen(Action<IMessageBinding> bindings)
 		{
-			return new LoopbackReceiverNode(this);
+			var node = new LoopbackReceiverNode(this);
+
+			var binding = new Binding();
+			if (bindings != null) bindings(binding);
+			node.Register(binding.AllBindings());
+
+			return node;
 		}
 
 		/// <summary>
 		/// Bind a message to a handler
 		/// </summary>
-		public void Bind<TMessage, THandler>()
+		public void Bind(Type msg, Type handler)
 		{
-			var msg = typeof(TMessage);
-			var handler = typeof(THandler);
-
 			if (!listenerBindings.IsMessageRegistered(msg))
 				listenerBindings.AddMessageType(msg);
 

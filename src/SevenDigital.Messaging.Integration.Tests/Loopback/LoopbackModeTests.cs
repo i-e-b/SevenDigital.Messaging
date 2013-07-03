@@ -12,10 +12,9 @@ namespace SevenDigital.Messaging.Integration.Tests.Loopback
 			MessagingSystem.Control.Shutdown();
 			MessagingSystem.Configure.WithLoopbackMode();
 			
-			using (var listener = MessagingSystem.Receiver().Listen())
+			using (MessagingSystem.Receiver().Listen(_=>_.Handle<IMessage>().With<IntegrationHandler>()))
 			{
 				IntegrationHandler.Sent = false;
-				listener.Handle<IMessage>().With<IntegrationHandler>();
 				MessagingSystem.Sender().SendMessage(new TestMessage());
 				Assert.That(IntegrationHandler.Sent, Is.True);
 			}
