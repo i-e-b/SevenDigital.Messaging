@@ -34,11 +34,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 				.AddEventHook<FailingHook>()
 				.AddEventHook<SucceedingHook>();
 
-			using (var receiverNode = node_factory.Listen())
+			using (node_factory.Listen(_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
 				var message = new GreenMessage();
-
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
 				senderNode.SendMessage(message);
 

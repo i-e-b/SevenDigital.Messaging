@@ -35,11 +35,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 				.AddEventHook<WaitingHookOne>()
 				.AddEventHook<WaitingHookTwo>();
 
-			using (var receiverNode = node_factory.Listen())
+			using (node_factory.Listen(_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
 				var message = new GreenMessage();
-
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
 				senderNode.SendMessage(message);
 
@@ -57,11 +55,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			MessagingSystem.Events.ClearEventHooks();
 
-			using (var receiverNode = node_factory.Listen())
+			using (node_factory.Listen(_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
 				var message = new GreenMessage();
 
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);

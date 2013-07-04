@@ -28,9 +28,8 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		public void can_deregister_a_handler_causing_no_further_messages_to_be_processed()
 		{
 			UnregisterSample.handledTimes = 0;
-			using (var receiverNode = _receiver.Listen())
+			using (var receiverNode = _receiver.Listen(_=>_.Handle<IColourMessage>().With<UnregisterSample>()))
 			{
-				receiverNode.Handle<IColourMessage>().With<UnregisterSample>();
 				_senderNode.SendMessage(new RedMessage());
 
 				Thread.Sleep(250);
@@ -41,7 +40,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 				Thread.Sleep(250);
 				Assert.That(UnregisterSample.handledTimes, Is.EqualTo(1));
 
-				receiverNode.Handle<IColourMessage>().With<UnregisterSample>();
+				receiverNode.Register(new Binding().Handle<IColourMessage>().With<UnregisterSample>());
 				_senderNode.SendMessage(new RedMessage());
 				Thread.Sleep(250);
 				Assert.That(UnregisterSample.handledTimes, Is.EqualTo(2));

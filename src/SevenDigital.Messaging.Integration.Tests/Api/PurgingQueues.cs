@@ -26,10 +26,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			_receiver = MessagingSystem.Receiver();
 			_senderNode = MessagingSystem.Sender();
 
-			using (var l = _receiver.Listen())
-			{
-				l.Handle<IColourMessage>().With<ColourMessageHandler>();
-			}
+			using (_receiver.Listen(_=>_.Handle<IColourMessage>().With<ColourMessageHandler>())) { }
 			_senderNode.SendMessage(new GreenMessage());
 		}
 
@@ -37,10 +34,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Should_not_get_messages_waiting_on_queue_when_starting_a_new_listener()
 		{
 			ColourMessageHandler.AutoResetEvent.Reset();
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-
 				var colourSignal = ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 				Assert.That(colourSignal, Is.False);
 			}

@@ -51,14 +51,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Should_trigger_event_hook_with_message_when_receiving_a_message()
 		{
 			var message = new GreenMessage();
-			using (var receiverNode = node_factory.Listen())
+			using (node_factory.Listen(_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
-
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 				senderNode.SendMessage(message);
 
 				Assert.That(ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval));
-
 			}
 			lock (mock_event_hook)
 			{
@@ -70,9 +67,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void Should_trigger_event_hook_with_message_when_receiving_a_message_from_a_base_type()
 		{
 			var message = new GreenMessage();
-			using (var receiverNode = node_factory.Listen())
+			using (node_factory.Listen(_=>_.Handle<IMessage>().With<GenericHandler>()))
 			{
-				receiverNode.Handle<IMessage>().With<GenericHandler>();
 				senderNode.SendMessage(message);
 
 				GenericHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -86,12 +82,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Every_handler_should_trigger_event_hook()
 		{
-			using (var receiverNode = node_factory.Listen())
+			using (node_factory.Listen(_=>_
+				.Handle<IColourMessage>().With<ColourMessageHandler>()
+				.Handle<IColourMessage>().With<AnotherColourMessageHandler>()
+				))
 			{
 				var message = new GreenMessage();
-
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
-				receiverNode.Handle<IColourMessage>().With<AnotherColourMessageHandler>();
 				senderNode.SendMessage(message);
 
 				ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
