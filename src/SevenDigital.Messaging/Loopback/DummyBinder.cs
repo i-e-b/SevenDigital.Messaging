@@ -16,7 +16,7 @@ namespace SevenDigital.Messaging.Loopback
 		/// <summary>
 		/// Does nothing.
 		/// </summary>
-		public void Register(IEnumerable<Tuple<Type, Type>> bindings) { }
+		public void Register(IBinding bindings) { }
 
 		/// <summary>
 		/// Gets the name of the destination queue used by messaging

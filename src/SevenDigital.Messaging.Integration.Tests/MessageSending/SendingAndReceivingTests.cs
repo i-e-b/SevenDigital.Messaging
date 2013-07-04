@@ -166,22 +166,21 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Assert.That(villainSignal, Is.True);
 			}
 		}
-		
+
 		[Test]
 		public void should_be_able_to_register_handlers_with_lot_of_messages_on_a_queue()
 		{
-			using (var receiverNode = _receiver.Listen(_=> { }))
+			using (var receiverNode = _receiver.Listen(_ => { }))
 			{
-
-			for (int i = 0; i < 1000; i++)
-			{
-				_sender.SendMessage(new JokerMessage());
-			}
+				for (int i = 0; i < 1000; i++)
+				{
+					_sender.SendMessage(new JokerMessage());
+				}
 
 				receiverNode.Register(
-					new[]{
-						new Tuple<Type,Type>(typeof(IComicBookCharacterMessage),typeof(SuperHeroMessageHandler)),
-						new Tuple<Type,Type>(typeof(IComicBookCharacterMessage),typeof(VillainMessageHandler))}
+					new Binding()
+					.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>()
+					.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>()
 					);
 
 				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
@@ -190,7 +189,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Assert.That(superheroSignal, Is.True);
 				Assert.That(villainSignal, Is.True);
 			}
-				
+
 		}
 
 

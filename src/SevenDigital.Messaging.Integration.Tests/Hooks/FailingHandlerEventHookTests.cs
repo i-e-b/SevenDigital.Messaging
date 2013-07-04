@@ -37,7 +37,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_trigger_failure_hook_when_handler_throws_exception ()
 		{
-			using (var receiverNode = node_factory.Listen())
+			using (var receiverNode = node_factory.Listen(_=> { }))
 			{
 				var message = TriggerFailingHandler(receiverNode);
 
@@ -52,7 +52,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Should_not_trigger_received_hook_when_handler_throws_exception ()
 		{
-			using (var receiverNode = node_factory.Listen())
+			using (var receiverNode = node_factory.Listen(_=> { }))
 			{
 				TriggerFailingHandler(receiverNode);
 
@@ -65,7 +65,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 		GreenMessage TriggerFailingHandler(IReceiverNode receiverNode)
 		{
-			receiverNode.Handle<IColourMessage>().With<FailingColourHandler>();
+			receiverNode.Register(new Binding().Handle<IColourMessage>().With<FailingColourHandler>());
 
 			var message = new GreenMessage();
 			var senderNode = ObjectFactory.GetInstance<ISenderNode>();

@@ -25,7 +25,7 @@ namespace SevenDigital.Messaging
 	/// <summary>
 	/// Interface for binding message types to handlers
 	/// </summary>
-	public interface IMessageBinding
+	public interface IMessageBinding: IBinding
 	{
 		/// <summary>
 		/// Handle a message type. Must complete With&lt;&gt;() to bind to a handler.

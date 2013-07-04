@@ -37,11 +37,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void Sent_and_received_messages_should_be_equal()
 		{
-			using (var receiverNode = node_factory.Listen())
+			using (node_factory.Listen(_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
 				var message = new GreenMessage();
-
-				receiverNode.Handle<IColourMessage>().With<ColourMessageHandler>();
 
 				senderNode.SendMessage(message);
 

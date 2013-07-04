@@ -40,9 +40,8 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			ExceptionSample.handledTimes = 0;
 			ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_=>_.Handle<IColourMessage>().With<ExceptionSample>()))
 			{
-				receiverNode.Handle<IColourMessage>().With<ExceptionSample>();
 
 				_senderNode.SendMessage(new RedMessage());
 
@@ -59,14 +58,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 			var events = new TestEvents();
 			var hook = new TestEventHook(events);
 			ObjectFactory.Configure(map => map.For<IEventHook>().Use(hook));
-			using (var receiverNode = _receiver.Listen())
+			using (_receiver.Listen(_=>_.Handle<IColourMessage>().With<ExceptionSample>()))
 			{
-				receiverNode.Handle<IColourMessage>().With<ExceptionSample>();
-
 				_senderNode.SendMessage(new RedMessage());
 
 				ExceptionSample.AutoResetEvent.WaitOne(ShortInterval);
-			//	Assert.That(ExceptionSample.handledTimes, Is.EqualTo(2));
 			}
 
 			ObjectFactory.GetInstance<IEventHook>();

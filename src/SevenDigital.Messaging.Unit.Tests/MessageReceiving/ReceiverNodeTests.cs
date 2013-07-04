@@ -50,21 +50,21 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		[Test]
 		public void binding_a_message_type_to_a_handler_type_adds_the_binding_to_the_handler_manager ()
 		{
-			_subject.Handle<IMessage>().With<MessageHandler>();
+			_subject.Register(new Binding().Handle<IMessage>().With<MessageHandler>());
 			_handlerManager.Received().AddHandler(typeof(IMessage), typeof(MessageHandler));
 		}
 
 		[Test]
 		public void binding_a_message_type_to_a_handler_type_adds_the_type_to_the_polling_node ()
 		{
-			_subject.Handle<IMessage>().With<MessageHandler>();
+			_subject.Register(new Binding().Handle<IMessage>().With<MessageHandler>());
 			_poller.Received().AddMessageType(typeof(IMessage));
 		}
 
 		[Test]
 		public void unbinding_a_message_type_removes_the_handler_associations ()
 		{
-			_subject.Handle<IMessage>().With<MessageHandler>();
+			_subject.Register(new Binding().Handle<IMessage>().With<MessageHandler>());
 			_subject.Unregister<MessageHandler>();
 
 			_handlerManager.RemoveHandler(typeof(MessageHandler));

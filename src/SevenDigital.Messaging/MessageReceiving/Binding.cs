@@ -6,7 +6,7 @@ namespace SevenDigital.Messaging
 	/// <summary>
 	/// Binding helper for receiver configuration
 	/// </summary>
-	public class Binding:IMessageBinding
+	public class Binding : IBinding, IMessageBinding
 	{
 		readonly List<Tuple<Type, Type>> _bindings;
 
@@ -17,7 +17,6 @@ namespace SevenDigital.Messaging
 		{
 			_bindings = new List<Tuple<Type,Type>>();
 		}
-
 
 		/// <summary>
 		/// Handle a message type. Must complete With&lt;&gt;() to bind to a handler.
@@ -65,5 +64,17 @@ namespace SevenDigital.Messaging
 				return _src;
 			}
 		}
+	}
+	
+	/// <summary>
+	/// Binding helper for receiver configuration.
+	/// Use `new Binding().Handle&lt;&gt;()...`
+	/// </summary>
+	public interface IBinding
+	{
+		/// <summary>
+		/// Return all completed bindings
+		/// </summary>
+		IEnumerable<Tuple<Type,Type>> AllBindings();
 	}
 }

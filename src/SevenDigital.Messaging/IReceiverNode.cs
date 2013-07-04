@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace SevenDigital.Messaging
 {
@@ -11,7 +10,7 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Bind multiple messages to handler types.
 		/// </summary>
-		void Register(IEnumerable<Tuple<Type,Type>> bindings);
+		void Register(IBinding bindings);
 
 		/// <summary>
 		/// Gets the name of the destination queue used by messaging

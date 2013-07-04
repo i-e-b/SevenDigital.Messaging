@@ -58,7 +58,7 @@ namespace SevenDigital.Messaging.Loopback
 
 			var binding = new Binding();
 			if (bindings != null) bindings(binding);
-			node.Register(binding.AllBindings());
+			node.Register(binding);
 
 			return node;
 		}

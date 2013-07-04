@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using DispatchSharp;
 using DispatchSharp.WorkerPools;
@@ -54,9 +53,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// <summary>
 		/// Bind messages to handler types.
 		/// </summary>
-		public void Register(IEnumerable<Tuple<Type,Type>> bindings)
+		public void Register(IBinding bindings)
 		{
-			foreach (var binding in bindings)
+			foreach (var binding in bindings.AllBindings())
 			{	
 				Type messageType = binding.Item1, handlerType = binding.Item2;
 
