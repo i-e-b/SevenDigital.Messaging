@@ -23,36 +23,30 @@ namespace SevenDigital.Messaging.Integration.Tests
 			MessagingSystem.Configure.WithDefaults().SetIntegrationTestMode();
 			MessagingSystem.Control.SetConcurrentHandlers(1);
 
-			CountingHandler.MaxCount = 0;
-			CountingHandler.Count = 0;
-			RegisteringExamples();
+			CountingHandler.Reset();
+			MessagingSystem.Receiver().Listen(_=>_
+				.Handle<IMessage>().With<CountingHandler>()
+			);
 
 			for (int i = 0; i < 20; i++)
 			{
 				MessagingSystem.Sender().SendMessage(new GreenMessage());
 			}
-
-			Thread.Sleep(1500);
+			while (CountingHandler.TotalCount < 10)
+			{
+				Thread.Sleep(250);
+			}
 			MessagingSystem.Control.Shutdown();
 			Assert.That(CountingHandler.MaxCount, Is.EqualTo(1));
 		}
-
-		static void RegisteringExamples()
+		public class CountingHandler:IHandle<IMessage>
 		{
-			MessagingSystem.Receiver().Listen(_=>_
-				.Handle<IMessage>().With<CountingHandler>()
-				.Handle<IColourMessage>().With<CountingHandler>()
-			);
-		}
-
-
-		public class CountingHandler:IHandle<IMessage>, IHandle<IColourMessage>
-		{
-			public static volatile int Count, MaxCount;
+			public static volatile int Count, MaxCount, TotalCount;
 
 			public void Handle(IMessage message)
 			{
 #pragma warning disable 420
+				Interlocked.Increment(ref TotalCount);
 				Interlocked.Increment(ref Count);
 				Thread.Sleep(200);
 				if (Count > MaxCount) MaxCount = Count;
@@ -60,7 +54,10 @@ namespace SevenDigital.Messaging.Integration.Tests
 #pragma warning restore 420
 			}
 
-			public void Handle(IColourMessage message) { }
+			public static void Reset()
+			{
+				Count = MaxCount = TotalCount = 0;
+			}
 		}
 
 		[Test]
