@@ -82,6 +82,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		#region Type junk
+#pragma warning disable 420
 		public interface IAMessage : IMessage { };
 		public interface IBMessage : IMessage { };
 
@@ -134,6 +135,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				set { count = value; }
 			}
 		}
+#pragma warning restore 420
 		#endregion
 	}
 
