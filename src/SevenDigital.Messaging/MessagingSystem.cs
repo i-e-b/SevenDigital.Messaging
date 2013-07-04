@@ -86,7 +86,7 @@ namespace SevenDigital.Messaging
 		}
 
 		internal static readonly object ConfigurationLock = new object();
-		internal static int Concurrency;
+		internal static int Concurrency = DispatchSharp.Internal.Default.ThreadCount;
 	}
 
 	#region Config interfaces
