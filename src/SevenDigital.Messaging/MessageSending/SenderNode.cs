@@ -27,8 +27,6 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public SenderNode(IMessagingBase messagingBase, IDispatcherFactory dispatchFactory, ISleepWrapper sleeper)
 		{
-
-
 			_messagingBase = messagingBase;
 			_sleeper = sleeper;
 			_sendingDispatcher = dispatchFactory.Create( 
@@ -106,7 +104,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void Dispose()
 		{
-			_sendingDispatcher.Stop();
+			_sendingDispatcher.WaitForEmptyQueueAndStop(MessagingSystem.ShutdownTimeout);
 		}
 	}
 }

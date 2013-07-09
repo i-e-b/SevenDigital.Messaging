@@ -14,22 +14,29 @@ namespace SevenDigital.Messaging.ConfigurationActions
 		{
 			lock (MessagingSystem.ConfigurationLock)
 			{
-				Log.Instance().Shutdown();
-
+				// Stop receiving
 				EjectAndDispose<IReceiverControl>();
 				EjectAndDispose<IReceiver>();
 
-				EjectAndDispose<IEventHook>();
-
+				// Send all and stop sending
 				EjectAndDispose<ISenderNode>();
+				EjectAndDispose<IEventHook>();
+				Log.Instance().Shutdown();
 
+				// Some random bits
 				EjectAndDispose<IUniqueEndpointGenerator>();
 				EjectAndDispose<ISleepWrapper>();
 
+				// Shut down base rabbitmq stuff
 				EjectAndDispose<IMessagingHost>();
 				EjectAndDispose<IRabbitMqConnection>();
 				EjectAndDispose<IChannelAction>();
 			}
+		}
+
+		public void SetShutdownTimeout(TimeSpan maxWait)
+		{
+			MessagingSystem.ShutdownTimeout = maxWait;
 		}
 
 		public void OnInternalWarning(Action<MessagingLogEventArgs> action)
