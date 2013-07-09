@@ -48,9 +48,9 @@
     <Reference Include="SevenDigital.ServiceStack.Merged">
       <HintPath>..\..\packages\ServiceStackSnapShot.1.0.0\lib\net40\SevenDigital.ServiceStack.Merged.dll</HintPath>
     </Reference>
-    <Reference Include="ShiftIt, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ShiftIt, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Shift-it.1.2.0\lib\net40\ShiftIt.dll</HintPath>
+      <HintPath>..\..\packages\Shift-it.1.2.1\lib\net40\ShiftIt.dll</HintPath>
     </Reference>
     <Reference Include="SignalHandling, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -63,6 +63,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\ThreadWatcher.cs" />
     <Compile Include="MessageReceiving\Binding.cs" />
     <Compile Include="EventHooks\TestEvents.cs" />
     <Compile Include="Infrastructure\ConcurrentHashSet.cs" />
