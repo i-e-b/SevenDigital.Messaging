@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>DispatchSharp</id>
-    <version>0.1.7</version>
+    <version>0.1.8</version>
     <title>DispatchSharp</title>
     <authors>iainb</authors>
     <owners>iainb</owners>
@@ -12,6 +12,7 @@
 
 Models a job dispatch pattern and provides both threaded and non threaded implementations.</description>
     <summary>An experimental library to make multi-threaded dispatch code more testable</summary>
+    <releaseNotes>Adds timeout option to WaitForEmptyQueueAndStop</releaseNotes>
     <language />
     <tags>threading tdd</tags>
   </metadata>

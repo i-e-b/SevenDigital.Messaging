@@ -148,7 +148,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		public void disposing_of_the_sender_node_stops_the_dispatcher ()
 		{
 			_subject.Dispose();
-			_dispatcher.Received().Stop();
+			_dispatcher.Received().WaitForEmptyQueueAndStop(Arg.Any<TimeSpan>());
 		}
 		
 		public class TestMessage : IMessage { public Guid CorrelationId { get; set; } }

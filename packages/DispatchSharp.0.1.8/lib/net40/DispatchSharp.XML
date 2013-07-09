@@ -56,6 +56,12 @@
             Continue consuming work and return when the queue reports 0 items waiting. 
             </summary>
         </member>
+        <member name="M:DispatchSharp.IDispatch`1.WaitForEmptyQueueAndStop(System.TimeSpan)">
+            <summary>
+            Continue consuming work and return when the queue reports 0 items waiting. 
+            </summary>
+            <param name="maxWait">Maximum duration to wait. The dispatcher will be stopped if this duration is exceeded</param>
+        </member>
         <member name="E:DispatchSharp.IDispatch`1.Exceptions">
             <summary> Event triggered when a consumer throws an exception </summary>
         </member>
@@ -140,6 +146,12 @@
             Continue consuming work and return when the queue reports 0 items waiting.
             If you continue to add work, this method will continue to block.
             </summary>
+        </member>
+        <member name="M:DispatchSharp.Dispatch`1.WaitForEmptyQueueAndStop(System.TimeSpan)">
+            <summary>
+            Continue consuming work and return when the queue reports 0 items waiting. 
+            </summary>
+            <param name="maxWait">Maximum duration to wait. The dispatcher will be stopped if this duration is exceeded</param>
         </member>
         <member name="E:DispatchSharp.Dispatch`1.Exceptions">
             <summary> Event triggered when a consumer throws an exception </summary>

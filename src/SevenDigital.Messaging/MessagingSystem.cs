@@ -79,6 +79,7 @@ namespace SevenDigital.Messaging
 				&& ObjectFactory.Model.HasImplementationsFor<ISenderNode>();
 		}
 
+		internal static TimeSpan ShutdownTimeout = TimeSpan.FromSeconds(10);
 		internal static readonly object ConfigurationLock = new object();
 		internal static int Concurrency = DispatchSharp.Internal.Default.ThreadCount;
 	}
@@ -91,8 +92,15 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Stop the messaging system, finishing all handlers and stopping all worker threads.
 		/// After this method is called, the messaging system must be reconfigured from scratch.
+		/// This will wait up to 10 seconds for sending messages to complete. If you want to increase the 
+		/// time-out, use `MessagingSystem.Control.SetShutdownTimeout(...)`
 		/// </summary>
 		void Shutdown();
+
+		/// <summary>
+		/// Set the maximum time to wait for pending messages to send during shutdown
+		/// </summary>
+		void SetShutdownTimeout(TimeSpan maxWait);
 
 		/// <summary>
 		/// Set maximum concurrent handlers. Set to 1 for single-thread mode
