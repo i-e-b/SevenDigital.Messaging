@@ -70,6 +70,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\AutoShutdownTests.cs" />
     <Compile Include="Api\ConcurrencyLimit.cs" />
     <Compile Include="Api\ConfiguringAcrossMethods.cs" />
     <Compile Include="Api\RegisteringMultipleHandlers.cs" />

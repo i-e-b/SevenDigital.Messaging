@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.MessageReceiving;
 
 namespace SevenDigital.Messaging.Integration.Tests
 {
