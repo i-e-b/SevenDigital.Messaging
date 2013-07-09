@@ -372,7 +372,6 @@ namespace SevenDigital.Messaging
 		}
 	}
 
-
 	class SDM_ConfigureOptions : IMessagingConfigureOptions
 	{
 		public IMessagingConfigureOptions SetManagementServer(string host, string username, string password, string vhost)

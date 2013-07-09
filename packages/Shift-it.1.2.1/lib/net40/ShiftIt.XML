@@ -571,6 +571,18 @@
             Connection and data transfer timeout
             </summary>
         </member>
+        <member name="T:ShiftIt.Http.HttpResponseExtensions">
+            <summary>
+            Extensions for IHttpResponse
+            </summary>
+        </member>
+        <member name="M:ShiftIt.Http.HttpResponseExtensions.HttpStatusCode(ShiftIt.Http.IHttpResponse)">
+            <summary>
+            Converts StatusCode integer into HttpStatusCode enum.
+            </summary>
+            <param name="response"></param>
+            <returns></returns>
+        </member>
         <member name="T:ShiftIt.Http.IHttpRequest">
             <summary>
             Data required to make a HTTP request
@@ -584,6 +596,11 @@
         <member name="P:ShiftIt.Http.IHttpRequest.Target">
             <summary>
             Target resource
+            </summary>
+        </member>
+        <member name="P:ShiftIt.Http.IHttpRequest.Verb">
+            <summary>
+            Verb used
             </summary>
         </member>
         <member name="P:ShiftIt.Http.IHttpRequest.DataStream">
@@ -876,6 +893,11 @@
         <member name="P:ShiftIt.Http.HttpRequestBuilder.Target">
             <summary>
             Target resource
+            </summary>
+        </member>
+        <member name="P:ShiftIt.Http.HttpRequestBuilder.ShiftIt#Http#IHttpRequest#Verb">
+            <summary>
+            Verb used
             </summary>
         </member>
         <member name="P:ShiftIt.Http.HttpRequestBuilder.DataLength">
