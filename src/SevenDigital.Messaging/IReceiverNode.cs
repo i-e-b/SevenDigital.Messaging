@@ -1,4 +1,5 @@
 using System;
+using SevenDigital.Messaging.MessageReceiving;
 
 namespace SevenDigital.Messaging
 {

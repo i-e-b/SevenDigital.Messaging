@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SevenDigital.Messaging
+namespace SevenDigital.Messaging.MessageReceiving
 {
 	/// <summary>
 	/// Binding helper for receiver configuration

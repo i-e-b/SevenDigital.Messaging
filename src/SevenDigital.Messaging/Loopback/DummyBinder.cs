@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SevenDigital.Messaging.MessageReceiving;
 
 namespace SevenDigital.Messaging.Loopback
 {
