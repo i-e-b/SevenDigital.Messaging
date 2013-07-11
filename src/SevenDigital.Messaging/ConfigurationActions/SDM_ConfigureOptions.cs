@@ -1,6 +1,7 @@
 using System;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
+using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -36,6 +37,8 @@ namespace SevenDigital.Messaging.ConfigurationActions
 			var controller = ObjectFactory.TryGetInstance<IReceiver>() as IReceiverControl;
 			if (controller == null)
 				throw new Exception("Messaging is not configured");
+
+			PersistentWorkQueue.DeletePendingMessages();
 
 			var namer = ObjectFactory.TryGetInstance<IUniqueEndpointGenerator>();
 			if (namer == null) throw new Exception("Unique endpoint generator was not properly configured.");
