@@ -5,6 +5,7 @@ using DispatchSharp.WorkerPools;
 using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Base.Serialisation;
 using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageSending;
@@ -21,12 +22,14 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		ISleepWrapper _sleeper;
 		IDispatch<IMessage> _dispatcher;
 		IEventHook _eventHook1, _eventHook2;
+		IMessageSerialiser _serialiser;
 
 		[SetUp]
 		public void setup()
 		{
 			_messagingBase = Substitute.For<IMessagingBase>();
 			_sleeper = Substitute.For<ISleepWrapper>();
+			_serialiser = Substitute.For<IMessageSerialiser>();
 			_dispatcher = Substitute.For<IDispatch<IMessage>>();
 			_dispatcherFactory = Substitute.For<IDispatcherFactory>();
 			_dispatcherFactory.Create(Arg.Any<IWorkQueue<IMessage>>(), Arg.Any<IWorkerPool<IMessage>>()).Returns(_dispatcher);
@@ -38,7 +41,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 				map.For<IEventHook>().Use(_eventHook2);
 			});
 
-			_subject = new SenderNode(_messagingBase, _dispatcherFactory, _sleeper);
+			_subject = new SenderNode(_messagingBase, _dispatcherFactory, _sleeper, _serialiser);
 		}
 
 		[Test]
