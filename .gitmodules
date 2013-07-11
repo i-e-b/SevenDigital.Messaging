@@ -1,0 +1,3 @@
+[submodule "DiskQueue"]
+	path = DiskQueue
+	url = git@github.com:i-e-b/DiskQueue.git
