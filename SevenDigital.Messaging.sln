@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Info", "Info", "{5B19FBF1-A
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhino.Queues.Storage.Disk.Tests", "DiskQueue\src\Rhino.Queues.Storage.Disk.Tests\Rhino.Queues.Storage.Disk.Tests.csproj", "{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiskQueue", "DiskQueue\src\Rhino.Queues.Storage.Disk\DiskQueue.csproj", "{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +70,26 @@ Global
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4}.Release|x86.ActiveCfg = Release|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}.Release|x86.ActiveCfg = Release|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,5 +98,6 @@ Global
 		{305495D2-0885-4EDC-9156-D47C049AE936} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
 		{1578F154-1C86-4A00-881C-CB7517C594AE} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
 		{B85310C8-7306-4867-A99A-EE15BB2C73A4} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
+		{1CE72DCA-61B7-4865-B5CB-191D04FB5B46} = {B92FE733-3A36-4F1A-83C3-9E61E21E3722}
 	EndGlobalSection
 EndGlobal
