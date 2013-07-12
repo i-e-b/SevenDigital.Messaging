@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DispatchSharp;
+using DispatchSharp.QueueTypes;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Serialisation;
@@ -35,9 +36,15 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			_messagingBase = messagingBase;
 			_sleeper = sleeper;
+
+			Console.WriteLine("Clearing pending messages (for development!)");
+			PersistentWorkQueue.DeletePendingMessages();
 			_persistentQueue = new PersistentWorkQueue(serialiser, new PersistentQueueFactory());
+			Console.WriteLine("Persistent queue is OK");
+
 			_sendingDispatcher = dispatchFactory.Create( 
 				_persistentQueue,
+				//new InMemoryWorkQueue<IMessage>(),
 				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
 			);
 
@@ -111,8 +118,11 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void Dispose()
 		{
+			Console.WriteLine(DateTime.Now + " Trying to end");
 			_sendingDispatcher.WaitForEmptyQueueAndStop(MessagingSystem.ShutdownTimeout);
+			Console.WriteLine(DateTime.Now + " closing queue");
 			_persistentQueue.Dispose();
+			Console.WriteLine(DateTime.Now + " ended");
 		}
 	}
 }

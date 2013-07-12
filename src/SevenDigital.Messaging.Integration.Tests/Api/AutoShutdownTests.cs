@@ -13,10 +13,13 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 
-		[Test, Repeat(10)]
+		[Test/*, Repeat(10)*/]
 		public void if_the_thread_messaging_is_configured_on_ends_messaging_gets_shut_down ()
 		{
-			var t = new Thread(() => MessagingSystem.Configure.WithDefaults())
+			var t = new Thread(() => {
+				MessagingSystem.Configure.WithDefaults();
+				Thread.Sleep(100);
+			})
 			{
 				Name = "Test setup thread"
 			};
