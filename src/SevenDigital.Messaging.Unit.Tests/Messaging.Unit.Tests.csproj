@@ -77,6 +77,7 @@
     <Compile Include="MessageReceiving\ReceiverNodeTests.cs" />
     <Compile Include="MessageReceiving\ReceiverTests.cs" />
     <Compile Include="MessageReceiving\SleepWrapperTests.cs" />
+    <Compile Include="MessageSending\PersistentQueueTests.cs" />
     <Compile Include="MessageSending\SenderNodeTests.cs" />
     <Compile Include="Shutdown\ThreadWatcherTests.cs" />
     <Compile Include="Routing\UniqueEndpointGeneratorTests.cs" />
@@ -88,6 +89,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DiskQueue\src\Rhino.Queues.Storage.Disk\DiskQueue.csproj">
+      <Project>{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}</Project>
+      <Name>DiskQueue</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SevenDigital.Messaging\SevenDigital.Messaging.csproj">
       <Project>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</Project>
       <Name>SevenDigital.Messaging</Name>
