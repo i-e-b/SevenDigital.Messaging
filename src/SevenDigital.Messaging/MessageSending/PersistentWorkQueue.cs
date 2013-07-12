@@ -29,18 +29,32 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public static void DeletePendingMessages()
 		{
-			if (Directory.Exists(Pname))
+			for (int i = 0; i < 50; i++)
 			{
-				var files = Directory.GetFiles(Pname, "*", SearchOption.AllDirectories);
-				Array.Sort(files, (s1, s2) => s2.Length.CompareTo(s1.Length));// sortby length descending
-				foreach (var file in files)
+				try
 				{
-					File.Delete(file);
-				}
+					if (Directory.Exists(Pname))
+					{
+						var files = Directory.GetFiles(Pname, "*", SearchOption.AllDirectories);
+						Array.Sort(files, (s1, s2) => s2.Length.CompareTo(s1.Length)); // sortby length descending
+						foreach (var file in files)
+						{
+							File.Delete(file);
+						}
 
-				Directory.Delete(Pname, true);
+						Directory.Delete(Pname, true);
+					}
+					Directory.CreateDirectory(Pname);
+
+					return;
+				}
+				catch
+				{
+					Console.Write("~");
+					Thread.Sleep(500);
+				}
 			}
-			Directory.CreateDirectory(Pname);
+			throw new Exception("Could never clear queues");
 		}
 
 		public void Enqueue(IMessage work)
@@ -120,15 +134,9 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public bool BlockUntilReady()
 		{
-			/*for (int i = 0; i < 10; i++)
-			{
-				var pq = _persistentQueue;
-				if (pq == null) return false;
-				if (pq.EstimatedCountOfItemsInQueue > 0) return true;
-				Thread.Sleep(100);
-			}
-			return false;*/
-			return true;
+			var pq = _persistentQueue;
+			if (pq == null) return false;
+			return (pq.EstimatedCountOfItemsInQueue > 0);
 		}
 
 		public void Dispose()
@@ -141,17 +149,31 @@ namespace SevenDigital.Messaging.MessageSending
 
 	class SingleAvailable
 	{
-		object _available;
+		bool _available;
+		readonly object _lock;
+
+		public SingleAvailable()
+		{
+			_lock = new object();
+		}
 
 		public void MakeAvailable()
 		{
-			Interlocked.Exchange(ref _available, new object());
+			lock(_lock)
+			{
+				_available = true;
+			}
 		}
 
 		public T IfAvailable<T>(Func<T> doThis, T _else)
 		{
-			var marker = Interlocked.Exchange(ref _available, null);
-			return marker != null ? doThis() : _else;
+			bool _if;
+			lock(_lock)
+			{
+				_if = _available;
+				_available = false;
+			}
+			return _if ? doThis() : _else;
 		}
 
 	}
