@@ -42,22 +42,50 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		[Test]
 		public void dequeing_an_item_reads_and_closes_session_without_flushing ()
 		{
+			_subject.Enqueue(_a_message);
+			_session.ClearReceivedCalls();
+
+			_subject.TryDequeue();
+
+			_session.Received().Dequeue();
+			_session.Received().Dispose();
+
+			_session.DidNotReceive().Flush();
 		}
 		[Test]
 		public void dequeueing_a_second_item_before_the_first_is_ended_doesnt_use_the_session ()
 		{
+			_subject.Enqueue(_a_message);
+			_subject.Enqueue(_b_message);
+			_subject.TryDequeue();
+			_session.ClearReceivedCalls();
+			_queue.ClearReceivedCalls();
+
+			_subject.TryDequeue();
+
+			_queue.DidNotReceive().OpenSession();
 		}
 		[Test]
 		public void dequeueing_a_second_item_before_the_first_is_ended_returns_empty ()
 		{
+			_subject.Enqueue(_a_message);
+			_subject.Enqueue(_b_message);
+			_session.ClearReceivedCalls();
+
+			_subject.TryDequeue();
+			var result = _subject.TryDequeue();
+
+			Assert.That(result.HasItem, Is.False);
 		}
 		[Test]
 		public void ending_an_item_by_finishing_allows_the_next_item_to_be_dequeued ()
 		{
+			Assert.Inconclusive();
 		}
 		[Test]
 		public void ending_an_item_by_cancelling_means_the_cancelled_item_will_be_the_next_to_dequeue ()
 		{
+			Assert.Inconclusive();
 		}
 
 
@@ -65,17 +93,19 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 
 	public class PersistentQueueTests
 	{
-		IMessageSerialiser _serialiser;
+		protected IMessageSerialiser _serialiser;
 		protected PersistentWorkQueue _subject;
 		protected IPersistentQueue _queue;
 		protected IPersistentQueueSession _session;
-		IPersistentQueueFactory _queueFactory;
+		protected IPersistentQueueFactory _queueFactory;
 		protected IMessage _a_message;
+		protected IMessage _b_message;
 
 		[SetUp]
 		public void setup()
 		{
 			_a_message = Substitute.For<IMessage>();
+			_b_message = Substitute.For<IMessage>();
 			_serialiser = Substitute.For<IMessageSerialiser>();
 
 			_session = Substitute.For<IPersistentQueueSession>();

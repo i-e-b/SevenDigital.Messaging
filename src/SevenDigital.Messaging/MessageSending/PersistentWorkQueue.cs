@@ -22,6 +22,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 			if (!Directory.Exists(Pname)) Directory.CreateDirectory(Pname);
 			_persistentQueue = queueFac.PrepareQueue(Pname);
+			MakeAvailable();
 		}
 
 		public static void DeletePendingMessages()
@@ -42,7 +43,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void Enqueue(IMessage work)
 		{
-			byte[] raw = Encoding.UTF8.GetBytes(_serialiser.Serialise(work));
+			var raw = Encoding.UTF8.GetBytes(_serialiser.Serialise(work));
 			lock (_lockObject)
 			{
 				using (var session = _persistentQueue.OpenSession())
@@ -55,27 +56,69 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public IWorkQueueItem<IMessage> TryDequeue()
 		{
-			lock(_lockObject)
+			return 
+				IfAvailable(
+					DequeueItem,
+				_else: 
+					new WorkQueueItem<IMessage>());
+		}
+
+		WorkQueueItem<IMessage> DequeueItem()
+		{
+			byte[] bytes;
+			lock (_lockObject)
 			{
-				byte[] bytes;
 				using (var session = _persistentQueue.OpenSession())
 				{
 					bytes = session.Dequeue();
-					// this means we can lose a message!
+				}
+			}
+			if (bytes == null) return new WorkQueueItem<IMessage>();
+
+			var msg = (IMessage)_serialiser.DeserialiseByStack(Encoding.UTF8.GetString(bytes));
+			return new WorkQueueItem<IMessage>(
+				msg, Finish, Cancel
+				);
+		}
+
+		void Cancel(IMessage obj)
+		{
+			MakeAvailable();
+		}
+
+		void Finish(IMessage obj)
+		{
+			PopQueue();
+			MakeAvailable();
+		}
+
+		void PopQueue()
+		{
+			lock (_lockObject)
+			{
+				using (var session = _persistentQueue.OpenSession())
+				{
+					session.Dequeue();
 					session.Flush();
 				}
-
-				if (bytes == null) return new WorkQueueItem<IMessage>();
-
-
-				var str = Encoding.UTF8.GetString(bytes);
-				return new WorkQueueItem<IMessage>(
-						(IMessage)_serialiser.DeserialiseByStack(str),
-						m => { },
-						m => { }
-					);
 			}
 		}
+
+		#region Available junk
+		object available;
+		void MakeAvailable()
+		{
+			Interlocked.Exchange(ref available, new object());
+		}
+
+		T IfAvailable<T>(Func<T> doThis, T _else)
+		{
+			var marker = Interlocked.Exchange(ref available, null);
+			if (marker == null) return _else;
+
+			return doThis();
+		}
+		#endregion
 
 		public int Length()
 		{
