@@ -1,4 +1,5 @@
-﻿using DiskQueue;
+﻿using System;
+using DiskQueue;
 using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base.Serialisation;
@@ -77,18 +78,35 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 
 			Assert.That(result.HasItem, Is.False);
 		}
+		/*
+		THESE NEED TO GO TO INTEGRATION TESTS
 		[Test]
 		public void ending_an_item_by_finishing_allows_the_next_item_to_be_dequeued ()
 		{
-			Assert.Inconclusive();
+			_subject.Enqueue(_a_message);
+			_subject.Enqueue(_b_message);
+
+			var expected_A = _subject.TryDequeue();
+			expected_A.Finish();
+			var expected_B = _subject.TryDequeue();
+			
+			Assert.That(expected_A.HasItem, Is.True);
+			Assert.That(expected_B.HasItem, Is.True);
 		}
 		[Test]
 		public void ending_an_item_by_cancelling_means_the_cancelled_item_will_be_the_next_to_dequeue ()
 		{
-			Assert.Inconclusive();
+			_subject.Enqueue(_a_message);
+			_subject.Enqueue(_b_message);
+
+			var expected_A = _subject.TryDequeue();
+			expected_A.Cancel();
+			var expected_B = _subject.TryDequeue();
+			
+			Assert.That(expected_A.HasItem, Is.True);
+			Assert.That(expected_B.HasItem, Is.True);
 		}
-
-
+		*/
 	}
 
 	public class PersistentQueueTests
@@ -104,8 +122,8 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		[SetUp]
 		public void setup()
 		{
-			_a_message = Substitute.For<IMessage>();
-			_b_message = Substitute.For<IMessage>();
+			_a_message = new MessageWithUniqueId();
+			_b_message = new MessageWithUniqueId();
 			_serialiser = Substitute.For<IMessageSerialiser>();
 
 			_session = Substitute.For<IPersistentQueueSession>();
@@ -120,4 +138,12 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		}
 	}
 
+	public class MessageWithUniqueId : IMessage
+	{
+		public MessageWithUniqueId()
+		{
+			CorrelationId = Guid.NewGuid();
+		}
+		public Guid CorrelationId { get; set; }
+	}
 }
