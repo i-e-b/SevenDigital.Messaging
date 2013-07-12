@@ -12,9 +12,10 @@ namespace SevenDigital.Messaging.MessageSending
 	public class PersistentWorkQueue : IWorkQueue<IMessage>, IDisposable
 	{
 		readonly IMessageSerialiser _serialiser;
-		readonly IPersistentQueue _persistentQueue;
+		IPersistentQueue _persistentQueue;
 		static readonly object _lockObject = new object();
 		const string Pname = "./QUEUE";
+		readonly SingleAvailable single;
 
 		public PersistentWorkQueue(IMessageSerialiser serialiser, IPersistentQueueFactory queueFac)
 		{
@@ -22,7 +23,8 @@ namespace SevenDigital.Messaging.MessageSending
 
 			if (!Directory.Exists(Pname)) Directory.CreateDirectory(Pname);
 			_persistentQueue = queueFac.PrepareQueue(Pname);
-			MakeAvailable();
+			single = new SingleAvailable();
+			single.MakeAvailable();
 		}
 
 		public static void DeletePendingMessages()
@@ -46,6 +48,7 @@ namespace SevenDigital.Messaging.MessageSending
 			var raw = Encoding.UTF8.GetBytes(_serialiser.Serialise(work));
 			lock (_lockObject)
 			{
+				if (_persistentQueue == null) return;
 				using (var session = _persistentQueue.OpenSession())
 				{
 					session.Enqueue(raw);
@@ -57,7 +60,7 @@ namespace SevenDigital.Messaging.MessageSending
 		public IWorkQueueItem<IMessage> TryDequeue()
 		{
 			return 
-				IfAvailable(
+				single.IfAvailable(
 					DequeueItem,
 				_else: 
 					new WorkQueueItem<IMessage>());
@@ -65,15 +68,20 @@ namespace SevenDigital.Messaging.MessageSending
 
 		WorkQueueItem<IMessage> DequeueItem()
 		{
-			byte[] bytes;
+			byte[] bytes = null;
 			lock (_lockObject)
 			{
-				using (var session = _persistentQueue.OpenSession())
-				{
-					bytes = session.Dequeue();
-				}
+				if (_persistentQueue != null)
+					using (var session = _persistentQueue.OpenSession())
+					{
+						bytes = session.Dequeue();
+					}
 			}
-			if (bytes == null) return new WorkQueueItem<IMessage>();
+			if (bytes == null)
+			{
+				single.MakeAvailable();
+				return new WorkQueueItem<IMessage>();
+			}
 
 			var msg = (IMessage)_serialiser.DeserialiseByStack(Encoding.UTF8.GetString(bytes));
 			return new WorkQueueItem<IMessage>(
@@ -83,13 +91,13 @@ namespace SevenDigital.Messaging.MessageSending
 
 		void Cancel(IMessage obj)
 		{
-			MakeAvailable();
+			single.MakeAvailable();
 		}
 
 		void Finish(IMessage obj)
 		{
 			PopQueue();
-			MakeAvailable();
+			single.MakeAvailable();
 		}
 
 		void PopQueue()
@@ -104,40 +112,47 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 		}
 
-		#region Available junk
-		object available;
-		void MakeAvailable()
-		{
-			Interlocked.Exchange(ref available, new object());
-		}
-
-		T IfAvailable<T>(Func<T> doThis, T _else)
-		{
-			var marker = Interlocked.Exchange(ref available, null);
-			if (marker == null) return _else;
-
-			return doThis();
-		}
-		#endregion
-
 		public int Length()
 		{
-			return _persistentQueue.EstimatedCountOfItemsInQueue;
+			var pq = _persistentQueue;
+			return pq == null ? 0 : pq.EstimatedCountOfItemsInQueue;
 		}
 
 		public bool BlockUntilReady()
 		{
-			for (int i = 0; i < 10; i++)
+			/*for (int i = 0; i < 10; i++)
 			{
-				if (_persistentQueue.EstimatedCountOfItemsInQueue > 0) return true;
+				var pq = _persistentQueue;
+				if (pq == null) return false;
+				if (pq.EstimatedCountOfItemsInQueue > 0) return true;
 				Thread.Sleep(100);
 			}
-			return false;
+			return false;*/
+			return true;
 		}
 
 		public void Dispose()
 		{
+			if (_persistentQueue == null) return;
 			_persistentQueue.Dispose();
+			_persistentQueue = null;
 		}
+	}
+
+	class SingleAvailable
+	{
+		object _available;
+
+		public void MakeAvailable()
+		{
+			Interlocked.Exchange(ref _available, new object());
+		}
+
+		public T IfAvailable<T>(Func<T> doThis, T _else)
+		{
+			var marker = Interlocked.Exchange(ref _available, null);
+			return marker != null ? doThis() : _else;
+		}
+
 	}
 }

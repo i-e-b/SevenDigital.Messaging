@@ -14,20 +14,15 @@ namespace SevenDigital.Messaging.Integration.Tests
 	{
 		IReceiver node_factory;
 		
-		protected TimeSpan LongInterval { get { return TimeSpan.FromMinutes(2); } }
+		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(15); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
 		IEventHook mock_event_hook;
-		
-		[TestFixtureSetUp]
-		public void StartMessaging()
-		{
-			Helper.SetupTestMessaging();
-		}
 
 		[SetUp]
 		public void SetUp()
 		{
+			Helper.SetupTestMessaging();
 			mock_event_hook = Substitute.For<IEventHook>();
 
 			ObjectFactory.Configure(map=> map.For<IEventHook>().Use(mock_event_hook));
@@ -35,6 +30,9 @@ namespace SevenDigital.Messaging.Integration.Tests
 			node_factory = ObjectFactory.GetInstance<IReceiver>();
 		}
 		
+		[TearDown]
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
+
 		[Test]
 		public void Should_trigger_failure_hook_when_handler_throws_exception ()
 		{
@@ -61,8 +59,6 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 		}
 		
-		[TestFixtureTearDown]
-		public void Stop() { MessagingSystem.Control.Shutdown(); }
 
 		GreenMessage TriggerFailingHandler(IReceiverNode receiverNode)
 		{

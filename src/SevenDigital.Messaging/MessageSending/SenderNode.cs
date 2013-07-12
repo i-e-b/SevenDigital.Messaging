@@ -21,6 +21,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessagingBase _messagingBase;
 		readonly ISleepWrapper _sleeper;
 		readonly IDispatch<IMessage> _sendingDispatcher;
+		readonly PersistentWorkQueue _persistentQueue;
 
 		/// <summary>
 		/// Create a new message sending node. You do not need to create this yourself. Use `Messaging.Sender()`
@@ -34,8 +35,9 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			_messagingBase = messagingBase;
 			_sleeper = sleeper;
+			_persistentQueue = new PersistentWorkQueue(serialiser, new PersistentQueueFactory());
 			_sendingDispatcher = dispatchFactory.Create( 
-				new PersistentWorkQueue(serialiser, new PersistentQueueFactory()),
+				_persistentQueue,
 				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
 			);
 
@@ -110,6 +112,7 @@ namespace SevenDigital.Messaging.MessageSending
 		public void Dispose()
 		{
 			_sendingDispatcher.WaitForEmptyQueueAndStop(MessagingSystem.ShutdownTimeout);
+			_persistentQueue.Dispose();
 		}
 	}
 }
