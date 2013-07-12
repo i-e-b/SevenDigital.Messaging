@@ -16,6 +16,14 @@ namespace SevenDigital.Messaging.MessageSending
 		static readonly object _lockObject = new object();
 		const string Pname = "./QUEUE";
 
+		public PersistentWorkQueue(IMessageSerialiser serialiser, IPersistentQueueFactory queueFac)
+		{
+			_serialiser = serialiser;
+
+			if (!Directory.Exists(Pname)) Directory.CreateDirectory(Pname);
+			_persistentQueue = queueFac.PrepareQueue(Pname);
+		}
+
 		public static void DeletePendingMessages()
 		{
 			if (Directory.Exists(Pname))
@@ -30,14 +38,6 @@ namespace SevenDigital.Messaging.MessageSending
 				Directory.Delete(Pname, true);
 			}
 			Directory.CreateDirectory(Pname);
-		}
-
-		public PersistentWorkQueue(IMessageSerialiser serialiser)
-		{
-			_serialiser = serialiser;
-
-			if (!Directory.Exists(Pname)) Directory.CreateDirectory(Pname);
-			_persistentQueue = new PersistentQueue(Pname);
 		}
 
 		public void Enqueue(IMessage work)

@@ -35,7 +35,7 @@ namespace SevenDigital.Messaging.MessageSending
 			_messagingBase = messagingBase;
 			_sleeper = sleeper;
 			_sendingDispatcher = dispatchFactory.Create( 
-				new PersistentWorkQueue(serialiser),
+				new PersistentWorkQueue(serialiser, new PersistentQueueFactory()),
 				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
 			);
 
