@@ -55,14 +55,17 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void Register(IBinding bindings)
 		{
+			bool shouldStart = false;
 			foreach (var binding in bindings.AllBindings())
 			{	
+				shouldStart = true;
 				Type messageType = binding.Item1, handlerType = binding.Item2;
 
 				_pollingNode.AddMessageType(messageType);
 				_handler.AddHandler(messageType, handlerType);
 			}
-			_receivingDispatcher.Start();
+			if (shouldStart)
+				_receivingDispatcher.Start();
 		}
 
 		/// <summary>

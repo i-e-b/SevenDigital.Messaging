@@ -51,7 +51,7 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 			catch
 			{
-				Console.Write("Deleting queues failed");
+				Console.WriteLine("Deleting queues failed");
 			}
 		}
 	}

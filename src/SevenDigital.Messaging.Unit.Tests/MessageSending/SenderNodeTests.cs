@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 using DispatchSharp;
 using DispatchSharp.QueueTypes;
 using DispatchSharp.WorkerPools;
@@ -20,9 +22,8 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		IMessagingBase _messagingBase;
 		IDispatcherFactory _dispatcherFactory;
 		ISleepWrapper _sleeper;
-		IDispatch<IMessage> _dispatcher;
+		IDispatch<byte[]> _dispatcher;
 		IEventHook _eventHook1, _eventHook2;
-		IMessageSerialiser _serialiser;
 		IPersistentQueueFactory _queueFactory;
 
 		[SetUp]
@@ -30,10 +31,9 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		{
 			_messagingBase = Substitute.For<IMessagingBase>();
 			_sleeper = Substitute.For<ISleepWrapper>();
-			_serialiser = Substitute.For<IMessageSerialiser>();
-			_dispatcher = Substitute.For<IDispatch<IMessage>>();
+			_dispatcher = Substitute.For<IDispatch<byte[]>>();
 			_dispatcherFactory = Substitute.For<IDispatcherFactory>();
-			_dispatcherFactory.Create(Arg.Any<IWorkQueue<IMessage>>(), Arg.Any<IWorkerPool<IMessage>>()).Returns(_dispatcher);
+			_dispatcherFactory.Create(Arg.Any<IWorkQueue<byte[]>>(), Arg.Any<IWorkerPool<byte[]>>()).Returns(_dispatcher);
 
 			_queueFactory = Substitute.For<IPersistentQueueFactory>();
 
@@ -44,7 +44,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 				map.For<IEventHook>().Use(_eventHook2);
 			});
 
-			_subject = new SenderNode(_messagingBase, _dispatcherFactory, _sleeper, _serialiser, _queueFactory);
+			_subject = new SenderNode(_messagingBase, _dispatcherFactory, _sleeper,_queueFactory);
 		}
 
 		[TearDown]
@@ -57,8 +57,8 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		public void creating_a_sender_node_should_create_a_single_threaded_dispatcher ()
 		{
 			_dispatcherFactory.Received().Create(
-				Arg.Any<IWorkQueue<IMessage>>(),
-				Arg.Is<ThreadedWorkerPool<IMessage>>(m=>m.PoolSize() == 1) // <-- testing this one
+				Arg.Any<IWorkQueue<byte[]>>(),
+				Arg.Is<ThreadedWorkerPool<byte[]>>(m=>m.PoolSize() == 1) // <-- testing this one
 				);
 		}
 
@@ -67,17 +67,8 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		{
 			_dispatcherFactory.Received().Create(
 				Arg.Any<PersistentWorkQueue>(), // <-- testing this one
-				Arg.Any<IWorkerPool<IMessage>>()
+				Arg.Any<IWorkerPool<byte[]>>()
 				);
-		}
-
-		[Test]
-		public void sending_a_message_adds_work_to_the_dispatcher ()
-		{
-			var msg = new TestMessage();
-			_subject.SendMessage(msg);
-
-			_dispatcher.Received().AddWork(msg);
 		}
 
 		[Test]
@@ -90,7 +81,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		public void send_waiting_message_fires_event_hooks ()
 		{
 			var msg = new TestMessage();
-			((SenderNode)_subject).SendWaitingMessage(msg);
+			((SenderNode)_subject).SendMessage(msg);
 
 			_eventHook1.Received().MessageSent(msg);
 			_eventHook2.Received().MessageSent(msg);
@@ -102,7 +93,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			var msg = new TestMessage();
 			_eventHook1.When(m=>m.MessageSent(Arg.Any<IMessage>())).Do(c => { throw new Exception("test exception"); });
 
-			((SenderNode)_subject).SendWaitingMessage(msg);
+			((SenderNode)_subject).SendMessage(msg);
 
 			_eventHook1.Received().MessageSent(msg);
 			_eventHook2.Received().MessageSent(msg);
@@ -111,12 +102,13 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		[Test]
 		public void a_failing_event_hook_does_not_prevent_a_message_being_sent ()
 		{
-			var msg = new TestMessage();
 			_eventHook1.When(m=>m.MessageSent(Arg.Any<IMessage>())).Do(c => { throw new Exception("test exception"); });
+			
+			var msg = Encoding.UTF8.GetBytes("SevenDigital.Messaging.IMessage|{}");
 
 			((SenderNode)_subject).SendWaitingMessage(msg);
-
-			_messagingBase.Received().SendMessage(msg);
+			
+			_messagingBase.Received().SendPrepared(Arg.Is<IPreparedMessage>(m=>m.ToBytes().SequenceEqual(msg)));
 		}
 
 		[Test]
@@ -125,10 +117,10 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			bool finished = false, cancelled = false;
 
 			((SenderNode)_subject).SendingExceptions(this,
-				new ExceptionEventArgs<IMessage>
+				new ExceptionEventArgs<byte[]>
 				{
 					SourceException = new Exception("test exception"),
-					WorkItem = new WorkQueueItem<IMessage>(null, o => { finished = true; }, o => { cancelled = true; })
+					WorkItem = new WorkQueueItem<byte[]>(null, o => { finished = true; }, o => { cancelled = true; })
 				});
 
 			_sleeper.Received().SleepMore();
@@ -139,7 +131,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		[Test]
 		public void sleeper_is_reset_after_successful_message_sending ()
 		{
-			var msg = new TestMessage();
+			var msg = Encoding.UTF8.GetBytes("SevenDigital.Messaging.IMessage|{}");
 			((SenderNode)_subject).SendWaitingMessage(msg);
 
 			_sleeper.Received().Reset();
@@ -150,10 +142,10 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		[Test]
 		public void send_waiting_message_sends_message_object_through_messaging_base ()
 		{
-			var msg = new TestMessage();
+			var msg = Encoding.UTF8.GetBytes("SevenDigital.Messaging.IMessage|{}");
 			((SenderNode)_subject).SendWaitingMessage(msg);
 
-			_messagingBase.Received().SendMessage(msg);
+			_messagingBase.Received().SendPrepared(Arg.Is<IPreparedMessage>(m=>m.ToBytes().SequenceEqual(msg)));
 		}
 
 		[Test]
@@ -165,4 +157,5 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		
 		public class TestMessage : IMessage { public Guid CorrelationId { get; set; } }
 	}
+
 }

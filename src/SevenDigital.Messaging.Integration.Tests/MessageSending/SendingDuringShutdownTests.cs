@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
@@ -43,10 +44,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		[Test]
 		public void shutdown_timeout_is_respected()
 		{
-			MessagingSystem.Configure.WithDefaults();
-			ObjectFactory.Configure(map => map.For<ITestEvents>().Singleton().Use<TestEvents>());
-			MessagingSystem.Events.AddEventHook<TestEventHook>();
-
+			MessagingSystem.Configure.WithDefaults().SetIntegrationTestMode();
 			MessagingSystem.Control.SetShutdownTimeout(TimeSpan.Zero);
 
 			var sender = MessagingSystem.Sender();
@@ -55,12 +53,13 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			{
 				sender.SendMessage(new GreenMessage());
 			}
+	
+			var sw = new Stopwatch();
+			sw.Start();
 			MessagingSystem.Control.Shutdown();
+			sw.Stop();
 
-			var sent = MessagingSystem.Testing.LoopbackEvents().SentMessages.Count();
-			Console.WriteLine(sent);
-
-			Assert.That(sent, Is.LessThan(1000));
+			Assert.That(sw.ElapsedMilliseconds, Is.LessThan(500));
 		}
 
 

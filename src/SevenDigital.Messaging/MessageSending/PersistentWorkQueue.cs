@@ -1,52 +1,46 @@
 using System;
-using System.Text;
 using DiskQueue;
 using DispatchSharp;
 using DispatchSharp.QueueTypes;
-using SevenDigital.Messaging.Base.Serialisation;
 
 namespace SevenDigital.Messaging.MessageSending
 {
-	public class PersistentWorkQueue : IWorkQueue<IMessage>, IDisposable
+	public class PersistentWorkQueue : IWorkQueue<byte[]>, IDisposable
 	{
-		readonly IMessageSerialiser _serialiser;
 		IPersistentQueue _persistentQueue;
 		static readonly object _lockObject = new object();
 		readonly SingleAvailable single;
 
-		public PersistentWorkQueue(IMessageSerialiser serialiser, IPersistentQueueFactory queueFac)
+		public PersistentWorkQueue(IPersistentQueueFactory queueFac)
 		{
-			_serialiser = serialiser;
-
 			_persistentQueue = queueFac.PrepareQueue();
 			single = new SingleAvailable();
 			single.MakeAvailable();
 		}
 
-		public void Enqueue(IMessage work)
+		public void Enqueue(byte[] work)
 		{
-			var raw = Encoding.UTF8.GetBytes(_serialiser.Serialise(work));
 			lock (_lockObject)
 			{
 				if (_persistentQueue == null) return;
 				using (var session = _persistentQueue.OpenSession())
 				{
-					session.Enqueue(raw);
+					session.Enqueue(work);
 					session.Flush();
 				}
 			}
 		}
 
-		public IWorkQueueItem<IMessage> TryDequeue()
+		public IWorkQueueItem<byte[]> TryDequeue()
 		{
 			return 
 				single.IfAvailable(
 					DequeueItem,
 				_else: 
-					new WorkQueueItem<IMessage>());
+					new WorkQueueItem<byte[]>());
 		}
 
-		WorkQueueItem<IMessage> DequeueItem()
+		WorkQueueItem<byte[]> DequeueItem()
 		{
 			byte[] bytes = null;
 			lock (_lockObject)
@@ -60,21 +54,20 @@ namespace SevenDigital.Messaging.MessageSending
 			if (bytes == null)
 			{
 				single.MakeAvailable();
-				return new WorkQueueItem<IMessage>();
+				return new WorkQueueItem<byte[]>();
 			}
 
-			var msg = (IMessage)_serialiser.DeserialiseByStack(Encoding.UTF8.GetString(bytes));
-			return new WorkQueueItem<IMessage>(
-				msg, Finish, Cancel
+			return new WorkQueueItem<byte[]>(
+				bytes, Finish, Cancel
 				);
 		}
 
-		void Cancel(IMessage obj)
+		void Cancel(byte[] obj)
 		{
 			single.MakeAvailable();
 		}
 
-		void Finish(IMessage obj)
+		void Finish(byte[] obj)
 		{
 			PopQueue();
 			single.MakeAvailable();
