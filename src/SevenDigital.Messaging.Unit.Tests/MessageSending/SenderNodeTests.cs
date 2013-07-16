@@ -60,10 +60,10 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		}
 
 		[Test]
-		public void sender_uses_an_InMemory_queue ()
+		public void sender_uses_a_persistent_queue ()
 		{
 			_dispatcherFactory.Received().Create(
-				Arg.Any<InMemoryWorkQueue<IMessage>>(), // <-- testing this one
+				Arg.Any<PersistentWorkQueue>(), // <-- testing this one
 				Arg.Any<IWorkerPool<IMessage>>()
 				);
 		}
