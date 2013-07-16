@@ -94,7 +94,9 @@ namespace SevenDigital.Messaging.Unit.Tests.Shutdown
 		public void teardown()
 		{
 			_running = false;
+			_actionCalled = false;
 			_runningThread.Join();
+			Thread.Sleep(250);
 		}
 
 		[Test] [Repeat(10)]

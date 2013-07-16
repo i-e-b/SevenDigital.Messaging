@@ -87,6 +87,15 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		}
 
 		[Test]
+		public void should_use_PersistentQueueFactory  ()
+		{
+			var fac = ObjectFactory.GetInstance<IPersistentQueueFactory>();
+			Assert.That(
+				fac,
+				Is.InstanceOf<PersistentQueueFactory>());
+		}
+
+		[Test]
 		public void Should_get_node_factory_implementation()
 		{
 			var factory = MessagingSystem.Receiver();

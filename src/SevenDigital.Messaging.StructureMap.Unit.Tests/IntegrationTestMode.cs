@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
@@ -21,6 +22,15 @@ namespace SevenDigital.Messaging.Unit.Tests.Configuration
 				gen.UseIntegrationTestName,
 				Is.True
 				);
+		}
+
+		[Test]
+		public void should_use_integration_test_queue_factory ()
+		{
+			var fac = ObjectFactory.GetInstance<IPersistentQueueFactory>();
+			Assert.That(
+				fac,
+				Is.InstanceOf<IntegrationTestQueueFactory>());
 		}
 
 		[TearDown]

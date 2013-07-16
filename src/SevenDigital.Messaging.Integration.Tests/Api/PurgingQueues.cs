@@ -14,20 +14,20 @@ namespace SevenDigital.Messaging.Integration.Tests
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
 
-		[TestFixtureSetUp]
-		public void StartMessaging()
-		{
-			Helper.SetupTestMessaging();
-		}
-
 		[SetUp]
 		public void SetUp()
 		{
+			// Start messaging, put everything in place
+			Helper.SetupTestMessaging();
 			_receiver = MessagingSystem.Receiver();
 			_senderNode = MessagingSystem.Sender();
 
 			using (_receiver.Listen(_=>_.Handle<IColourMessage>().With<ColourMessageHandler>())) { }
 			_senderNode.SendMessage(new GreenMessage());
+			MessagingSystem.Control.Shutdown(); // should cause message to flush
+
+			// Start messaging again with purging:
+			Helper.SetupTestMessaging();
 		}
 
 		[Test]

@@ -132,7 +132,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			_queue.OpenSession().Returns(_session);
 
 			_queueFactory = Substitute.For<IPersistentQueueFactory>();
-			_queueFactory.PrepareQueue(Arg.Any<string>()).Returns(_queue);
+			_queueFactory.PrepareQueue().Returns(_queue);
 
 			_subject = new PersistentWorkQueue(_serialiser, _queueFactory);
 		}

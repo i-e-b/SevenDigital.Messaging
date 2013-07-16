@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using DispatchSharp;
-using DispatchSharp.QueueTypes;
 using DispatchSharp.WorkerPools;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Serialisation;
@@ -21,8 +21,9 @@ namespace SevenDigital.Messaging.MessageSending
 		const int SingleThreaded = 1;
 		readonly IMessagingBase _messagingBase;
 		readonly ISleepWrapper _sleeper;
-		readonly IDispatch<IMessage> _sendingDispatcher;
-		readonly PersistentWorkQueue _persistentQueue;
+		readonly IPersistentQueueFactory _queueFactory;
+		IDispatch<IMessage> _sendingDispatcher;
+		PersistentWorkQueue _persistentQueue;
 
 		/// <summary>
 		/// Create a new message sending node. You do not need to create this yourself. Use `Messaging.Sender()`
@@ -31,20 +32,21 @@ namespace SevenDigital.Messaging.MessageSending
 			IMessagingBase messagingBase,
 			IDispatcherFactory dispatchFactory,
 			ISleepWrapper sleeper,
-			IMessageSerialiser serialiser
+			IMessageSerialiser serialiser,
+			IPersistentQueueFactory queueFactory
 			)
 		{
 			_messagingBase = messagingBase;
 			_sleeper = sleeper;
+			_queueFactory = queueFactory;
 
-			
-			Console.WriteLine("Trying to acquire queue");
-			_persistentQueue = new PersistentWorkQueue(serialiser, new PersistentQueueFactory());
-			Console.WriteLine("Persistent queue is OK");
+
+			Console.WriteLine(DateTime.Now + " Trying to acquire queue");
+			_persistentQueue = new PersistentWorkQueue(serialiser, _queueFactory);
+			Console.WriteLine(DateTime.Now + " Persistent queue is OK");
 
 			_sendingDispatcher = dispatchFactory.Create( 
 				_persistentQueue,
-				//new InMemoryWorkQueue<IMessage>(),
 				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
 			);
 
@@ -118,15 +120,23 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void Dispose()
 		{
-			Console.WriteLine(DateTime.Now + " Trying to end");
-			_sendingDispatcher.WaitForEmptyQueueAndStop(MessagingSystem.ShutdownTimeout);
-			Console.WriteLine(DateTime.Now + " closing queue");
-			_persistentQueue.Dispose();
+			var lDispatcher = Interlocked.Exchange(ref _sendingDispatcher, null);
+			if (lDispatcher != null)
+			{
+				Console.WriteLine(DateTime.Now + " Trying to end");
+				lDispatcher.WaitForEmptyQueueAndStop(MessagingSystem.ShutdownTimeout);
+				Console.WriteLine(DateTime.Now + " closing queue");
+			}
+
+			var lQueue = Interlocked.Exchange(ref _persistentQueue, null);
+			if (lQueue != null)
+			{
+				lQueue.Dispose();
+			}
+
 			Console.WriteLine(DateTime.Now + " ended");
 			
-			Console.WriteLine("Clearing pending messages (for development!)");
-			// remove all messages (during development of persistent queues). Delete later.
-			_persistentQueue.DeletePendingMessages();
+			_queueFactory.Cleanup();
 		}
 	}
 }
