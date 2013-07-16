@@ -1,3 +1,4 @@
+using System;
 using DiskQueue;
 
 namespace SevenDigital.Messaging.MessageSending
@@ -11,7 +12,7 @@ namespace SevenDigital.Messaging.MessageSending
 	{
 		public IPersistentQueue PrepareQueue(string storagePath)
 		{
-			return new PersistentQueue(storagePath);
+			return PersistentQueue.WaitFor(storagePath, TimeSpan.FromSeconds(30));
 		}
 	}
 }

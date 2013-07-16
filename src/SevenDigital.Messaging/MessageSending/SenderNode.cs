@@ -37,8 +37,8 @@ namespace SevenDigital.Messaging.MessageSending
 			_messagingBase = messagingBase;
 			_sleeper = sleeper;
 
-			Console.WriteLine("Clearing pending messages (for development!)");
-			PersistentWorkQueue.DeletePendingMessages();
+			
+			Console.WriteLine("Trying to acquire queue");
 			_persistentQueue = new PersistentWorkQueue(serialiser, new PersistentQueueFactory());
 			Console.WriteLine("Persistent queue is OK");
 
@@ -123,6 +123,10 @@ namespace SevenDigital.Messaging.MessageSending
 			Console.WriteLine(DateTime.Now + " closing queue");
 			_persistentQueue.Dispose();
 			Console.WriteLine(DateTime.Now + " ended");
+			
+			Console.WriteLine("Clearing pending messages (for development!)");
+			// remove all messages (during development of persistent queues). Delete later.
+			PersistentWorkQueue.DeletePendingMessages();
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			_sender = MessagingSystem.Sender();
 		}
 
-		[Test]
+		[Test, Explicit("Slow test")]
 		public void should_be_able_to_send_and_receive_1000_messages_per_minute()
 		{
 			using (_receiver.TakeFrom("test_listener_ping-pong-endpoint", _ => _
