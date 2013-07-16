@@ -23,6 +23,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		IDispatch<IMessage> _dispatcher;
 		IEventHook _eventHook1, _eventHook2;
 		IMessageSerialiser _serialiser;
+		IPersistentQueueFactory _queueFactory;
 
 		[SetUp]
 		public void setup()
@@ -34,6 +35,8 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			_dispatcherFactory = Substitute.For<IDispatcherFactory>();
 			_dispatcherFactory.Create(Arg.Any<IWorkQueue<IMessage>>(), Arg.Any<IWorkerPool<IMessage>>()).Returns(_dispatcher);
 
+			_queueFactory = Substitute.For<IPersistentQueueFactory>();
+
 			_eventHook1 = Substitute.For<IEventHook>();
 			_eventHook2 = Substitute.For<IEventHook>();
 			ObjectFactory.Configure(map => {
@@ -41,7 +44,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 				map.For<IEventHook>().Use(_eventHook2);
 			});
 
-			_subject = new SenderNode(_messagingBase, _dispatcherFactory, _sleeper, _serialiser);
+			_subject = new SenderNode(_messagingBase, _dispatcherFactory, _sleeper, _serialiser, _queueFactory);
 		}
 
 		[TearDown]

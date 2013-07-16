@@ -40,10 +40,11 @@ namespace SevenDigital.Messaging.ConfigurationActions
 				if (controller == null)
 					throw new Exception("Messaging is not configured");
 
-				//PersistentWorkQueue.DeletePendingMessages();
-
 				var namer = ObjectFactory.TryGetInstance<IUniqueEndpointGenerator>();
 				if (namer == null) throw new Exception("Unique endpoint generator was not properly configured.");
+
+				ObjectFactory.Configure(map =>
+					map.For<IPersistentQueueFactory>().Singleton().Use<IntegrationTestQueueFactory>());
 
 				namer.UseIntegrationTestName = true;
 				controller.PurgeOnConnect = true;

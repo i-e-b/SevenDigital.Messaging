@@ -43,6 +43,7 @@ namespace SevenDigital.Messaging.ConfigurationActions
 					map.For<ISleepWrapper>().Singleton().Use<SleepWrapper>();
 					map.For<IReceiver>().Singleton().Use<Receiver>();
 					map.For<ISenderNode>().Singleton().Use<SenderNode>();
+					map.For<IPersistentQueueFactory>().Singleton().Use<PersistentQueueFactory>();
 
 					// aliases
 					map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);

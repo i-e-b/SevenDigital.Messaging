@@ -20,7 +20,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 		[Test]
 		public void shutdown_waits_for_messages_to_send()
 		{
-			MessagingSystem.Configure.WithDefaults();
+			MessagingSystem.Configure.WithDefaults().SetIntegrationTestMode();
 			ObjectFactory.Configure(map => map.For<ITestEvents>().Singleton().Use<TestEvents>());
 			MessagingSystem.Events.AddEventHook<TestEventHook>();
 

@@ -14,19 +14,19 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessageSerialiser _serialiser;
 		IPersistentQueue _persistentQueue;
 		static readonly object _lockObject = new object();
-		 readonly string Pname = "./QUEUE_"+(Guid.NewGuid().ToString());
+		//readonly string Pname = "./QUEUE_"+(Guid.NewGuid().ToString());
 		readonly SingleAvailable single;
 
 		public PersistentWorkQueue(IMessageSerialiser serialiser, IPersistentQueueFactory queueFac)
 		{
 			_serialiser = serialiser;
 
-			if (!Directory.Exists(Pname)) Directory.CreateDirectory(Pname);
-			_persistentQueue = queueFac.PrepareQueue(Pname);
+			//if (!Directory.Exists(Pname)) Directory.CreateDirectory(Pname);
+			_persistentQueue = queueFac.PrepareQueue(/*Pname*/);
 			single = new SingleAvailable();
 			single.MakeAvailable();
 		}
-
+		/*
 		public void DeletePendingMessages()
 		{
 			for (int i = 0; i < 50; i++)
@@ -56,7 +56,7 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 			throw new Exception("Could never clear queues");
 		}
-
+		*/
 		public void Enqueue(IMessage work)
 		{
 			var raw = Encoding.UTF8.GetBytes(_serialiser.Serialise(work));

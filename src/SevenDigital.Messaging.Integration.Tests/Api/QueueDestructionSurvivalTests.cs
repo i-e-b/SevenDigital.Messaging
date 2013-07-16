@@ -20,7 +20,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[SetUp]
 		public void Setup()
 		{
-			Helper.SetupTestMessaging();
+			Helper.SetupTestMessagingWithoutPurging();
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
 			_receiver = MessagingSystem.Receiver();
 			senderNode = MessagingSystem.Sender();
@@ -43,7 +43,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 		}
 
-		[TestFixtureTearDown]
+		[TearDown]
 		public void Stop() { MessagingSystem.Control.Shutdown(); }
 	}
 }
