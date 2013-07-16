@@ -27,20 +27,27 @@ namespace SevenDigital.Messaging.MessageSending
 
 		public void Cleanup()
 		{
+			foreach (var dir in Directory.GetDirectories(".", "QUEUE_*"))
+			{
+				Console.WriteLine("Deleting " + dir);
+				DeleteQueueFolder(dir);
+			}
+		}
+
+		void DeleteQueueFolder(string path)
+		{
 			try
 			{
-				if (Directory.Exists(_storagePath))
-				{
-					var files = Directory.GetFiles(_storagePath, "*", SearchOption.AllDirectories);
-					Array.Sort(files, (s1, s2) => s2.Length.CompareTo(s1.Length)); // sortby length descending
-					foreach (var file in files)
-					{
-						File.Delete(file);
-					}
+				if (!Directory.Exists(path)) return;
 
-					Directory.Delete(_storagePath, true);
+				var files = Directory.GetFiles(_storagePath, "*", SearchOption.AllDirectories);
+				Array.Sort(files, (s1, s2) => s2.Length.CompareTo(s1.Length)); // sortby length descending
+				foreach (var file in files)
+				{
+					File.Delete(file);
 				}
-				Directory.CreateDirectory(_storagePath);
+
+				Directory.Delete(path, true);
 			}
 			catch
 			{
@@ -51,7 +58,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 	public class PersistentQueueFactory : IPersistentQueueFactory
 	{
-		const string storagePath = "../../QUEUE";
+		const string storagePath = "../../QUEUE"; // hacky, hacky, hacky :-(
 
 		public IPersistentQueue PrepareQueue()
 		{

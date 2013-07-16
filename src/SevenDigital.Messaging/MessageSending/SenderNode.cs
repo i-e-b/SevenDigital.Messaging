@@ -41,9 +41,7 @@ namespace SevenDigital.Messaging.MessageSending
 			_queueFactory = queueFactory;
 
 
-			Console.WriteLine(DateTime.Now + " Trying to acquire queue");
 			_persistentQueue = new PersistentWorkQueue(serialiser, _queueFactory);
-			Console.WriteLine(DateTime.Now + " Persistent queue is OK");
 
 			_sendingDispatcher = dispatchFactory.Create( 
 				_persistentQueue,
@@ -122,20 +120,12 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			var lDispatcher = Interlocked.Exchange(ref _sendingDispatcher, null);
 			if (lDispatcher != null)
-			{
-				Console.WriteLine(DateTime.Now + " Trying to end");
 				lDispatcher.WaitForEmptyQueueAndStop(MessagingSystem.ShutdownTimeout);
-				Console.WriteLine(DateTime.Now + " closing queue");
-			}
 
 			var lQueue = Interlocked.Exchange(ref _persistentQueue, null);
 			if (lQueue != null)
-			{
 				lQueue.Dispose();
-			}
 
-			Console.WriteLine(DateTime.Now + " ended");
-			
 			_queueFactory.Cleanup();
 		}
 	}
