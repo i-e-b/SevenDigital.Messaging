@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>MessagingBase</id>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <title>MessagingBase</title>
     <authors>iainb</authors>
     <owners>iainb</owners>
@@ -10,6 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>BearBones messaging: lower-level framework, part of a contract-interface based distributed event framework for .Net</description>
     <summary>BearBones messaging: lower-level framework, part of a contract-interface based distributed event framework for .Net</summary>
+    <releaseNotes>Adding support for pre-prepared messages.</releaseNotes>
     <dependencies>
       <group targetFramework=".NETFramework4.0">
         <dependency id="structuremap" version="2.6.4.1" />

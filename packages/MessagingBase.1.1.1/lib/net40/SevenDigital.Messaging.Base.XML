@@ -83,6 +83,19 @@
             Ensure that routes and connections are rebuild on next SendMessage or CreateDestination.
             </summary>
         </member>
+        <member name="M:SevenDigital.Messaging.Base.IMessagingBase.PrepareForSend(System.Object)">
+            <summary>
+            Convert a message object to a simplified serialisable format.
+            This is intended for later sending with SendPrepared().
+            If you want to send immediately, use SendMessage();
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.IMessagingBase.SendPrepared(SevenDigital.Messaging.Base.Serialisation.IPreparedMessage)">
+            <summary>
+            Immediately send a prepared message.
+            </summary>
+            <param name="message">A message created by PrepareForSend()</param>
+        </member>
         <member name="T:SevenDigital.Messaging.Base.IPendingMessage`1">
             <summary>
             Represents a message received from RabbitMq.
@@ -97,6 +110,26 @@
         </member>
         <member name="P:SevenDigital.Messaging.Base.IPendingMessage`1.Finish">
             <summary>Action to complete message and remove from queue</summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Serialisation.IPreparedMessage">
+            <summary>
+            Contract for serialised messages
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.IPreparedMessage.ToBytes">
+            <summary>
+            Return a storable list of bytes representing the message
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.IPreparedMessage.TypeName">
+            <summary>
+            Return routable type name
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.IPreparedMessage.SerialisedMessage">
+            <summary>
+            Return serialised message string
+            </summary>
         </member>
         <member name="T:SevenDigital.Messaging.Base.MessagingBase">
             <summary>
@@ -150,6 +183,19 @@
             Ensure that routes and connections are rebuild on next SendMessage or CreateDestination.
             </summary>
         </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.PrepareForSend(System.Object)">
+            <summary>
+            Convert a message object to a simplified serialisable format.
+            This is intended for later sending with SendPrepared().
+            If you want to send immediately, use SendMessage();
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.MessagingBase.SendPrepared(SevenDigital.Messaging.Base.Serialisation.IPreparedMessage)">
+            <summary>
+            Immediately send a prepared message.
+            </summary>
+            <param name="message">A message created by PrepareForSend()</param>
+        </member>
         <member name="T:SevenDigital.Messaging.Base.MessagingBaseConfiguration">
             <summary>
             Configuration options for messaging base
@@ -182,23 +228,53 @@
             Use a specific rabbit management node
             </summary>
         </member>
-        <member name="T:SevenDigital.Messaging.Base.PendingMessage`1">
+        <member name="T:SevenDigital.Messaging.Base.Serialisation.PreparedMessage">
+            <summary>
+            A pre-serialised message
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.PreparedMessage.#ctor(System.String,System.String)">
+            <summary>
+            Create a new prepared message from a type name and message string
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.PreparedMessage.FromBytes(System.Byte[])">
+            <summary>
+            Restore a prepared message from bytes
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.PreparedMessage.ToBytes">
+            <summary>
+            Return a storable list of bytes representing the message
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.PreparedMessage.TypeName">
+            <summary>
+            Return routable type name
+            </summary>
+        </member>
+        <member name="M:SevenDigital.Messaging.Base.Serialisation.PreparedMessage.SerialisedMessage">
+            <summary>
+            Return serialised message string
+            </summary>
+        </member>
+        <member name="T:SevenDigital.Messaging.Base.Routing.PendingMessage`1">
             <summary>
             A received message instance
             </summary>
         </member>
-        <member name="M:SevenDigital.Messaging.Base.PendingMessage`1.#ctor(SevenDigital.Messaging.Base.Routing.IMessageRouter,`0,System.UInt64)">
+        <member name="M:SevenDigital.Messaging.Base.Routing.PendingMessage`1.#ctor(SevenDigital.Messaging.Base.Routing.IMessageRouter,`0,System.UInt64)">
             <summary>
             Wrap a message object and delivery tag as a PendingMessage
             </summary>
         </member>
-        <member name="P:SevenDigital.Messaging.Base.PendingMessage`1.Message">
+        <member name="P:SevenDigital.Messaging.Base.Routing.PendingMessage`1.Message">
             <summary>Message on queue</summary>
         </member>
-        <member name="P:SevenDigital.Messaging.Base.PendingMessage`1.Cancel">
+        <member name="P:SevenDigital.Messaging.Base.Routing.PendingMessage`1.Cancel">
             <summary>Action to cancel and return message to queue</summary>
         </member>
-        <member name="P:SevenDigital.Messaging.Base.PendingMessage`1.Finish">
+        <member name="P:SevenDigital.Messaging.Base.Routing.PendingMessage`1.Finish">
             <summary>Action to complete message and remove from queue</summary>
         </member>
         <member name="T:SevenDigital.Messaging.Base.RabbitMq.IChannelAction">
