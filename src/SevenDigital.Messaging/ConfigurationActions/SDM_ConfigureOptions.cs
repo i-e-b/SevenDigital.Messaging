@@ -31,21 +31,24 @@ namespace SevenDigital.Messaging.ConfigurationActions
 
 		public void SetIntegrationTestMode()
 		{
-			if (MessagingSystem.UsingLoopbackMode())
-				throw new Exception("Integration test mode can not be used in loopback mode");
+			lock (MessagingSystem.ConfigurationLock)
+			{
+				if (MessagingSystem.UsingLoopbackMode())
+					throw new Exception("Integration test mode can not be used in loopback mode");
 
-			var controller = ObjectFactory.TryGetInstance<IReceiver>() as IReceiverControl;
-			if (controller == null)
-				throw new Exception("Messaging is not configured");
+				var controller = ObjectFactory.TryGetInstance<IReceiver>() as IReceiverControl;
+				if (controller == null)
+					throw new Exception("Messaging is not configured");
 
-			PersistentWorkQueue.DeletePendingMessages();
+				//PersistentWorkQueue.DeletePendingMessages();
 
-			var namer = ObjectFactory.TryGetInstance<IUniqueEndpointGenerator>();
-			if (namer == null) throw new Exception("Unique endpoint generator was not properly configured.");
+				var namer = ObjectFactory.TryGetInstance<IUniqueEndpointGenerator>();
+				if (namer == null) throw new Exception("Unique endpoint generator was not properly configured.");
 
-			namer.UseIntegrationTestName = true;
-			controller.PurgeOnConnect = true;
-			controller.DeleteIntegrationEndpointsOnShutdown = true;
+				namer.UseIntegrationTestName = true;
+				controller.PurgeOnConnect = true;
+				controller.DeleteIntegrationEndpointsOnShutdown = true;
+			}
 		}
 	}
 }
