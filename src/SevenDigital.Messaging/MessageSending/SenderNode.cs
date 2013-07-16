@@ -43,8 +43,8 @@ namespace SevenDigital.Messaging.MessageSending
 			Console.WriteLine("Persistent queue is OK");
 
 			_sendingDispatcher = dispatchFactory.Create( 
-				_persistentQueue,
-				//new InMemoryWorkQueue<IMessage>(),
+				//_persistentQueue,
+				new InMemoryWorkQueue<IMessage>(),
 				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
 			);
 
@@ -126,7 +126,7 @@ namespace SevenDigital.Messaging.MessageSending
 			
 			Console.WriteLine("Clearing pending messages (for development!)");
 			// remove all messages (during development of persistent queues). Delete later.
-			PersistentWorkQueue.DeletePendingMessages();
+			_persistentQueue.DeletePendingMessages();
 		}
 	}
 }

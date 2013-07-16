@@ -44,6 +44,12 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			_subject = new SenderNode(_messagingBase, _dispatcherFactory, _sleeper, _serialiser);
 		}
 
+		[TearDown]
+		public void teardown()
+		{
+			_subject.Dispose();
+		}
+
 		[Test]
 		public void creating_a_sender_node_should_create_a_single_threaded_dispatcher ()
 		{

@@ -14,7 +14,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessageSerialiser _serialiser;
 		IPersistentQueue _persistentQueue;
 		static readonly object _lockObject = new object();
-		const string Pname = "./QUEUE";
+		 readonly string Pname = "./QUEUE_"+(Guid.NewGuid().ToString());
 		readonly SingleAvailable single;
 
 		public PersistentWorkQueue(IMessageSerialiser serialiser, IPersistentQueueFactory queueFac)
@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging.MessageSending
 			single.MakeAvailable();
 		}
 
-		public static void DeletePendingMessages()
+		public void DeletePendingMessages()
 		{
 			for (int i = 0; i < 50; i++)
 			{
