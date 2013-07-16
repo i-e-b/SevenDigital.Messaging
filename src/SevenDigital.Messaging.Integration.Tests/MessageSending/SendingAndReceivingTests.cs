@@ -193,9 +193,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 		}
 
-
 		[TestFixtureTearDown]
 		public void Stop() { MessagingSystem.Control.Shutdown(); }
-
 	}
 }

@@ -19,16 +19,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 		IEventHook mock_event_hook;
 		private ISenderNode senderNode;
 
-		[TestFixtureSetUp]
-		public void StartMessaging()
-		{
-			Helper.SetupTestMessaging();
-		}
-
 
 		[SetUp]
 		public void SetUp()
 		{
+			Helper.SetupTestMessaging();
 			mock_event_hook = Substitute.For<IEventHook>();
 
 			ObjectFactory.Configure(map => map.For<IEventHook>().Use(mock_event_hook));
@@ -37,14 +32,15 @@ namespace SevenDigital.Messaging.Integration.Tests
 			senderNode = MessagingSystem.Sender();
 		}
 
-		[Test, Ignore("This may be broken by double-serialisation")]
+		[Test]
 		public void Sender_should_trigger_event_hook_with_message_when_sending()
 		{
 			var message = new GreenMessage();
 
 			senderNode.SendMessage(message);
+			MessagingSystem.Control.Shutdown();
 
-			mock_event_hook.Received().MessageSent(message);
+			mock_event_hook.Received().MessageSent(Arg.Is<IMessage>(m=> m.CorrelationId == message.CorrelationId));
 		}
 
 		[Test]
@@ -97,7 +93,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 		}
 
-		[TestFixtureTearDown]
+		[TearDown]
 		public void Stop() { MessagingSystem.Control.Shutdown(); }
 	}
 
