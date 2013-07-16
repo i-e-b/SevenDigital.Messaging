@@ -1,4 +1,5 @@
 using System;// ReSharper disable InconsistentNaming
+using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
@@ -173,10 +174,11 @@ namespace SevenDigital.Messaging.Integration.Tests
 		{
 			using (var receiverNode = _receiver.Listen(_ => { }))
 			{
-				for (int i = 0; i < 1000; i++)
+				for (int i = 0; i < 100; i++)
 				{
 					_sender.SendMessage(new JokerMessage());
 				}
+				Console.WriteLine("All sent");
 
 				receiverNode.Register(
 					new Binding()
@@ -184,16 +186,18 @@ namespace SevenDigital.Messaging.Integration.Tests
 					.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>()
 					);
 
+				Thread.Sleep(10000);
+
 				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
-				Assert.That(superheroSignal, Is.True);
-				Assert.That(villainSignal, Is.True);
+				Assert.That(superheroSignal, Is.True, "superhero signal");
+				Assert.That(villainSignal, Is.True, "villain signal");
 			}
 
 		}
 
-		[TestFixtureTearDown]
+		[TearDown]
 		public void Stop() { MessagingSystem.Control.Shutdown(); }
 	}
 }

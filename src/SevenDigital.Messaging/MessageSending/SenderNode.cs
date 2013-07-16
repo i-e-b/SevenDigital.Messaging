@@ -22,7 +22,7 @@ namespace SevenDigital.Messaging.MessageSending
 		readonly IMessagingBase _messagingBase;
 		readonly ISleepWrapper _sleeper;
 		readonly IPersistentQueueFactory _queueFactory;
-		IDispatch<IMessage> _sendingDispatcher;
+		IDispatch<byte[]> _sendingDispatcher;
 		PersistentWorkQueue _persistentQueue;
 
 		/// <summary>
@@ -32,7 +32,6 @@ namespace SevenDigital.Messaging.MessageSending
 			IMessagingBase messagingBase,
 			IDispatcherFactory dispatchFactory,
 			ISleepWrapper sleeper,
-			IMessageSerialiser serialiser,
 			IPersistentQueueFactory queueFactory
 			)
 		{
@@ -41,22 +40,22 @@ namespace SevenDigital.Messaging.MessageSending
 			_queueFactory = queueFactory;
 
 
-			_persistentQueue = new PersistentWorkQueue(serialiser, _queueFactory);
+			_persistentQueue = new PersistentWorkQueue(_queueFactory);
 
 			_sendingDispatcher = dispatchFactory.Create( 
 				_persistentQueue,
-				new ThreadedWorkerPool<IMessage>("SDMessaging_Sender", SingleThreaded)
+				new ThreadedWorkerPool<byte[]>("SDMessaging_Sender", SingleThreaded)
 			);
 
 			_sendingDispatcher.AddConsumer(SendWaitingMessage);
-			_sendingDispatcher.Start();
 			_sendingDispatcher.Exceptions += SendingExceptions;
+			_sendingDispatcher.Start();
 		}
 
 		/// <summary>
 		/// Handle exceptions thrown during sending.
 		/// </summary>
-		public void SendingExceptions(object sender, ExceptionEventArgs<IMessage> e)
+		public void SendingExceptions(object sender, ExceptionEventArgs<byte[]> e)
 		{
 			_sleeper.SleepMore();
 			e.WorkItem.Cancel();
@@ -70,17 +69,19 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <param name="message">Message to be send. This must be a serialisable type</param>
 		public virtual void SendMessage<T>(T message) where T : class, IMessage
 		{
-			_sendingDispatcher.AddWork(message);
+			var prepared = _messagingBase.PrepareForSend(message);
+			_sendingDispatcher.AddWork(prepared.ToBytes());
+			TryFireHooks(message);
 		}
 
 		/// <summary>
 		/// Internal immediate send. Use SendMessage() instead.
 		/// </summary>
-		public void SendWaitingMessage(IMessage message)
+		public void SendWaitingMessage(byte[] message)
 		{
-			_messagingBase.SendMessage(message);
+			_messagingBase.SendPrepared(PreparedMessage.FromBytes(message));
 			_sleeper.Reset();
-			TryFireHooks(message);
+			Thread.Sleep(1);// this prevents the compiler optimising the whole method away. Not sure why.
 		}
 
 		static void TryFireHooks(IMessage message)
