@@ -55,7 +55,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		/// </summary>
 		public void Register(IBinding bindings)
 		{
-			bool shouldStart = false;
+			var shouldStart = false;
 			foreach (var binding in bindings.AllBindings())
 			{	
 				shouldStart = true;
@@ -64,8 +64,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 				_pollingNode.AddMessageType(messageType);
 				_handler.AddHandler(messageType, handlerType);
 			}
-			if (shouldStart)
-				_receivingDispatcher.Start();
+			if (shouldStart) _receivingDispatcher.Start();
 		}
 
 		/// <summary>
@@ -88,31 +87,6 @@ namespace SevenDigital.Messaging.MessageReceiving
 		public void SetConcurrentHandlers(int max)
 		{
 			_receivingDispatcher.SetMaximumInflight(max);
-		}
-
-		/// <summary>
-		/// Bind a message to a handler (non-exclusively)
-		/// </summary>
-		public void BindHandlers(Tuple<Type, Type>[] messageType_handlerType)
-		{
-			foreach (var tuple in messageType_handlerType)
-			{
-				var messageType = tuple.Item1;
-				var handlerType = tuple.Item2;
-				_pollingNode.AddMessageType(messageType);
-				_handler.AddHandler(messageType, handlerType);
-			}
-			_receivingDispatcher.Start();
-		}
-
-		/// <summary>
-		/// Bind a messages to a handlers (non-exclusively)
-		/// </summary>
-		public void BindHandler(Type messageType, Type handlerType)
-		{
-			_pollingNode.AddMessageType(messageType);
-			_handler.AddHandler(messageType, handlerType);
-			_receivingDispatcher.Start();
 		}
 
 		/// <summary>

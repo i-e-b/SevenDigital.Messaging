@@ -8,6 +8,7 @@ namespace SevenDigital.Messaging.EventHooks
 	public class TestEventHook : IEventHook
 	{
 		readonly ITestEvents _testEvents;
+		readonly object _lock = new object();
 
 		/// <summary>
 		/// Creates a test event hook. Don't do this yourself -- use
@@ -24,7 +25,10 @@ namespace SevenDigital.Messaging.EventHooks
 		/// <param name="message">The message sent</param>
 		public void MessageSent(IMessage message)
 		{
-			((TestEvents)_testEvents).sentMessages.Add(message);
+			lock(_lock)
+			{
+				((TestEvents) _testEvents).sentMessages.Add(message);
+			}
 		}
 
 		/// <summary>
@@ -33,7 +37,10 @@ namespace SevenDigital.Messaging.EventHooks
 		/// <param name="message">The incoming message</param>
 		public void MessageReceived(IMessage message)
 		{
-			((TestEvents)_testEvents).receivedMessages.Add(message);
+			lock(_lock)
+			{
+				((TestEvents) _testEvents).receivedMessages.Add(message);
+			}
 		}
 
 		/// <summary>
@@ -44,7 +51,10 @@ namespace SevenDigital.Messaging.EventHooks
 		/// <param name="ex">Exception thrown</param>
 		public void HandlerFailed(IMessage message, Type handler, Exception ex)
 		{
-			((TestEvents)_testEvents).handlerExceptions.Add(ex);
+			lock(_lock)
+			{
+				((TestEvents) _testEvents).handlerExceptions.Add(ex);
+			}
 		}
 	}
 }

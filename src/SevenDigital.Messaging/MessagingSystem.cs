@@ -139,6 +139,11 @@ namespace SevenDigital.Messaging
 		/// Handler bindings that have been registered during loopback mode sessions.
 		/// </summary>
 		ILoopbackBinding LoopbackHandlers();
+
+		/// <summary>
+		/// Add test event hooks when not in loopback mode.
+		/// </summary>
+		void AddTestEventHook();
 	}
 
 	/// <summary>
