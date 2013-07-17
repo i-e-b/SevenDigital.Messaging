@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.MessageReceiving;
