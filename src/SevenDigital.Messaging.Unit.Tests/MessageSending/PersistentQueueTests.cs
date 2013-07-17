@@ -35,12 +35,12 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		}
 	}
 
-	[TestFixture, Ignore("Needs re-writing")]
+	[TestFixture]
 	public class when_dequeueing : PersistentQueueTests
 	{
 
 		[Test]
-		public void dequeing_an_item_reads_and_closes_session_without_flushing ()
+		public void dequeing_an_item_reads_and_leaves_session_open_without_flushing ()
 		{
 			_subject.Enqueue(_a_message);
 			_session.ClearReceivedCalls();
@@ -48,35 +48,39 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			_subject.TryDequeue();
 
 			_session.Received().Dequeue();
-			_session.Received().Dispose();
 
+			_session.DidNotReceive().Dispose();
 			_session.DidNotReceive().Flush();
 		}
+
 		[Test]
-		public void dequeueing_a_second_item_before_the_first_is_ended_doesnt_use_the_session ()
+		public void finishing_a_message_flushes_and_disposes_of_the_session ()
 		{
 			_subject.Enqueue(_a_message);
-			_subject.Enqueue(_b_message);
-			_subject.TryDequeue();
 			_session.ClearReceivedCalls();
-			_queue.ClearReceivedCalls();
 
-			_subject.TryDequeue();
+			_subject.TryDequeue().Finish();
 
-			_queue.DidNotReceive().OpenSession();
+			_session.Received().Dequeue();
+
+			_session.Received().Dispose();
+			_session.Received().Flush();
 		}
+
 		[Test]
-		public void dequeueing_a_second_item_before_the_first_is_ended_returns_empty ()
+		public void cancelling_a_message_disposes_of_session_without_flushing ()
 		{
 			_subject.Enqueue(_a_message);
-			_subject.Enqueue(_b_message);
 			_session.ClearReceivedCalls();
 
-			_subject.TryDequeue();
-			var result = _subject.TryDequeue();
+			_subject.TryDequeue().Cancel();
 
-			Assert.That(result.HasItem, Is.False);
+			_session.Received().Dequeue();
+
+			_session.Received().Dispose();
+			_session.DidNotReceive().Flush();
 		}
+
 	}
 
 	public class PersistentQueueTests

@@ -25,7 +25,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			_senderNode = MessagingSystem.Sender();
 		}
 
-		[Test, Ignore("This test needs further work with persistent queues")]
+		[Test]
 		public void can_deregister_a_handler_causing_no_further_messages_to_be_processed()
 		{
 			UnregisterSample.handledTimes = 0;
