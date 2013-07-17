@@ -79,8 +79,8 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void SendWaitingMessage(byte[] message)
 		{
-			_sleeper.Reset();
 			_messagingBase.SendPrepared(PreparedMessage.FromBytes(message));
+			_sleeper.Reset();
 		}
 
 		static void TryFireHooks(IMessage message)
