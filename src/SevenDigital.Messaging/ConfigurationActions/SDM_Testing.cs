@@ -26,6 +26,12 @@ namespace SevenDigital.Messaging.ConfigurationActions
 			return lb;
 		}
 
+		public void AddTestEventHook()
+		{
+			ObjectFactory.Configure(map => map.For<ITestEvents>().Singleton().Use<TestEvents>());
+			MessagingSystem.Events.AddEventHook<TestEventHook>();
+		}
+
 		[Obsolete("Use `LoopbackHandlers().ForMessage<T>()` instead")]
 		public IEnumerable<Type> LoopbackListenersForMessage<T>()
 		{

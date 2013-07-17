@@ -79,9 +79,8 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		public void SendWaitingMessage(byte[] message)
 		{
-			_messagingBase.SendPrepared(PreparedMessage.FromBytes(message));
 			_sleeper.Reset();
-			Thread.Sleep(1);// this prevents the compiler optimising the whole method away. Not sure why.
+			_messagingBase.SendPrepared(PreparedMessage.FromBytes(message));
 		}
 
 		static void TryFireHooks(IMessage message)

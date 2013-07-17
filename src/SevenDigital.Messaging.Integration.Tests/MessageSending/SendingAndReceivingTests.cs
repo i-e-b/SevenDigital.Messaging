@@ -1,9 +1,12 @@
 using System;// ReSharper disable InconsistentNaming
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Handlers;
 using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.MessageReceiving;
 
 namespace SevenDigital.Messaging.Integration.Tests
@@ -172,13 +175,24 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void should_be_able_to_register_handlers_with_lot_of_messages_on_a_queue()
 		{
-			using (var receiverNode = _receiver.Listen(_ => { }))
+			MessagingSystem.Testing.AddTestEventHook();
+			Log.Instance().RegisterAction(m => Console.WriteLine(m.LogDate + " " +m.Message));
+
+			using(_receiver.TakeFrom("Backlog.Integration.Queue", _ =>_
+				.Handle<IComicBookCharacterMessage>().With<SuperHeroMessageHandler>()
+				.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>()))
+			{
+			}
+
+
+			using (var receiverNode = _receiver.TakeFrom("Backlog.Integration.Queue", _ => { }))
 			{
 				for (int i = 0; i < 100; i++)
 				{
 					_sender.SendMessage(new JokerMessage());
 				}
-				Console.WriteLine("All sent");
+				
+				Thread.Sleep(1000);
 
 				receiverNode.Register(
 					new Binding()
@@ -186,13 +200,23 @@ namespace SevenDigital.Messaging.Integration.Tests
 					.Handle<IComicBookCharacterMessage>().With<VillainMessageHandler>()
 					);
 
-				Thread.Sleep(10000);
-
-				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(LongInterval);
-				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
 				Assert.That(superheroSignal, Is.True, "superhero signal");
 				Assert.That(villainSignal, Is.True, "villain signal");
+
+				int recvd = 0;
+				var sent = MessagingSystem.Testing.LoopbackEvents().SentMessages.Count();
+				var sw = new Stopwatch();
+				sw.Start();
+				while (sw.Elapsed < TimeSpan.FromSeconds(20) && recvd < sent)
+				{
+					recvd = MessagingSystem.Testing.LoopbackEvents().ReceivedMessages.Count();
+				}
+
+				Assert.That(recvd, Is.EqualTo(sent),
+					"Sent: "+sent+"; Received: "+recvd);
 			}
 
 		}

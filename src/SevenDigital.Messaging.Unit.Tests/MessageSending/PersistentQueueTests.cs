@@ -35,7 +35,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		}
 	}
 
-	[TestFixture]
+	[TestFixture, Ignore("Needs re-writing")]
 	public class when_dequeueing : PersistentQueueTests
 	{
 
