@@ -76,14 +76,11 @@ namespace SevenDigital.Messaging.MessageSending
 		/// </summary>
 		void Pop()
 		{
-			Console.WriteLine("Starting flush: "+_persistentQueue.EstimatedCountOfItemsInQueue);
 			using (var session = _persistentQueue.OpenSession())
 			{
 				session.Dequeue();
 				session.Flush();
 			}
-			
-			Console.WriteLine("Completed flush: "+_persistentQueue.EstimatedCountOfItemsInQueue);
 		}
 
 		/// <summary>

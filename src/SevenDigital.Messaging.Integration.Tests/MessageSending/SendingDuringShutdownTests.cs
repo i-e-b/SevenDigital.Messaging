@@ -29,7 +29,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 
 			var sender = MessagingSystem.Sender();
 
-			for (int i = 0; i < 1000; i++)
+			for (int i = 0; i < 100; i++)
 			{
 				sender.SendMessage(new GreenMessage());
 			}
@@ -38,7 +38,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			var sent = MessagingSystem.Testing.LoopbackEvents().SentMessages.Count();
 			Console.WriteLine(sent);
 
-			Assert.That(sent, Is.EqualTo(1000));
+			Assert.That(sent, Is.EqualTo(100));
 		}
 		
 		[Test]
@@ -49,7 +49,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 
 			var sender = MessagingSystem.Sender();
 
-			for (int i = 0; i < 1000; i++)
+			for (int i = 0; i < 100; i++)
 			{
 				sender.SendMessage(new GreenMessage());
 			}
