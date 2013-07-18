@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\SevenDigital.Messaging.XML</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DispatchSharp, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
@@ -39,11 +40,11 @@
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=2.8.1.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MessagingBase.1.1.1\lib\net40\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\..\packages\MessagingBase.1.2.1\lib\net40\RabbitMQ.Client.dll</HintPath>
     </Reference>
-    <Reference Include="SevenDigital.Messaging.Base, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SevenDigital.Messaging.Base, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MessagingBase.1.1.1\lib\net40\SevenDigital.Messaging.Base.dll</HintPath>
+      <HintPath>..\..\packages\MessagingBase.1.2.1\lib\net40\SevenDigital.Messaging.Base.dll</HintPath>
     </Reference>
     <Reference Include="SevenDigital.ServiceStack.Merged">
       <HintPath>..\..\packages\ServiceStackSnapShot.1.0.0\lib\net40\SevenDigital.ServiceStack.Merged.dll</HintPath>
@@ -51,10 +52,6 @@
     <Reference Include="ShiftIt, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Shift-it.1.2.1\lib\net40\ShiftIt.dll</HintPath>
-    </Reference>
-    <Reference Include="SignalHandling, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MessagingBase.1.1.1\lib\net40\SignalHandling.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap">
       <HintPath>..\..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
@@ -116,9 +113,14 @@
     <Compile Include="ConfigurationActions\SDM_Control.cs" />
     <Compile Include="ConfigurationActions\SDM_Events.cs" />
     <Compile Include="ConfigurationActions\SDM_Testing.cs" />
+    <Compile Include="Infrastructure\SignalHandling\CrossPlatformSignalDispatch.cs" />
+    <Compile Include="Infrastructure\SignalHandling\PrivateMonoDerived\RealTimeSignum.cs" />
+    <Compile Include="Infrastructure\SignalHandling\PrivateMonoDerived\Signum.cs" />
+    <Compile Include="Infrastructure\SignalHandling\PrivateMonoDerived\UnixSignal.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Infrastructure\SignalHandling\ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DiskQueue\src\Rhino.Queues.Storage.Disk\DiskQueue.csproj">

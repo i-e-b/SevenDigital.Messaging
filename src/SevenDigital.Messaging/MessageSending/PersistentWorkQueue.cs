@@ -1,8 +1,10 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using DiskQueue;
 using DispatchSharp;
 using DispatchSharp.QueueTypes;
+using SevenDigital.Messaging.MessageReceiving;
 
 namespace SevenDigital.Messaging.MessageSending
 {
@@ -12,12 +14,14 @@ namespace SevenDigital.Messaging.MessageSending
 	public class PersistentWorkQueue : IWorkQueue<byte[]>, IDisposable
 	{
 		readonly IPersistentQueue _persistentQueue;
+		readonly ISleepWrapper _sleeper;
 
 		/// <summary>
 		/// Create a new persistent queue wrapper, given a persistent queue factory.
 		/// </summary>
-		public PersistentWorkQueue(IPersistentQueueFactory queueFac)
+		public PersistentWorkQueue(IPersistentQueueFactory queueFac, ISleepWrapper sleeper)
 		{
+			_sleeper = sleeper;
 			_persistentQueue = queueFac.PrepareQueue();
 		}
 
@@ -34,6 +38,7 @@ namespace SevenDigital.Messaging.MessageSending
 			}
 		}
 
+		int inFlight;
 
 		/// <summary>
 		/// Try and get an item from this queue. Success is encoded in the WQI result 'HasItem' 
@@ -41,22 +46,55 @@ namespace SevenDigital.Messaging.MessageSending
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public IWorkQueueItem<byte[]> TryDequeue()
 		{
-			var session = _persistentQueue.OpenSession();
-			var bytes = session.Dequeue();
+			Interlocked.Increment(ref inFlight);
+			if (inFlight > 1)
+			{
+				Interlocked.Decrement(ref inFlight);
+				return new WorkQueueItem<byte[]>();
+			}
+
+			var bytes = NextItem();
 
 			if (bytes == null)
 			{
-				session.Dispose();
+				Interlocked.Decrement(ref inFlight);
 				return new WorkQueueItem<byte[]>();
 			}
 
 			return new WorkQueueItem<byte[]>(
-				bytes, 
-				finish => {
-					session.Flush();
-					session.Dispose();
-				}, 
-				cancel => session.Dispose());
+				bytes,
+				finish =>
+				{
+					Pop();
+					Interlocked.Decrement(ref inFlight);
+				},
+				cancel => Interlocked.Decrement(ref inFlight));
+		}
+
+		/// <summary>
+		/// Remove front item from queue
+		/// </summary>
+		void Pop()
+		{
+			Console.WriteLine("Starting flush: "+_persistentQueue.EstimatedCountOfItemsInQueue);
+			using (var session = _persistentQueue.OpenSession())
+			{
+				session.Dequeue();
+				session.Flush();
+			}
+			
+			Console.WriteLine("Completed flush: "+_persistentQueue.EstimatedCountOfItemsInQueue);
+		}
+
+		/// <summary>
+		/// Peek front item in queue.
+		/// </summary>
+		byte[] NextItem()
+		{
+			using (var session = _persistentQueue.OpenSession())
+			{
+				return session.Dequeue();
+			}
 		}
 
 		/// <summary>
@@ -79,7 +117,14 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			var pq = _persistentQueue;
 			if (pq == null) return false;
-			return (pq.EstimatedCountOfItemsInQueue > 0);
+
+			if (pq.EstimatedCountOfItemsInQueue <= 0)
+			{
+				_sleeper.SleepMore();
+				return false;
+			}
+			_sleeper.Reset();
+			return true;
 		}
 
 		/// <summary>
