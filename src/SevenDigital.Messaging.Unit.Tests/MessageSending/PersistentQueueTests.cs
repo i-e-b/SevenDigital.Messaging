@@ -2,6 +2,7 @@
 using DiskQueue;
 using NSubstitute;
 using NUnit.Framework;
+using SevenDigital.Messaging.MessageReceiving;
 using SevenDigital.Messaging.MessageSending;
 
 namespace SevenDigital.Messaging.Unit.Tests.MessageSending
@@ -40,7 +41,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 	{
 
 		[Test]
-		public void dequeing_an_item_reads_and_leaves_session_open_without_flushing ()
+		public void dequeing_an_item_reads_and_closes_session_without_flushing ()
 		{
 			_subject.Enqueue(_a_message);
 			_session.ClearReceivedCalls();
@@ -49,7 +50,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 
 			_session.Received().Dequeue();
 
-			_session.DidNotReceive().Dispose();
+			_session.Received().Dispose();
 			_session.DidNotReceive().Flush();
 		}
 
@@ -106,7 +107,9 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			_queueFactory = Substitute.For<IPersistentQueueFactory>();
 			_queueFactory.PrepareQueue().Returns(_queue);
 
-			_subject = new PersistentWorkQueue(_queueFactory);
+
+
+			_subject = new PersistentWorkQueue(_queueFactory, Substitute.For<ISleepWrapper>());
 		}
 	}
 

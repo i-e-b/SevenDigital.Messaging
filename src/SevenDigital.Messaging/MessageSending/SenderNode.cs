@@ -9,6 +9,9 @@ using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.MessageReceiving;
 using StructureMap;
+// ReSharper disable RedundantUsingDirective
+using DispatchSharp.QueueTypes;
+// ReSharper restore RedundantUsingDirective
 
 namespace SevenDigital.Messaging.MessageSending
 {
@@ -40,10 +43,11 @@ namespace SevenDigital.Messaging.MessageSending
 			_queueFactory = queueFactory;
 
 
-			_persistentQueue = new PersistentWorkQueue(_queueFactory);
+			_persistentQueue = new PersistentWorkQueue(_queueFactory, _sleeper);
 
 			_sendingDispatcher = dispatchFactory.Create( 
 				_persistentQueue,
+				//new InMemoryWorkQueue<byte[]>(),
 				new ThreadedWorkerPool<byte[]>("SDMessaging_Sender", SingleThreaded)
 			);
 

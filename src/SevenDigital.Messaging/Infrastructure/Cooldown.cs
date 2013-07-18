@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using SignalHandling;
+using SevenDigital.Messaging.Infrastructure.SignalHandling;
 
 namespace SevenDigital.Messaging.Infrastructure
 {
