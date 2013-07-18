@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using SevenDigital.Messaging;
 
 namespace SimpleSample

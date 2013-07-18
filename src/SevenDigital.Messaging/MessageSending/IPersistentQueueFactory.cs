@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using DiskQueue;
+using SevenDigital.Messaging.Routing;
 
 namespace SevenDigital.Messaging.MessageSending
 {
@@ -84,15 +85,26 @@ namespace SevenDigital.Messaging.MessageSending
 	/// </summary>
 	public class PersistentQueueFactory : IPersistentQueueFactory
 	{
-		const string storagePath = "../../QUEUE"; // hacky, hacky, hacky :-(
+		/// <summary>
+		/// Storage location for the Persistent queue.
+		/// Only one process can use each queue location at a time.
+		/// This is a horrible hack. I need to think of a better way of doing this...
+		/// </summary>
+		public static string StoragePath;
 
 		/// <summary>
 		/// Ensure queue exists on disk and return a locked instance
 		/// </summary>
 		public IPersistentQueue PrepareQueue()
 		{
-			if (!Directory.Exists(storagePath)) Directory.CreateDirectory(storagePath);
-			return PersistentQueue.WaitFor(storagePath, TimeSpan.FromSeconds(10));
+			if (string.IsNullOrWhiteSpace(StoragePath))
+			{
+				StoragePath = Path.Combine(Path.GetTempPath(), Naming.GoodAssemblyName() + "_QUEUE");
+				Console.WriteLine(StoragePath);
+			}
+
+			if (!Directory.Exists(StoragePath)) Directory.CreateDirectory(StoragePath);
+			return PersistentQueue.WaitFor(StoragePath, TimeSpan.FromSeconds(10));
 		}
 
 		/// <summary>
