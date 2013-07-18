@@ -11,6 +11,9 @@ Windows
 Linux
 
 * As Windows, or use your distro's package manager to get RabbitMQ (you should get Erlang automatically)
+  * (example, for Ubuntu: `sudo apt-get install rabbitmq-server`)
+
+To check your installation is working, try the `SimpleSample` console app included
 
 Getting Started: Path of least resistance
 -----------------------------------------
@@ -75,4 +78,4 @@ Notes
 * To listen to messages, `factory.Listener(binder=>binder.Handle<IMyMessageInterface>().With<MyHandlerType>()`
 * Each listener can handle any number of message => handler pairs, and a message can have more than one handler (they all fire in parallel)
 
-See further simple examples in the Integration Tests
+See further simple examples in the Integration Tests.
