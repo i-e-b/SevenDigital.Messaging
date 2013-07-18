@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		private ISenderNode senderNode;
 
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(30); } }
-		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
+		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(1); } }
 
 		[TestFixtureSetUp]
 		public void StartMessaging()
@@ -61,7 +61,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 
 				senderNode.SendMessage(message);
 
-				ColourMessageHandler.AutoResetEvent.WaitOne(LongInterval);
+				ColourMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
 
 				Assert.That(WaitingHookOne.SentEvent.WaitOne(ShortInterval), Is.False, "Hook one didn't get sent event");
 				Assert.That(WaitingHookOne.ReceivedEvent.WaitOne(ShortInterval), Is.False, "Hook one didn't get received event");

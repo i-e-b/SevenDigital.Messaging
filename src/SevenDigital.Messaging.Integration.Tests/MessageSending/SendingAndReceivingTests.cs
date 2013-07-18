@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		private ISenderNode _sender;
 
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(20); } }
-		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(3); } }
+		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(2); } }
 
 		[SetUp]
 		public void SetUp()
