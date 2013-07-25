@@ -7,7 +7,7 @@ namespace SimpleSample
 	{
 		public void Handle(IEchoMessage message)
 		{
-			Console.Write("# Recevied \"" + message.Message);
+			Console.Write("# Received \"" + message.Message);
 			Console.WriteLine("\" (" + message.GetType() + ")");
 		}
 	}
