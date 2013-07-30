@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.Integration.Tests.Messages;
 
@@ -11,7 +12,12 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void can_set_concurreny_limit_in_default_mode ()
 		{
 			MessagingSystem.Configure.WithDefaults();
+
+			Assert.That(MessagingSystem.Testing.ConcurrencyLimit(), Is.EqualTo(Environment.ProcessorCount));
 			MessagingSystem.Control.SetConcurrentHandlers(1);
+			Assert.That(MessagingSystem.Testing.ConcurrencyLimit(), Is.EqualTo(1));
+			
+			
 			MessagingSystem.Control.Shutdown();
 
 			Assert.Pass();
