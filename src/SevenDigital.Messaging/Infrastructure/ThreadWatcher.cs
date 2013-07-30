@@ -38,8 +38,11 @@ namespace SevenDigital.Messaging.Infrastructure
 
 		void ThreadLoop()
 		{
-			_threadToWatch.Join();
-			_onEnd();
+			while (!_threadToWatch.Join(1000))
+			{
+				if (!IsValidAndRunning(_threadToWatch)) break;
+			}
+			if (_onEnd != null) _onEnd();
 		}
 	}
 }

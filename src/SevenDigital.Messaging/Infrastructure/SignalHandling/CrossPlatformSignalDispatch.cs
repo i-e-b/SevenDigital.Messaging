@@ -35,6 +35,7 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling
 				return (p == 4) || (p == 6) || (p == 128);
 			}
 		}
+
 		void TerminateEventSent(int signal)
 		{
 			var handler = TerminateEvent;
