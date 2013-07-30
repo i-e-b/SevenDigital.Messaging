@@ -6,7 +6,7 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.ConfigurationActions
 {
-	class SDM_Testing : IMessagingLoopbackInformation
+	class SDM_Testing : IMessagingTestingMethods
 	{
 		public ITestEvents LoopbackEvents()
 		{
@@ -30,6 +30,11 @@ namespace SevenDigital.Messaging.ConfigurationActions
 		{
 			ObjectFactory.Configure(map => map.For<ITestEvents>().Singleton().Use<TestEvents>());
 			MessagingSystem.Events.AddEventHook<TestEventHook>();
+		}
+
+		public int ConcurrencyLimit()
+		{
+			return MessagingSystem.Concurrency;
 		}
 
 		[Obsolete("Use `LoopbackHandlers().ForMessage<T>()` instead")]

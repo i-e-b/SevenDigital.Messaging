@@ -28,7 +28,7 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// Options for inspecting test data
 		/// </summary>
-		public static readonly IMessagingLoopbackInformation Testing = new SDM_Testing();
+		public static readonly IMessagingTestingMethods Testing = new SDM_Testing();
 
 		/// <summary>
 		/// Runtime controls for the messaging system, including
@@ -122,7 +122,7 @@ namespace SevenDigital.Messaging
 	/// <summary>
 	/// Messaging system loopback mode information
 	/// </summary>
-	public interface IMessagingLoopbackInformation
+	public interface IMessagingTestingMethods
 	{
 		/// <summary>
 		/// Return a set of all events (send, received, errors) since loopback mode was configured
@@ -144,6 +144,12 @@ namespace SevenDigital.Messaging
 		/// Add test event hooks when not in loopback mode.
 		/// </summary>
 		void AddTestEventHook();
+
+		/// <summary>
+		/// returns the current set concurrency limit --
+		/// this is the maximum number of handlers that will run at once
+		/// </summary>
+		int ConcurrencyLimit();
 	}
 
 	/// <summary>
