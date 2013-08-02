@@ -19,7 +19,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <summary>
 		/// Create a new persistent queue wrapper, given a persistent queue factory.
 		/// </summary>
-		public PersistentWorkQueue(IPersistentQueueFactory queueFac, ISleepWrapper sleeper)
+		public PersistentWorkQueue(IOutgoingQueueFactory queueFac, ISleepWrapper sleeper)
 		{
 			_sleeper = sleeper;
 			_persistentQueue = queueFac.PrepareQueue();

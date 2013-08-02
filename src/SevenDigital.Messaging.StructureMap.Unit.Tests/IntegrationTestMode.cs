@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging.Unit.Tests.Configuration
 		[Test]
 		public void should_use_integration_test_queue_factory ()
 		{
-			var fac = ObjectFactory.GetInstance<IPersistentQueueFactory>();
+			var fac = ObjectFactory.GetInstance<IOutgoingQueueFactory>();
 			Assert.That(
 				fac,
 				Is.InstanceOf<IntegrationTestQueueFactory>());

@@ -89,7 +89,7 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[Test]
 		public void should_use_PersistentQueueFactory  ()
 		{
-			var fac = ObjectFactory.GetInstance<IPersistentQueueFactory>();
+			var fac = ObjectFactory.GetInstance<IOutgoingQueueFactory>();
 			Assert.That(
 				fac,
 				Is.InstanceOf<PersistentQueueFactory>());

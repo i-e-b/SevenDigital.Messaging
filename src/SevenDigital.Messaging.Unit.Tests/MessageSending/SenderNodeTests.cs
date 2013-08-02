@@ -24,7 +24,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		ISleepWrapper _sleeper;
 		IDispatch<byte[]> _dispatcher;
 		IEventHook _eventHook1, _eventHook2;
-		IPersistentQueueFactory _queueFactory;
+		IOutgoingQueueFactory _queueFactory;
 
 		[SetUp]
 		public void setup()
@@ -35,7 +35,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			_dispatcherFactory = Substitute.For<IDispatcherFactory>();
 			_dispatcherFactory.Create(Arg.Any<IWorkQueue<byte[]>>(), Arg.Any<IWorkerPool<byte[]>>()).Returns(_dispatcher);
 
-			_queueFactory = Substitute.For<IPersistentQueueFactory>();
+			_queueFactory = Substitute.For<IOutgoingQueueFactory>();
 
 			_eventHook1 = Substitute.For<IEventHook>();
 			_eventHook2 = Substitute.For<IEventHook>();

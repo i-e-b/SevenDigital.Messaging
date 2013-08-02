@@ -29,6 +29,21 @@ namespace SevenDigital.Messaging.ConfigurationActions
 			return this;
 		}
 
+		/// <summary>
+		/// By default, the messaging system will try to do store-and-forward
+		/// messaging. This is persisted to permanent storage.
+		/// This option turns store-and-forward off. No disk files will
+		/// be required, but in the event of total failure, messages will be lost.
+		/// </summary>
+		public IMessagingConfigureOptions NoPersistentMessages()
+		{
+			ObjectFactory.EjectAllInstancesOf<IOutgoingQueueFactory>();
+			
+			ObjectFactory.Configure(map => map.For<IOutgoingQueueFactory>().Use<NonPersistentQueueFactory>());
+
+			return this;
+		}
+
 		public void SetIntegrationTestMode()
 		{
 			lock (MessagingSystem.ConfigurationLock)
@@ -44,7 +59,9 @@ namespace SevenDigital.Messaging.ConfigurationActions
 				if (namer == null) throw new Exception("Unique endpoint generator was not properly configured.");
 
 				ObjectFactory.Configure(map =>
-					map.For<IPersistentQueueFactory>().Singleton().Use<IntegrationTestQueueFactory>());
+					map.For<IOutgoingQueueFactory>().Singleton().Use<IntegrationTestQueueFactory>());
+
+				//NoPersistentMessages();
 
 				namer.UseIntegrationTestName = true;
 				controller.PurgeOnConnect = true;
