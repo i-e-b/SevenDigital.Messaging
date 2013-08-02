@@ -89,7 +89,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		protected PersistentWorkQueue _subject;
 		protected IPersistentQueue _queue;
 		protected IPersistentQueueSession _session;
-		protected IPersistentQueueFactory _queueFactory;
+		protected IOutgoingQueueFactory _queueFactory;
 		protected byte[] _a_message;
 		protected byte[] _b_message;
 
@@ -104,7 +104,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 			_queue = Substitute.For<IPersistentQueue>();
 			_queue.OpenSession().Returns(_session);
 
-			_queueFactory = Substitute.For<IPersistentQueueFactory>();
+			_queueFactory = Substitute.For<IOutgoingQueueFactory>();
 			_queueFactory.PrepareQueue().Returns(_queue);
 
 

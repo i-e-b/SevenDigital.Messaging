@@ -212,6 +212,15 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		/// <param name="host">IP or hostname of a server running RabbitMQ service</param>
 		IMessagingConfigureOptions SetMessagingServer(string host);
+		
+		/// <summary>
+		/// By default, the messaging system will try to do store-and-forward
+		/// messaging. This is persisted to permanent storage.
+		/// &#x0D;&#x0A;
+		/// This option turns store-and-forward off. No disk files will
+		/// be required, but in the event of total failure, messages will be lost.
+		/// </summary>
+		IMessagingConfigureOptions NoPersistentMessages();
 
 		/// <summary>
 		/// Sets integration test mode. Must be set before any handlers are configured.

@@ -24,7 +24,7 @@ namespace SevenDigital.Messaging.MessageSending
 		const int SingleThreaded = 1;
 		readonly IMessagingBase _messagingBase;
 		readonly ISleepWrapper _sleeper;
-		readonly IPersistentQueueFactory _queueFactory;
+		readonly IOutgoingQueueFactory _queueFactory;
 		IDispatch<byte[]> _sendingDispatcher;
 		PersistentWorkQueue _persistentQueue;
 
@@ -35,7 +35,7 @@ namespace SevenDigital.Messaging.MessageSending
 			IMessagingBase messagingBase,
 			IDispatcherFactory dispatchFactory,
 			ISleepWrapper sleeper,
-			IPersistentQueueFactory queueFactory
+			IOutgoingQueueFactory queueFactory
 			)
 		{
 			_messagingBase = messagingBase;
