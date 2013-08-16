@@ -70,9 +70,8 @@ namespace SevenDigital.Messaging.ConfigurationActions
 			if (max < 1) throw new ArgumentException("Concurrent handlers must be at least 1", "max");
 
 			var controller = ObjectFactory.TryGetInstance<IReceiver>() as IReceiverControl;
-			if (controller == null) throw new InvalidOperationException("Messaging is not configured");
-
-			controller.SetConcurrentHandlers(max);
+			if (controller != null)
+				controller.SetConcurrentHandlers(max);
 			MessagingSystem.Concurrency = max;
 		}
 
