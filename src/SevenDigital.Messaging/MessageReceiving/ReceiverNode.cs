@@ -43,8 +43,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 
 			_receivingDispatcher = dispatchFactory.Create(
 				_pollingNode,
-				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver")
-				);
+				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver", MessagingSystem.Concurrency));
 
 			_receivingDispatcher.AddConsumer(HandleIncomingMessage);
 			_receivingDispatcher.SetMaximumInflight(MessagingSystem.Concurrency);
@@ -57,7 +56,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 		{
 			var shouldStart = false;
 			foreach (var binding in bindings.AllBindings())
-			{	
+			{
 				shouldStart = true;
 				Type messageType = binding.Item1, handlerType = binding.Item2;
 

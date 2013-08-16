@@ -26,15 +26,15 @@ namespace SevenDigital.Messaging.Integration.Tests
 		[Test]
 		public void concurrency_limit_is_obeyed_in_default_mode ()
 		{
+			MessagingSystem.Control.SetConcurrentHandlers(10);
 			MessagingSystem.Configure.WithDefaults().SetIntegrationTestMode();
-			MessagingSystem.Control.SetConcurrentHandlers(1);
 
 			CountingHandler.Reset();
 			MessagingSystem.Receiver().Listen(_=>_
 				.Handle<IMessage>().With<CountingHandler>()
 			);
 
-			for (int i = 0; i < 20; i++)
+			for (int i = 0; i < 200; i++)
 			{
 				MessagingSystem.Sender().SendMessage(new GreenMessage());
 			}
@@ -43,7 +43,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Thread.Sleep(250);
 			}
 			MessagingSystem.Control.Shutdown();
-			Assert.That(CountingHandler.MaxCount, Is.EqualTo(1));
+			Assert.That(CountingHandler.MaxCount, Is.EqualTo(10));
 		}
 		public class CountingHandler:IHandle<IMessage>
 		{
