@@ -48,9 +48,10 @@ namespace SevenDigital.Messaging.MessageSending
 			_sendingDispatcher = dispatchFactory.Create( 
 				_persistentQueue,
 				//new InMemoryWorkQueue<byte[]>(),
-				new ThreadedWorkerPool<byte[]>("SDMessaging_Sender", SingleThreaded)
+				new ThreadedWorkerPool<byte[]>("SDMessaging_Sender")
 			);
 
+			_sendingDispatcher.SetMaximumInflight(SingleThreaded);
 			_sendingDispatcher.AddConsumer(SendWaitingMessage);
 			_sendingDispatcher.Exceptions += SendingExceptions;
 			_sendingDispatcher.Start();

@@ -43,7 +43,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Thread.Sleep(250);
 			}
 			MessagingSystem.Control.Shutdown();
-			Assert.That(CountingHandler.MaxCount, Is.EqualTo(10));
+			Assert.That(CountingHandler.MaxCount, Is.GreaterThan(Environment.ProcessorCount));
 		}
 		
 

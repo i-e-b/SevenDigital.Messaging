@@ -56,10 +56,7 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageSending
 		[Test]
 		public void creating_a_sender_node_should_create_a_single_threaded_dispatcher ()
 		{
-			_dispatcherFactory.Received().Create(
-				Arg.Any<IWorkQueue<byte[]>>(),
-				Arg.Is<ThreadedWorkerPool<byte[]>>(m=>m.PoolSize() == 1) // <-- testing this one
-				);
+			_dispatcher.Received().SetMaximumInflight(1);
 		}
 
 		[Test]
