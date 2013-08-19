@@ -24,7 +24,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		[Test]
-		public void concurrency_limit_is_obeyed_in_default_mode ()
+		public void concurrency_can_be_set_beyond_current_number_of_cores ()
 		{
 			MessagingSystem.Control.SetConcurrentHandlers(10);
 			MessagingSystem.Configure.WithDefaults().SetIntegrationTestMode();
@@ -45,6 +45,31 @@ namespace SevenDigital.Messaging.Integration.Tests
 			MessagingSystem.Control.Shutdown();
 			Assert.That(CountingHandler.MaxCount, Is.EqualTo(10));
 		}
+		
+
+		[Test]
+		public void concurrency_limit_is_obeyed_in_default_mode ()
+		{
+			MessagingSystem.Control.SetConcurrentHandlers(1);
+			MessagingSystem.Configure.WithDefaults().SetIntegrationTestMode();
+
+			CountingHandler.Reset();
+			MessagingSystem.Receiver().Listen(_=>_
+				.Handle<IMessage>().With<CountingHandler>()
+			);
+
+			for (int i = 0; i < 20; i++)
+			{
+				MessagingSystem.Sender().SendMessage(new GreenMessage());
+			}
+			while (CountingHandler.TotalCount < 10)
+			{
+				Thread.Sleep(250);
+			}
+			MessagingSystem.Control.Shutdown();
+			Assert.That(CountingHandler.MaxCount, Is.EqualTo(1));
+		}
+
 		public class CountingHandler:IHandle<IMessage>
 		{
 			public static volatile int Count, MaxCount, TotalCount;
