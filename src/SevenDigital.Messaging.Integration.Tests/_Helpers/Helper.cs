@@ -1,3 +1,4 @@
+using System;
 using System.Configuration;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Routing;
@@ -35,6 +36,21 @@ namespace SevenDigital.Messaging.Integration.Tests
 		}
 
 		static void Ignore(){}
+
+		public static void DeleteQueueAndExchange(string queue, Type exchangeType)
+		{
+			try
+			{
+				ObjectFactory.GetInstance<IRabbitMqConnection>().WithChannel(channel => {
+					channel.QueueDelete(queue);
+					channel.ExchangeDelete(exchangeType.FullName);
+				});
+			}
+			catch
+			{
+				Ignore();
+			}
+		}
 	}
 
 	public class TestEndpointGenerator : IUniqueEndpointGenerator

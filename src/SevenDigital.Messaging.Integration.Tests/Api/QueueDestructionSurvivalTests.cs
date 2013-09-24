@@ -33,7 +33,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 				new Endpoint(TestQueue),
 				_=>_.Handle<IColourMessage>().With<ColourMessageHandler>()))
 			{
-				Helper.DeleteQueue(TestQueue);
+				Helper.DeleteQueueAndExchange(TestQueue, typeof(IColourMessage));
 				Thread.Sleep(500);
 
 				senderNode.SendMessage(new RedMessage());
