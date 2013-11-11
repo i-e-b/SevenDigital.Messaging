@@ -34,6 +34,8 @@ namespace SevenDigital.Messaging.ConfigurationActions
 			}
 		}
 
+		static void Ignore() { }
+
 		public void SetShutdownTimeout(TimeSpan maxWait)
 		{
 			MessagingSystem.ShutdownTimeout = maxWait;
@@ -60,7 +62,17 @@ namespace SevenDigital.Messaging.ConfigurationActions
 			ObjectFactory.EjectAllInstancesOf<T>();
 			if (instances.Length < 1) return;
 
-			foreach (var disposable in instances) disposable.Dispose();
+			foreach (var disposable in instances)
+			{
+				try
+				{
+					disposable.Dispose();
+				}
+				catch
+				{
+					Ignore();
+				}
+			}
 		}
 
 		public void SetConcurrentHandlers(int max)
