@@ -12,7 +12,7 @@ using SevenDigital.Messaging.MessageReceiving;
 namespace SevenDigital.Messaging.Integration.Tests
 {
 	[TestFixture]
-	public class SendingAndReceivingTests
+	public class SendingAndReceiving_WithDefaultQueue_Tests
 	{
 		IReceiver _receiver;
 		private ISenderNode _sender;

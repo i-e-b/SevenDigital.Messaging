@@ -90,6 +90,7 @@
     <Compile Include="MessageSending\HandlerAction.cs" />
     <Compile Include="MessageReceiving\RabbitPolling\RabbitMqPollingNode.cs" />
     <Compile Include="IReceiverNode.cs" />
+    <Compile Include="MessageSending\InMemoryQueueBridge.cs" />
     <Compile Include="MessageSending\QueueFactory.cs" />
     <Compile Include="MessageSending\PersistentWorkQueue.cs" />
     <Compile Include="MessagingSystem.cs" />

@@ -76,6 +76,8 @@
     <Compile Include="Hooks\FailingEventHookTests.cs" />
     <Compile Include="Hooks\FailingHandlerEventHookTests.cs" />
     <Compile Include="Loopback\LoopbackModeTests.cs" />
+    <Compile Include="MessageSending\SendingAndReceiving_WithNonPersistentQueue_Tests.cs" />
+    <Compile Include="MessageSending\NonPersistentQueueTests.cs" />
     <Compile Include="MessageSending\RetryReceivingTests.cs" />
     <Compile Include="MessageSending\SendingDuringShutdownTests.cs" />
     <Compile Include="MessageSending\SendingRetryTests.cs" />
@@ -96,7 +98,7 @@
     <Compile Include="_Helpers\Handlers\VillainMessageHandler.cs" />
     <Compile Include="Api\PurgingQueues.cs" />
     <Compile Include="Api\QueueDestructionSurvivalTests.cs" />
-    <Compile Include="MessageSending\SendingAndReceivingTests.cs" />
+    <Compile Include="MessageSending\SendingAndReceiving_WithDefaultQueue_Tests.cs" />
     <Compile Include="_Helpers\Messages\GreenMessage.cs" />
     <Compile Include="_Helpers\Messages\IColourMessage.cs" />
     <Compile Include="_Helpers\Messages\IComicBookCharacterMessage.cs" />
@@ -118,6 +120,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DiskQueue\src\Rhino.Queues.Storage.Disk\DiskQueue.csproj">
+      <Project>{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}</Project>
+      <Name>DiskQueue</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SevenDigital.Messaging\SevenDigital.Messaging.csproj">
       <Project>{703B2D01-1D82-4249-979E-2A9EE5BE27AF}</Project>
       <Name>SevenDigital.Messaging</Name>

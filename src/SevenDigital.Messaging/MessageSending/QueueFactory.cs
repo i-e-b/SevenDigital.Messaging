@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using DiskQueue;
 using SevenDigital.Messaging.Routing;
@@ -87,98 +86,25 @@ namespace SevenDigital.Messaging.MessageSending
 	/// </summary>
 	public class NonPersistentQueueFactory : IOutgoingQueueFactory
 	{
+		static readonly InMemoryQueueBridge Bridge;
+
+		static NonPersistentQueueFactory ()
+		{
+			Bridge = new InMemoryQueueBridge();
+		}
+
 		/// <summary>
 		/// Ensure queue exists on disk and return a locked instance
 		/// </summary>
 		public IPersistentQueue PrepareQueue()
 		{
-			return new InMemoryQueueBridge();
+			return Bridge;
 		}
 
 		/// <summary>
 		/// Do any cleanup after queue is disposed.
 		/// </summary>
 		public void Cleanup() { }
-	}
-
-	/// <summary>
-	/// Simulates a PersistentQueue, but only in memory
-	/// </summary>
-	public class InMemoryQueueBridge : IPersistentQueue
-	{
-		readonly InnerQueue _innerQueue;
-
-		/// <summary>
-		/// Create a new memory bridge
-		/// </summary>
-		public InMemoryQueueBridge()
-		{
-			_innerQueue = new InnerQueue();
-		}
-
-		/// <summary>
-		/// Nasty fake version of persistent queue behaviour
-		/// </summary>
-		class InnerQueue: IPersistentQueueSession
-		{
-			public readonly Queue<byte[]> Queue;
-			byte[] _last;
-
-			public InnerQueue()
-			{
-				Queue = new Queue<byte[]>();
-			}
-
-			public void Dispose() {
-				_last = null;
-			}
-
-			public void Enqueue(byte[] data)
-			{
-				Queue.Enqueue(data);
-			}
-
-			public byte[] Dequeue()
-			{
-				if (Queue.Count < 1) return null;
-				_last = Queue.Dequeue();
-				return _last;
-			}
-
-			public void Flush()
-			{
-				_last = null;
-			}
-		}
-
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		public void Dispose(){}
-
-		/// <summary>
-		/// Start a session
-		/// </summary>
-		/// <returns></returns>
-		public IPersistentQueueSession OpenSession()
-		{
-			return _innerQueue;
-		}
-
-		/// <summary>
-		/// Count
-		/// </summary>
-		public int EstimatedCountOfItemsInQueue { get { return _innerQueue.Queue.Count;}}
-
-		/// <summary>
-		/// Nothing here. Don't use.
-		/// </summary>
-		public IPersistentQueueImpl Internals { get { return null; }}
-
-		/// <summary>
-		/// Nothing here. Don't use
-		/// </summary>
-		public int MaxFileSize { get { return 1000; } }
 	}
 
 	/// <summary>

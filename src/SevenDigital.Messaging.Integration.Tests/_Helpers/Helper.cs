@@ -51,6 +51,15 @@ namespace SevenDigital.Messaging.Integration.Tests
 				Ignore();
 			}
 		}
+
+		public static void SetupTestMessagingNonPersistent()
+		{
+			var server = ConfigurationManager.AppSettings["rabbitServer"];
+			MessagingSystem.Configure.WithDefaults().NoPersistentMessages()
+				.SetMessagingServer(server).SetIntegrationTestMode();
+
+			ObjectFactory.Configure(map=>map.For<IUniqueEndpointGenerator>().Use<TestEndpointGenerator>());
+		}
 	}
 
 	public class TestEndpointGenerator : IUniqueEndpointGenerator
