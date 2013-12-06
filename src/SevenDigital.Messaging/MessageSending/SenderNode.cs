@@ -47,7 +47,6 @@ namespace SevenDigital.Messaging.MessageSending
 
 			_sendingDispatcher = dispatchFactory.Create( 
 				_persistentQueue,
-				//new InMemoryWorkQueue<byte[]>(),
 				new ThreadedWorkerPool<byte[]>("SDMessaging_Sender")
 			);
 
@@ -125,6 +124,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			var lDispatcher = Interlocked.Exchange(ref _sendingDispatcher, null);
 			if (lDispatcher != null)
+				//lDispatcher.Stop();
 				lDispatcher.WaitForEmptyQueueAndStop(MessagingSystem.ShutdownTimeout);
 
 			var lQueue = Interlocked.Exchange(ref _persistentQueue, null);
