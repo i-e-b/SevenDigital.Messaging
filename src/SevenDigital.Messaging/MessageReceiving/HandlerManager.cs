@@ -18,13 +18,15 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// </summary>
 	public class HandlerManager : IHandlerManager
 	{
+		readonly ISleepWrapper _sleeper;
 		readonly Dictionary<Type, ISet<Type>> _handlers; // message type => [handler types]
 
 		/// <summary>
 		/// New dispatcher
 		/// </summary>
-		public HandlerManager()
+		public HandlerManager(ISleepWrapper sleeper)
 		{
+			_sleeper = sleeper;
 			_handlers = new Dictionary<Type, ISet<Type>>();
 		}
 
@@ -48,7 +50,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 			HandleMessageWithInstancesOfHandlers(pendingMessage, matchingHandlers, messageObject);
 		}
 
-		static void HandleMessageWithInstancesOfHandlers(IPendingMessage<object> pendingMessage, IEnumerable<Type> matchingHandlers, object messageObject)
+		void HandleMessageWithInstancesOfHandlers(IPendingMessage<object> pendingMessage, IEnumerable<Type> matchingHandlers, object messageObject)
 		{
 			foreach (var handler in matchingHandlers)
 			{
@@ -59,6 +61,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 					var instance = ObjectFactory.GetInstance(handler);
 					handler.GetMethod("Handle", new[] { messageObject.GetType() }).Invoke(instance, new[] { messageObject });
 					FireHandledOkHooks((IMessage)messageObject, hooks);
+					_sleeper.Reset();
 				}
 				catch (Exception ex)
 				{
@@ -68,7 +71,10 @@ namespace SevenDigital.Messaging.MessageReceiving
 					}
 					try
 					{
-						if (ShouldRetry(ex.GetType(), handler)) pendingMessage.Cancel();
+						if (ShouldRetry(ex.GetType(), handler))
+						{
+							RetryFailedMessage(pendingMessage);
+						}
 						else pendingMessage.Finish();
 
 						FireHandlerFailedHooks((IMessage)messageObject, hooks, ex, handler);
@@ -81,6 +87,12 @@ namespace SevenDigital.Messaging.MessageReceiving
 				}
 			}
 			pendingMessage.Finish();
+		}
+
+		void RetryFailedMessage(IPendingMessage<object> pendingMessage)
+		{
+			pendingMessage.Cancel();
+			_sleeper.SleepMore();
 		}
 
 		/// <summary>

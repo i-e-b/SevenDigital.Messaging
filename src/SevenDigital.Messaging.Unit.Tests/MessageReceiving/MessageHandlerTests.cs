@@ -19,15 +19,17 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 		IMessagingBase _messageBase;
 		bool FinishCalled, CancelCalled, LogWritten;
 		IEventHook _eventHook;
+		ISleepWrapper _sleepWrapper;
 
 		[SetUp]
 		public void setup()
 		{
+			_sleepWrapper = Substitute.For<ISleepWrapper>();
 			_messageBase = Substitute.For<IMessagingBase>();
 			ObjectFactory.Configure(map=>map.For<IMessagingBase>().Use(_messageBase));
 
 			FinishCalled = CancelCalled = LogWritten = false;
-			_subject = new HandlerManager();
+			_subject = new HandlerManager(_sleepWrapper);
 			_types = new[] {typeof (IMessageOne), typeof (IMessageTwo), typeof (IMessageThree)};
 			_handlers = new[] {typeof (HandlerOne), typeof (HandlerTwo), typeof (HandlerThree)};
 
@@ -118,6 +120,18 @@ namespace SevenDigital.Messaging.Unit.Tests.MessageReceiving
 
 			Assert.That(SubMessageHandler.Count, Is.EqualTo(1));
 			Assert.That(BaseMessageHandler.Count, Is.EqualTo(1));
+		}
+
+		[Test]
+		public void successfully_handling_a_message_resets_the_sleep_wraper ()
+		{
+			_sleepWrapper.ClearReceivedCalls();
+			_subject.AddHandler(typeof (ISubMessage), typeof (SubMessageHandler));
+			_subject.AddHandler(typeof (IMessage), typeof (BaseMessageHandler));
+
+			_subject.TryHandle(_pendingSubMessage);
+
+			_sleepWrapper.Received().Reset();
 		}
 
 		[Test]

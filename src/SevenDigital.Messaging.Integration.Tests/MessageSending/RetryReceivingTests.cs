@@ -3,9 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.MessageReceiving;
 using StructureMap;
 
 namespace SevenDigital.Messaging.Integration.Tests
@@ -15,6 +17,7 @@ namespace SevenDigital.Messaging.Integration.Tests
 	{
 		IReceiver _receiver;
 		ISenderNode _senderNode;
+		ISleepWrapper _sleepWrapper;
 
 		protected TimeSpan LongInterval
 		{
@@ -30,6 +33,13 @@ namespace SevenDigital.Messaging.Integration.Tests
 		public void SetUp()
 		{
 			Helper.SetupTestMessaging();
+			_sleepWrapper = Substitute.For<ISleepWrapper>();
+
+			// Inject a sleep mock into just the handler manager.
+			ObjectFactory.Configure(map => map.For<IHandlerManager>()
+				.Use(() => new HandlerManager(_sleepWrapper))
+				);
+
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
 			_receiver = MessagingSystem.Receiver();
 			_senderNode = MessagingSystem.Sender();
@@ -69,6 +79,20 @@ namespace SevenDigital.Messaging.Integration.Tests
 			Assert.That(events.HandlerExceptions.Count(e => e is IOException), Is.EqualTo(1));
 		}
 
+		[Test]
+		public void Should_sleep_handler_after_failure ()
+		{
+			ExceptionSample.handledTimes = 0;
+			ExceptionSample.AutoResetEvent = new AutoResetEvent(false);
+			using (_receiver.Listen(_=>_.Handle<IColourMessage>().With<ExceptionSample>()))
+			{
+				_senderNode.SendMessage(new RedMessage());
+
+				ExceptionSample.AutoResetEvent.WaitOne(ShortInterval);
+			}
+
+			_sleepWrapper.Received().SleepMore();
+		}
 
 
 		[TestFixtureTearDown]
