@@ -187,6 +187,15 @@ namespace SevenDigital.Messaging
 		/// Calling `WithLoopbackMode()` more than once has no effect.
 		/// </summary>
 		void WithLoopbackMode();
+		
+		/// <summary>
+		/// Use a local-machine persistent queue for process-to-process message sending
+		/// that does not rely on both sides being connected at once.
+		/// <para>This is not high performance for multiple-readers or high write loads</para>
+		/// </summary>
+		/// <param name="storagePath">File path for storing queue items. This should either not
+		/// be created or have been created previously by `SetLocalQueue`</param>
+		void WithLocalQueue(string storagePath);
 	}
 
 	/// <summary>
@@ -216,9 +225,8 @@ namespace SevenDigital.Messaging
 		/// <summary>
 		/// By default, the messaging system will try to do store-and-forward
 		/// messaging. This is persisted to permanent storage.
-		/// &#x0D;&#x0A;
-		/// This option turns store-and-forward off. No disk files will
-		/// be required, but in the event of total failure, messages will be lost.
+		/// <para>This option turns store-and-forward off. No disk files will
+		/// be required, but in the event of total failure, messages will be lost.</para>
 		/// </summary>
 		IMessagingConfigureOptions NoPersistentMessages();
 

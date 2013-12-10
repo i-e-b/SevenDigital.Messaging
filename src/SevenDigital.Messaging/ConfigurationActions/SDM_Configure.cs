@@ -74,5 +74,10 @@ namespace SevenDigital.Messaging.ConfigurationActions
 				MessagingSystem.Events.AddEventHook<TestEventHook>();
 			}
 		}
+
+		public void WithLocalQueue(string storagePath)
+		{
+			// TODO: implement!
+		}
 	}
 }

@@ -25,6 +25,8 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending.BaseCases
 		/// </summary>
 		public abstract void ConfigureMessaging();
 
+		public abstract int ExpectedCompeteMessages(int handlers, int sent);
+
 		[SetUp]
 		public void SetUp()
 		{
@@ -223,7 +225,8 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending.BaseCases
 					recvd = MessagingSystem.Testing.LoopbackEvents().ReceivedMessages.Count();
 				}
 
-				Assert.That(recvd, Is.EqualTo(sent),
+				var expected = ExpectedCompeteMessages(2, sent);
+				Assert.That(recvd, Is.EqualTo(expected),
 					"Sent: "+sent+"; Received: "+recvd);
 			}
 
