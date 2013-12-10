@@ -16,9 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Info", "Info", "{5B19FBF1-A
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhino.Queues.Storage.Disk.Tests", "DiskQueue\src\Rhino.Queues.Storage.Disk.Tests\Rhino.Queues.Storage.Disk.Tests.csproj", "{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiskQueue.Tests", "DiskQueue\src\DiskQueue.Tests\DiskQueue.Tests.csproj", "{1CE72DCA-61B7-4865-B5CB-191D04FB5B46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiskQueue", "DiskQueue\src\Rhino.Queues.Storage.Disk\DiskQueue.csproj", "{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiskQueue", "DiskQueue\src\DiskQueue\DiskQueue.csproj", "{D3F1301E-3C40-4FE5-9FF3-5D95D3A4F7E5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{12147509-77F0-4F0A-8B16-8F85CF80DAEF}"
 EndProject
