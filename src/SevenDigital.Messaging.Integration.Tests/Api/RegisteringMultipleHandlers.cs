@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using NUnit.Framework;
+using SevenDigital.Messaging.Integration.Tests._Helpers;
 
-namespace SevenDigital.Messaging.Integration.Tests
+namespace SevenDigital.Messaging.Integration.Tests.Api
 {
 	[TestFixture]
 	public class RegisteringMultipleHandlers_Base

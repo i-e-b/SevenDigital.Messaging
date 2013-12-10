@@ -1,4 +1,4 @@
-namespace SevenDigital.Messaging.Integration.Tests.Messages
+namespace SevenDigital.Messaging.Integration.Tests._Helpers.Messages
 {
     public interface ITwoColoursMessage : IColourMessage
     {

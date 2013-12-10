@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
-using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.Integration.Tests._Helpers.Messages;
 using StructureMap;
 
-namespace SevenDigital.Messaging.Integration.Tests.MessageSending
+namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 {
 	[TestFixture]
 	public class SendingDuringShutdownTests

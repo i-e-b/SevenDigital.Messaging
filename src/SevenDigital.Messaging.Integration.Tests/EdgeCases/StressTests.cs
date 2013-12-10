@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using NUnit.Framework;
+using SevenDigital.Messaging.Integration.Tests._Helpers;
 
-namespace SevenDigital.Messaging.Integration.Tests.MessageSending
+namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 {
 	[TestFixture]
 	public class StressTests

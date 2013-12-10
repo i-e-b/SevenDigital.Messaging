@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using NUnit.Framework;
 
-namespace SevenDigital.Messaging.Integration.Tests
+namespace SevenDigital.Messaging.Integration.Tests.Api
 {
 	[TestFixture]
 	public class AutoShutdownTests

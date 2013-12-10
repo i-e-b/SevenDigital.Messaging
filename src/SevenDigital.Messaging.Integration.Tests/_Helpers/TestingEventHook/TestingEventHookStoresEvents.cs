@@ -5,7 +5,7 @@ using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
 using StructureMap;
 
-namespace SevenDigital.Messaging.Integration.Tests.TestingEventHook
+namespace SevenDigital.Messaging.Integration.Tests._Helpers.TestingEventHook
 {
 	[TestFixture]
 	public class TestingEventHookStoresEvents

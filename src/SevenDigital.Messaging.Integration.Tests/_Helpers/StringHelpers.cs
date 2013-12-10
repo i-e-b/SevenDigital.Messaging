@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SevenDigital.Messaging.Integration.Tests.Helpers
+namespace SevenDigital.Messaging.Integration.Tests._Helpers
 {
 	public static class StringHelpers {
 		/// <summary>

@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace SevenDigital.Messaging.Integration.Tests
+namespace SevenDigital.Messaging.Integration.Tests._Helpers
 {
 	class HoldingEventHook : IEventHook
 	{

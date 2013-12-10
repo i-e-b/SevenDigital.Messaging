@@ -1,6 +1,6 @@
 using System;
 
-namespace SevenDigital.Messaging.Integration.Tests.Messages
+namespace SevenDigital.Messaging.Integration.Tests._Helpers.Messages
 {
 	public class SupermanMessage : ISuperHeroMessage
 	{

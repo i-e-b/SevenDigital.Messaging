@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using NUnit.Framework;
+using SevenDigital.Messaging.Integration.Tests._Helpers;
 
 namespace SevenDigital.Messaging.Integration.Tests.EdgeCases
 {

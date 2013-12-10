@@ -2,10 +2,11 @@
 using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
-using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.Integration.Tests._Helpers;
+using SevenDigital.Messaging.Integration.Tests._Helpers.Messages;
 using SevenDigital.Messaging.MessageReceiving;
 
-namespace SevenDigital.Messaging.Integration.Tests.MessageSending
+namespace SevenDigital.Messaging.Integration.Tests.Api
 {
 	[TestFixture]
 	public class UnregisteringHandlersTests

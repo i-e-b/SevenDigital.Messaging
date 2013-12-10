@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
-using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.Integration.Tests._Helpers.Messages;
 
-namespace SevenDigital.Messaging.Integration.Tests.Handlers
+namespace SevenDigital.Messaging.Integration.Tests._Helpers.Handlers
 {
 	public class FailingColourHandler : IHandle<IColourMessage>
 	{

@@ -1,18 +1,18 @@
-using System;// ReSharper disable InconsistentNaming
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.EventHooks;
-using SevenDigital.Messaging.Integration.Tests.Handlers;
-using SevenDigital.Messaging.Integration.Tests.Messages;
+using SevenDigital.Messaging.Integration.Tests._Helpers.Handlers;
+using SevenDigital.Messaging.Integration.Tests._Helpers.Messages;
 using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.MessageReceiving;
+// ReSharper disable InconsistentNaming
 
-namespace SevenDigital.Messaging.Integration.Tests
+namespace SevenDigital.Messaging.Integration.Tests.MessageSending.BaseCases
 {
-	[TestFixture]
-	public class SendingAndReceiving_WithDefaultQueue_Tests
+	public abstract class SendingAndReceivingBase
 	{
 		IReceiver _receiver;
 		private ISenderNode _sender;
@@ -20,16 +20,24 @@ namespace SevenDigital.Messaging.Integration.Tests
 		protected TimeSpan LongInterval { get { return TimeSpan.FromSeconds(20); } }
 		protected TimeSpan ShortInterval { get { return TimeSpan.FromSeconds(2); } }
 
+		/// <summary>
+		/// Concretes should setup their specific messaging configs here
+		/// </summary>
+		public abstract void ConfigureMessaging();
+
 		[SetUp]
 		public void SetUp()
 		{
-			Helper.SetupTestMessaging();
+			ConfigureMessaging();
 
 			MessagingSystem.Events.ClearEventHooks();
 			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
 			_receiver = MessagingSystem.Receiver();
 			_sender = MessagingSystem.Sender();
 		}
+
+		[TearDown]
+		public void Stop() { MessagingSystem.Control.Shutdown(); }
 
 		[Test]
 		public void Handler_should_react_for_all_message_types_it_is_handling()
@@ -220,8 +228,5 @@ namespace SevenDigital.Messaging.Integration.Tests
 			}
 
 		}
-
-		[TearDown]
-		public void Stop() { MessagingSystem.Control.Shutdown(); }
 	}
 }

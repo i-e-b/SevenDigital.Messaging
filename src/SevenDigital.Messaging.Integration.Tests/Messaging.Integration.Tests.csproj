@@ -77,13 +77,13 @@
     <Compile Include="Hooks\FailingEventHookTests.cs" />
     <Compile Include="Hooks\FailingHandlerEventHookTests.cs" />
     <Compile Include="Loopback\LoopbackModeTests.cs" />
-    <Compile Include="MessageSending\SendingAndReceiving_WithNonPersistentQueue_Tests.cs" />
+    <Compile Include="MessageSending\BaseCases\SendingAndReceivingBase.cs" />
     <Compile Include="MessageSending\NonPersistentQueueTests.cs" />
-    <Compile Include="MessageSending\RetryReceivingTests.cs" />
-    <Compile Include="MessageSending\SendingDuringShutdownTests.cs" />
+    <Compile Include="Api\RetryReceivingTests.cs" />
+    <Compile Include="EdgeCases\SendingDuringShutdownTests.cs" />
     <Compile Include="MessageSending\SendingRetryTests.cs" />
-    <Compile Include="MessageSending\StressTests.cs" />
-    <Compile Include="MessageSending\UnregisteringHandlersTests.cs" />
+    <Compile Include="EdgeCases\StressTests.cs" />
+    <Compile Include="Api\UnregisteringHandlersTests.cs" />
     <Compile Include="_Helpers\Handlers\FailingColourHandler.cs" />
     <Compile Include="_Helpers\Helper.cs" />
     <Compile Include="_Helpers\HoldingEventHook.cs" />
@@ -99,7 +99,7 @@
     <Compile Include="_Helpers\Handlers\VillainMessageHandler.cs" />
     <Compile Include="Api\PurgingQueues.cs" />
     <Compile Include="Api\QueueDestructionSurvivalTests.cs" />
-    <Compile Include="MessageSending\SendingAndReceiving_WithDefaultQueue_Tests.cs" />
+    <Compile Include="MessageSending\SendingAndReceivingTests.cs" />
     <Compile Include="_Helpers\Messages\GreenMessage.cs" />
     <Compile Include="_Helpers\Messages\IColourMessage.cs" />
     <Compile Include="_Helpers\Messages\IComicBookCharacterMessage.cs" />

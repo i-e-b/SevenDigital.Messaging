@@ -4,7 +4,7 @@ using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
-namespace SevenDigital.Messaging.Integration.Tests
+namespace SevenDigital.Messaging.Integration.Tests._Helpers
 {
 	public class Helper
 	{
