@@ -78,6 +78,26 @@ namespace SevenDigital.Messaging.ConfigurationActions
 		public void WithLocalQueue(string storagePath)
 		{
 			// TODO: implement!
+			/*
+			 * The Plan:
+			 * =========
+			 * 
+			 * Inside `storagePath` we keep TWO DiskQueues: one for 'incoming'
+			 * and one for 'dispatch'. ISenderNode does a PersistentQueue.WaitFor,
+			 * adds the item, flushes and exits as fast as possible.
+			 * Another thread loops, trying to get a lock on both the dispatch and
+			 * incoming queue (dispatch first). When it gets a lock, it dequeues from
+			 * incoming and enqueues onto dispatch.
+			 * 
+			 * The receiver node loops connecting to dispatch. It disconnects and sleeps
+			 * if no messages. Otherwise it holds the session open, runs handlers and
+			 * follows the RetryException semantics: if complete or non-retry exception
+			 * the dequeue is flushed. If retry exception the dequeue is abandoned.
+			 * In either case, receiver loop reads again from dispatch.
+			 * 
+			 * In the case of handler exceptions... I dunno. Maybe require another storage
+			 * path just for handler errors.
+			 */
 		}
 	}
 }

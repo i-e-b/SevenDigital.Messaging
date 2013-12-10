@@ -62,6 +62,7 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 			ObjectFactory.Configure(map=>map.For<IUniqueEndpointGenerator>().Use<TestEndpointGenerator>());
 		}
 
+		// TODO: look into this, it may actually be a bug.
 		public override int ExpectedCompeteMessages(int handlers, int sent) { return sent * handlers; }
 	}
 	
