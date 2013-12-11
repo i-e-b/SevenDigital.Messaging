@@ -13,7 +13,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 {
 	/// <summary>
 	/// Standard node factory for messaging.
-	/// You don't need to create this yourself, use `Messaging.Receiver()`
+	/// You don't need to create this yourself, use `MessagingSystem.Receiver()`
 	/// </summary>
 	/// <remarks>
 	/// The Receiver is a factory class for ReceiverNodes. It provides
@@ -31,7 +31,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 
 		/// <summary>
 		/// Create a new node factory.
-		/// You don't need to create this yourself, use `Messaging.Receiver()`
+		/// You don't need to create this yourself, use `MessagingSystem.Receiver()`
 		/// </summary>
 		public Receiver(
 			IUniqueEndpointGenerator uniqueEndPointGenerator,
@@ -152,7 +152,8 @@ namespace SevenDigital.Messaging.MessageReceiving
 				try
 				{
 					_messageRouter.RemoveRouting(DeleteNameFilter);
-				} catch
+				}
+				catch
 				{
 					Ignore();
 				}
@@ -162,7 +163,8 @@ namespace SevenDigital.Messaging.MessageReceiving
 		static void Ignore() { }
 
 		/// <summary>
-		/// Returns true if a queue name would be deleted is DIEOS is set
+		/// Returns true if a queue name would be deleted if 
+		/// <see cref="DeleteIntegrationEndpointsOnShutdown"/> is set
 		/// </summary>
 		public bool DeleteNameFilter(string queueName)
 		{

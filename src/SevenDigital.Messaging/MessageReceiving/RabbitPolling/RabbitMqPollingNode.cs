@@ -24,7 +24,8 @@ namespace SevenDigital.Messaging.MessageReceiving.RabbitPolling
 		/// <param name="endpoint">Destination endpoint to pull messages from</param>
 		/// <param name="messagingBase">RabbitMQ connection provider</param>
 		/// <param name="sleeper">Sleeper to rate limit polling</param>
-		public RabbitMqPollingNode(IRoutingEndpoint endpoint, IMessagingBase messagingBase, ISleepWrapper sleeper)
+		public RabbitMqPollingNode(IRoutingEndpoint endpoint,
+			IMessagingBase messagingBase, ISleepWrapper sleeper)
 		{
 			_endpoint = endpoint.ToString();
 			_messagingBase = messagingBase;

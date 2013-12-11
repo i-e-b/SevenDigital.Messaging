@@ -43,7 +43,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 
 			_receivingDispatcher = dispatchFactory.Create(
 				_pollingNode,
-				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver"));
+				new ThreadedWorkerPool<IPendingMessage<object>>("SDMessaging_Receiver_" + endpoint));
 
 			_receivingDispatcher.AddConsumer(HandleIncomingMessage);
 			_receivingDispatcher.SetMaximumInflight(MessagingSystem.Concurrency);

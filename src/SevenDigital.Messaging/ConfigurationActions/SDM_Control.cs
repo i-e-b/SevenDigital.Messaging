@@ -31,6 +31,9 @@ namespace SevenDigital.Messaging.ConfigurationActions
 				EjectAndDispose<IMessagingHost>();
 				EjectAndDispose<IRabbitMqConnection>();
 				EjectAndDispose<IChannelAction>();
+
+				// Maybe some local queue bits
+				EjectAndDispose<LocalQueueConfig>();
 			}
 		}
 

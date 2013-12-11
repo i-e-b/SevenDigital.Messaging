@@ -1,6 +1,14 @@
 using System;
+using System.IO;
+using System.Text;
+using System.Threading;
+using DiskQueue;
+using DispatchSharp;
+using DispatchSharp.QueueTypes;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
+using SevenDigital.Messaging.Base.Routing;
+using SevenDigital.Messaging.Base.Serialisation;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Loopback;
@@ -9,6 +17,7 @@ using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
+using StructureMap.Pipeline;
 
 namespace SevenDigital.Messaging.ConfigurationActions
 {
@@ -98,6 +107,222 @@ namespace SevenDigital.Messaging.ConfigurationActions
 			 * In the case of handler exceptions... I dunno. Maybe require another storage
 			 * path just for handler errors.
 			 */
+
+			lock (MessagingSystem.ConfigurationLock)
+			{
+				if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
+					return;// new SDM_LocalQueueOptions();
+
+				new MessagingBaseConfiguration().WithDefaults();
+				ObjectFactory.EjectAllInstancesOf<IReceiver>();
+
+				// Base messaging
+				new MessagingBaseConfiguration().WithDefaults();
+				Cooldown.Activate();
+				AutoShutdown.Activate();
+
+				ObjectFactory.Configure(map => {
+					// threading and dispatch
+					map.For<IHandlerManager>().Use<HandlerManager>();
+					map.For<IDispatcherFactory>().Use<DispatcherFactory>();
+
+					// no-op proxy for routing
+					map.For<IMessageRouter>().Use<DummyMessageRouter>();
+
+					// singletons
+					map.For<ISleepWrapper>().Singleton().Use<SleepWrapper>();
+					map.For<IReceiver>().Singleton().Use<Receiver>();
+
+					// aliases
+					map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
+
+					// Local queue specific
+					map.For<LocalQueueConfig>().Use(new LocalQueueConfig {
+						DispatchPath = Path.Combine(storagePath, "dispatch"),
+						IncomingPath = Path.Combine(storagePath, "incoming")
+					}
+					);
+					map.For<IPollingNodeFactory>().Use<LocalQueuePollingNodeFactory>();
+					map.For<ISenderNode>().Singleton().Use<LocalQueueSender>();
+				});
+			}
 		}
 	}
+
+	public class DummyMessageRouter:IMessageRouter
+	{
+		public void AddSource(string name) { }
+		public void AddBroadcastSource(string className) { }
+		public void AddDestination(string name) { }
+		public void Link(string sourceName, string destinationName) { } 
+		public void RouteSources(string child, string parent) { } 
+		public void Send(string sourceName, string data) { } 
+		public string Get(string destinationName, out ulong deliveryTag) { deliveryTag = 0; return null; } 
+		public void Finish(ulong deliveryTag) { } 
+		public string GetAndFinish(string destinationName) { return null; }
+		public void Purge(string destinationName) { } 
+		public void Cancel(ulong deliveryTag) { } 
+		public void RemoveRouting(Func<string, bool> filter) { }
+	}
+
+	public class LocalQueuePollingNodeFactory:IPollingNodeFactory
+	{
+		readonly string _dispatchPath;
+		readonly IMessageSerialiser _serialiser;
+		readonly ISleepWrapper _sleeper;
+
+		public LocalQueuePollingNodeFactory(LocalQueueConfig config,
+			IMessageSerialiser serialiser, ISleepWrapper sleeper)
+		{
+			_serialiser = serialiser;
+			_sleeper = sleeper;
+			_dispatchPath = config.DispatchPath;
+		}
+
+		public ITypedPollingNode Create(IRoutingEndpoint endpoint)
+		{
+			return new LocalQueuePollingNode(_dispatchPath, _serialiser, _sleeper);
+		}
+	}
+
+	public class LocalQueuePollingNode : ITypedPollingNode
+	{
+		readonly string _dispatchPath;
+		readonly IMessageSerialiser _serialiser;
+		readonly ISleepWrapper _sleeper;
+		readonly ConcurrentSet<Type> _boundMessageTypes;
+
+		public LocalQueuePollingNode(string dispatchPath,
+			IMessageSerialiser serialiser, ISleepWrapper sleeper)
+		{
+			_dispatchPath = dispatchPath;
+			_serialiser = serialiser;
+			_sleeper = sleeper;
+			_boundMessageTypes = new ConcurrentSet<Type>();
+		}
+
+		public void Enqueue(IPendingMessage<object> work)
+		{
+			throw new InvalidOperationException("This queue self populates and doesn't currently support direct injection.");
+		}
+
+		public IWorkQueueItem<IPendingMessage<object>> TryDequeue()
+		{
+			if (_boundMessageTypes.Count < 1)
+			{
+				_sleeper.SleepMore();
+				return new WorkQueueItem<IPendingMessage<object>>();
+			}
+
+			IPersistentQueue[] queue = {PersistentQueue.WaitFor(_dispatchPath, TimeSpan.FromMinutes(1))};
+			if (queue[0] == null) throw new Exception("Unexpected null queue");
+			try
+			{
+				var session = queue[0].OpenSession();
+				var data = session.Dequeue();
+				if (data == null)
+				{
+					session.Dispose();
+					queue[0].Dispose();
+					_sleeper.SleepMore();
+
+					return new WorkQueueItem<IPendingMessage<object>>();
+				}
+
+				object msg;
+				try
+				{
+					msg = _serialiser.DeserialiseByStack(Encoding.UTF8.GetString(data));
+				}
+				catch
+				{
+					session.Dispose();
+					throw;
+				}
+
+				_sleeper.Reset();
+				return new WorkQueueItem<IPendingMessage<object>>(
+					new PendingMessage<object>(null, msg, 0UL),
+					m => { // Finish a message
+						session.Flush();
+						session.Dispose();
+						if (queue[0] != null) queue[0].Dispose();
+						queue[0] = null;
+					},
+					m => {
+						// Cancel a message
+						session.Dispose();
+						if (queue[0] != null) queue[0].Dispose();
+						queue[0] = null;
+					});
+			}
+			catch
+			{
+				if (queue[0] != null) queue[0].Dispose();
+				throw;
+			}
+		}
+
+		public int Length()
+		{
+			return 0;
+		}
+
+		public bool BlockUntilReady()
+		{
+			return true;
+		}
+
+		public void AddMessageType(Type type)
+		{
+			lock (_boundMessageTypes)
+			{
+				_boundMessageTypes.Add(type);
+			}
+		}
+
+		public void Stop()
+		{
+			lock (_boundMessageTypes)
+			{
+				_boundMessageTypes.Clear();
+			}
+		}
+	}
+
+	public class LocalQueueConfig
+	{
+		public string IncomingPath { get; set; }
+		public string DispatchPath { get; set; }
+	}
+
+	public class LocalQueueSender : ISenderNode
+	{
+		readonly IMessageSerialiser _serialiser;
+		readonly string _incomingPath;
+
+		public LocalQueueSender(LocalQueueConfig config,
+			IMessageSerialiser serialiser)
+		{
+			_serialiser = serialiser;
+			_incomingPath = config.IncomingPath;
+		}
+
+		public void Dispose() { }
+
+		public void SendMessage<T>(T message) where T : class, IMessage
+		{
+			Thread.Sleep(150);
+			var data = Encoding.UTF8.GetBytes(_serialiser.Serialise(message));
+
+			using (var queue = PersistentQueue.WaitFor(_incomingPath, TimeSpan.FromMinutes(1)))
+			using (var session = queue.OpenSession())
+			{
+				session.Enqueue(data);
+				session.Flush();
+			}
+			HookHelper.TrySentHooks(message);
+		}
+	}
+
 }

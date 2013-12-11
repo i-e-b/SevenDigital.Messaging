@@ -32,10 +32,11 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending.BaseCases
 		{
 			ConfigureMessaging();
 
-			MessagingSystem.Events.ClearEventHooks();
-			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
 			_receiver = MessagingSystem.Receiver();
 			_sender = MessagingSystem.Sender();
+
+			MessagingSystem.Events.ClearEventHooks();
+			MessagingSystem.Events.AddEventHook<ConsoleEventHook>();
 		}
 
 		[TearDown]

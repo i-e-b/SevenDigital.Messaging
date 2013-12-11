@@ -8,7 +8,6 @@ using SevenDigital.Messaging.Base.Serialisation;
 using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.MessageReceiving;
-using StructureMap;
 // ReSharper disable RedundantUsingDirective
 using DispatchSharp.QueueTypes;
 // ReSharper restore RedundantUsingDirective
@@ -17,7 +16,7 @@ namespace SevenDigital.Messaging.MessageSending
 {
 	/// <summary>
 	/// Standard sender node for Messaging.
-	/// You do not need to create this yourself. Use `Messaging.Sender()`
+	/// You do not need to create this yourself. Use `MessagingSystem.Sender()`
 	/// </summary>
 	public class SenderNode : ISenderNode
 	{
@@ -29,7 +28,8 @@ namespace SevenDigital.Messaging.MessageSending
 		PersistentWorkQueue _persistentQueue;
 
 		/// <summary>
-		/// Create a new message sending node. You do not need to create this yourself. Use `Messaging.Sender()`
+		/// Create a new message sending node. You do not need to create this yourself.
+		/// Use `MessagingSystem.Sender()`
 		/// </summary>
 		public SenderNode(
 			IMessagingBase messagingBase,
@@ -45,7 +45,7 @@ namespace SevenDigital.Messaging.MessageSending
 
 			_persistentQueue = new PersistentWorkQueue(_queueFactory, _sleeper);
 
-			_sendingDispatcher = dispatchFactory.Create( 
+			_sendingDispatcher = dispatchFactory.Create(
 				_persistentQueue,
 				new ThreadedWorkerPool<byte[]>("SDMessaging_Sender")
 			);
@@ -75,7 +75,7 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			var prepared = _messagingBase.PrepareForSend(message);
 			_sendingDispatcher.AddWork(prepared.ToBytes());
-			TryFireHooks(message);
+			HookHelper.TrySentHooks(message);
 		}
 
 		/// <summary>
@@ -85,36 +85,6 @@ namespace SevenDigital.Messaging.MessageSending
 		{
 			_messagingBase.SendPrepared(PreparedMessage.FromBytes(message));
 			_sleeper.Reset();
-		}
-
-		static void TryFireHooks(IMessage message)
-		{
-			var hooks = GetEventHooks();
-
-			foreach (var hook in hooks)
-			{
-				try
-				{
-					hook.MessageSent(message);
-				}
-				catch (Exception ex)
-				{
-					Log.Warning("An event hook failed during send " + ex.GetType() + "; " + ex.Message);
-				}
-			}
-		}
-
-		static IEnumerable<IEventHook> GetEventHooks()
-		{
-			try
-			{
-				return ObjectFactory.GetAllInstances<IEventHook>();
-			}
-			catch (Exception ex)
-			{
-				Log.Warning("Structuremap could not generate event hook list " + ex.GetType() + "; " + ex.Message);
-				return new IEventHook[0];
-			}
 		}
 
 		/// <summary>
