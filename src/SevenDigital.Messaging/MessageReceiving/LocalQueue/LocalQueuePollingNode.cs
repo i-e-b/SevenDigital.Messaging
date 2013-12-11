@@ -11,6 +11,9 @@ using SevenDigital.Messaging.MessageReceiving.RabbitPolling;
 
 namespace SevenDigital.Messaging.MessageReceiving.LocalQueue
 {
+	/// <summary>
+	/// Message polling node that reads from a locally accessible DiskQueue
+	/// </summary>
 	public class LocalQueuePollingNode : ITypedPollingNode
 	{
 		readonly string _dispatchPath;
@@ -19,6 +22,12 @@ namespace SevenDigital.Messaging.MessageReceiving.LocalQueue
 		readonly ISleepWrapper _sleeper;
 		readonly ConcurrentSet<Type> _boundMessageTypes;
 
+		/// <summary>
+		/// Create a local polling node.
+		/// <para>You should not use this yourself. Use:</para>
+		/// <para>MessagingSystem.Configure.WithLocalQueue(...);</para>
+		/// and receive messages as normal.
+		/// </summary>
 		public LocalQueuePollingNode(string dispatchPath, string incomingPath,
 		                             IMessageSerialiser serialiser, ISleepWrapper sleeper)
 		{
@@ -112,9 +121,9 @@ namespace SevenDigital.Messaging.MessageReceiving.LocalQueue
 					while ((data = src.Dequeue()) != null)
 					{
 						dst.Enqueue(data);
-						dst.Flush();
-						src.Flush();
 					}
+					dst.Flush();
+					src.Flush();
 				}
 			}
 			catch (TimeoutException)

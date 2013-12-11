@@ -25,8 +25,6 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending.BaseCases
 		/// </summary>
 		public abstract void ConfigureMessaging();
 
-		public abstract int ExpectedCompeteMessages(int handlers, int sent);
-
 		[SetUp]
 		public void SetUp()
 		{
@@ -202,8 +200,8 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending.BaseCases
 				{
 					_sender.SendMessage(new JokerMessage());
 				}
-				
-				Thread.Sleep(1000);
+
+				Thread.Sleep(500);
 
 				receiverNode.Register(
 					new Binding()
@@ -212,21 +210,22 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending.BaseCases
 					);
 
 				var superheroSignal = SuperHeroMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
-				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(ShortInterval);
+				var villainSignal = VillainMessageHandler.AutoResetEvent.WaitOne(LongInterval);
 
 				Assert.That(superheroSignal, Is.True, "superhero signal");
 				Assert.That(villainSignal, Is.True, "villain signal");
 
-				int recvd = 0;
 				var sent = MessagingSystem.Testing.LoopbackEvents().SentMessages.Count();
+				int recvd = 0;
+				var expected = (2 * sent);
+
 				var sw = new Stopwatch();
 				sw.Start();
-				while (sw.Elapsed < TimeSpan.FromSeconds(20) && recvd < sent)
+				while (sw.Elapsed < TimeSpan.FromSeconds(20) && recvd < expected)
 				{
 					recvd = MessagingSystem.Testing.LoopbackEvents().ReceivedMessages.Count();
 				}
 
-				var expected = ExpectedCompeteMessages(2, sent);
 				Assert.That(recvd, Is.EqualTo(expected),
 					"Sent: "+sent+"; Received: "+recvd);
 			}
