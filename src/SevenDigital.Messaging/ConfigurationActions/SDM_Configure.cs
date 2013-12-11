@@ -20,6 +20,12 @@ namespace SevenDigital.Messaging.ConfigurationActions
 {
 	class SDM_Configure : IMessagingConfigure
 	{
+		/// <summary> Subpath for handler transactions </summary>
+		public const string DispatchQueueSubpath = "dispatch";
+
+		/// <summary> Subpath for storing incoming messages </summary>
+		public const string IncomingQueueSubpath = "incoming";
+
 		public IMessagingConfigureOptions WithDefaults()
 		{
 			lock (MessagingSystem.ConfigurationLock)
@@ -81,34 +87,12 @@ namespace SevenDigital.Messaging.ConfigurationActions
 			}
 		}
 
-		public void WithLocalQueue(string storagePath)
+		public ILocalQueueOptions WithLocalQueue(string storagePath)
 		{
-			// TODO: implement!
-			/*
-			 * The Plan:
-			 * =========
-			 * 
-			 * Inside `storagePath` we keep TWO DiskQueues: one for 'incoming'
-			 * and one for 'dispatch'. ISenderNode does a PersistentQueue.WaitFor,
-			 * adds the item, flushes and exits as fast as possible.
-			 * Another thread loops, trying to get a lock on both the dispatch and
-			 * incoming queue (dispatch first). When it gets a lock, it dequeues from
-			 * incoming and enqueues onto dispatch.
-			 * 
-			 * The receiver node loops connecting to dispatch. It disconnects and sleeps
-			 * if no messages. Otherwise it holds the session open, runs handlers and
-			 * follows the RetryException semantics: if complete or non-retry exception
-			 * the dequeue is flushed. If retry exception the dequeue is abandoned.
-			 * In either case, receiver loop reads again from dispatch.
-			 * 
-			 * In the case of handler exceptions... I dunno. Maybe require another storage
-			 * path just for handler errors.
-			 */
-
 			lock (MessagingSystem.ConfigurationLock)
 			{
 				if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
-					return;// new SDM_LocalQueueOptions();
+					return new SDM_LocalQueueOptions();
 
 				new MessagingBaseConfiguration().WithDefaults();
 				ObjectFactory.EjectAllInstancesOf<IReceiver>();
@@ -135,14 +119,15 @@ namespace SevenDigital.Messaging.ConfigurationActions
 
 					// Local queue specific
 					map.For<LocalQueueConfig>().Use(new LocalQueueConfig {
-						DispatchPath = Path.Combine(storagePath, "dispatch"),
-						IncomingPath = Path.Combine(storagePath, "incoming")
+						DispatchPath = Path.Combine(storagePath, DispatchQueueSubpath),
+						IncomingPath = Path.Combine(storagePath, IncomingQueueSubpath)
 					}
 					);
 					map.For<IPollingNodeFactory>().Use<LocalQueuePollingNodeFactory>();
 					map.For<ISenderNode>().Singleton().Use<LocalQueueSender>();
 				});
 			}
+			return new SDM_LocalQueueOptions();
 		}
 	}
 }

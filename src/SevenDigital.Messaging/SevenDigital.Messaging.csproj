@@ -62,6 +62,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventHooks\LocalQueueExceptionHook.cs" />
+    <Compile Include="ConfigurationActions\SDM_LocalQueueOptions.cs" />
+    <Compile Include="IHandlerException.cs" />
     <Compile Include="MessageReceiving\LocalQueue\DummyMessageRouter.cs" />
     <Compile Include="MessageReceiving\LocalQueue\DummyRouter.cs" />
     <Compile Include="ConfigurationActions\LocalQueueConfig.cs" />

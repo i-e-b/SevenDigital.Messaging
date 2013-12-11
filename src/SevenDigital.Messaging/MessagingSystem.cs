@@ -195,7 +195,7 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		/// <param name="storagePath">File path for storing queue items. This should either not
 		/// be created or have been created previously by `SetLocalQueue`</param>
-		void WithLocalQueue(string storagePath);
+		ILocalQueueOptions WithLocalQueue(string storagePath);
 	}
 
 	/// <summary>
@@ -236,5 +236,18 @@ namespace SevenDigital.Messaging
 		/// in their names will be deleted on disposal.
 		/// </summary>
 		void SetIntegrationTestMode();
+	}
+	
+	/// <summary>
+	/// Options for local queue mode
+	/// </summary>
+	public interface ILocalQueueOptions
+	{
+		/// <summary>
+		/// Adds an event hook to capture handler exceptions
+		/// in this process and send an <see cref="IHandlerExceptionMessage"/>
+		/// to the named locally available storage
+		/// </summary>
+		ILocalQueueOptions SendHandlerErrorsToQueue(string errorQueueStorage);
 	}
 }

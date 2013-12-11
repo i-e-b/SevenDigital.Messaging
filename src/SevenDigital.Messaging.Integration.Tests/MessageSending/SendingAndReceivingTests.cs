@@ -57,7 +57,6 @@ namespace SevenDigital.Messaging.Integration.Tests.MessageSending
 
 			ObjectFactory.Configure(map=>map.For<IUniqueEndpointGenerator>().Use<TestEndpointGenerator>());
 		}
-
 	}
 	
 	[TestFixture]
