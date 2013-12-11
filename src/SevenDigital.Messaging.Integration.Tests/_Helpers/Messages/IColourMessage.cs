@@ -2,6 +2,6 @@
 {
 	public interface IColourMessage : IMessage
 	{
-		string Text { get; }
+		string Text { get; set; }
 	}
 }

@@ -2,18 +2,19 @@ using System;
 
 namespace SevenDigital.Messaging.Integration.Tests._Helpers.Messages
 {
-    public class RedMessage : IColourMessage
-    {
+	public class RedMessage : IColourMessage
+	{
 
-        public RedMessage()
-        {
-            CorrelationId = Guid.NewGuid();
-        }
-        public Guid CorrelationId { get; set; }
+		public RedMessage()
+		{
+			CorrelationId = Guid.NewGuid();
+		}
+		public Guid CorrelationId { get; set; }
 
-        public string Text
-        {
-            get { return "Red"; }
-        }
-    }
+		public string Text
+		{
+			get { return "Red"; }
+			set { }
+		}
+	}
 }

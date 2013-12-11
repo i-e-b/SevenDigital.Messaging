@@ -56,7 +56,17 @@ namespace SevenDigital.Messaging.MessageReceiving.LocalQueue
 				return new WorkQueueItem<IPendingMessage<object>>();
 			}
 
-			IPersistentQueue[] queue = {PersistentQueue.WaitFor(_dispatchPath, TimeSpan.FromMinutes(1))};
+			IPersistentQueue[] queue;
+			
+			try
+			{
+				queue =new []{PersistentQueue.WaitFor(_dispatchPath, TimeSpan.FromMinutes(1))};
+			}
+			catch (TimeoutException)
+			{
+				return new WorkQueueItem<IPendingMessage<object>>();
+			}
+
 			if (queue[0] == null) throw new Exception("Unexpected null queue");
 			try
 			{

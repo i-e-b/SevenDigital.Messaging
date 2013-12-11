@@ -12,6 +12,7 @@ namespace SevenDigital.Messaging.Integration.Tests._Helpers.Messages
 		public string Text
 		{
 			get { return "Green"; }
+			set { }
 		}
 	}
 }

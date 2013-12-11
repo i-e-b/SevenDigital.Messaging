@@ -11,7 +11,7 @@ namespace SevenDigital.Messaging.Integration.Tests._Helpers.Messages
             CorrelationId = Guid.NewGuid();
         }
         public Guid CorrelationId { get; set; }
-        public string Text { get; private set; }
+        public string Text { get; set; }
         public string Text2 { get; private set; }
     }
 }
