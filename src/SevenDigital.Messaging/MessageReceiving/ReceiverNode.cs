@@ -18,7 +18,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// When the user binds a message type to a handler, this gets added to the
 	/// handler and the rabbit work queue.
 	/// </remarks>
-	public class ReceiverNode : IReceiverNode
+	public sealed class ReceiverNode : IReceiverNode
 	{
 		readonly IReceiverControl _parent;
 		readonly IRoutingEndpoint _endpoint;

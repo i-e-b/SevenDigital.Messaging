@@ -6,7 +6,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// <summary>
 	/// Simulates a PersistentQueue, but only in memory
 	/// </summary>
-	public class InMemoryQueueBridge : IPersistentQueue
+	public sealed class InMemoryQueueBridge : IPersistentQueue
 	{
 		readonly InnerQueue _innerQueue;
 
@@ -54,7 +54,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
-		public void Dispose(){}
+		public void Dispose(){if (_innerQueue != null) _innerQueue.Dispose();}
 
 		/// <summary>
 		/// Start a session

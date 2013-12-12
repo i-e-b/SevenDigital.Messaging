@@ -89,7 +89,7 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling
 	/// <summary>
 	/// Terminate signal event
 	/// </summary>
-	public delegate void TerminateEvent(object sender, TerminateEventArgs args);
+	public delegate void TerminateEvent(object sender, TerminateEventArgs e);
 
 	/// <summary>
 	/// Terminate signal event arguments

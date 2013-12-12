@@ -20,7 +20,7 @@ namespace SevenDigital.Messaging.MessageReceiving
 	/// the API point to decide to use a unique endpoint name (Listen) or
 	/// a specific endpoint name (TakeFrom)
 	/// </remarks>
-	public class Receiver : IReceiver, IReceiverControl, IReceiverTesting
+	public sealed class Receiver : IReceiver, IReceiverControl, IReceiverTesting
 	{
 		readonly IUniqueEndpointGenerator _uniqueEndPointGenerator;
 		ConcurrentBag<IReceiverNode> _registeredNodes;

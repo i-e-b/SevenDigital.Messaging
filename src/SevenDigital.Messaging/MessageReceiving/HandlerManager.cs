@@ -36,7 +36,9 @@ namespace SevenDigital.Messaging.MessageReceiving
 		public void TryHandle(IPendingMessage<object> pendingMessage)
 		{
 			var messageObject = pendingMessage.Message;
+// ReSharper disable InvokeAsExtensionMethod
 			var type = TypeExtensions.DirectlyImplementedInterfaces(messageObject.GetType()).Single();
+// ReSharper restore InvokeAsExtensionMethod
 
 			var matchingHandlers = GetMatchingHandlers(type).ToList();
 
@@ -50,7 +52,8 @@ namespace SevenDigital.Messaging.MessageReceiving
 			HandleMessageWithInstancesOfHandlers(pendingMessage, matchingHandlers, messageObject);
 		}
 
-		void HandleMessageWithInstancesOfHandlers(IPendingMessage<object> pendingMessage, IEnumerable<Type> matchingHandlers, object messageObject)
+		void HandleMessageWithInstancesOfHandlers(IPendingMessage<object> pendingMessage, 
+			IEnumerable<Type> matchingHandlers, object messageObject)
 		{
 			foreach (var handler in matchingHandlers)
 			{

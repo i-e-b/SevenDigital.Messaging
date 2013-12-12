@@ -11,7 +11,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// <summary>
 	/// Persistent queue interface for dispatch sharp
 	/// </summary>
-	public class PersistentWorkQueue : IWorkQueue<byte[]>, IDisposable
+	public sealed class PersistentWorkQueue : IWorkQueue<byte[]>, IDisposable
 	{
 		readonly IPersistentQueue _persistentQueue;
 		readonly ISleepWrapper _sleeper;

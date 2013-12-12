@@ -112,6 +112,7 @@ namespace SevenDigital.Messaging.ConfigurationActions
 
 					// singletons
 					map.For<ISleepWrapper>().Singleton().Use<SleepWrapper>();
+					map.For<IUniqueEndpointGenerator>().Singleton().Use<UniqueEndpointGenerator>();
 					map.For<IReceiver>().Singleton().Use<Receiver>();
 
 					// aliases

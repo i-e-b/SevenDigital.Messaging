@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using DispatchSharp;
 using DispatchSharp.WorkerPools;
@@ -9,7 +7,7 @@ using SevenDigital.Messaging.Infrastructure;
 using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.MessageReceiving;
 // ReSharper disable RedundantUsingDirective
-using DispatchSharp.QueueTypes;
+
 // ReSharper restore RedundantUsingDirective
 
 namespace SevenDigital.Messaging.MessageSending
@@ -18,7 +16,7 @@ namespace SevenDigital.Messaging.MessageSending
 	/// Standard sender node for Messaging.
 	/// You do not need to create this yourself. Use `MessagingSystem.Sender()`
 	/// </summary>
-	public class SenderNode : ISenderNode
+	public sealed class SenderNode : ISenderNode
 	{
 		const int SingleThreaded = 1;
 		readonly IMessagingBase _messagingBase;
@@ -71,7 +69,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// Send the given message. Does not guarantee reception.
 		/// </summary>
 		/// <param name="message">Message to be send. This must be a serialisable type</param>
-		public virtual void SendMessage<T>(T message) where T : class, IMessage
+		public void SendMessage<T>(T message) where T : class, IMessage
 		{
 			var prepared = _messagingBase.PrepareForSend(message);
 			_sendingDispatcher.AddWork(prepared.ToBytes());
@@ -90,6 +88,7 @@ namespace SevenDigital.Messaging.MessageSending
 		/// <summary>
 		/// Shutdown the sender
 		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_persistentQueue", Justification = "fields are disposed with an interlock")]
 		public void Dispose()
 		{
 			var lDispatcher = Interlocked.Exchange(ref _sendingDispatcher, null);

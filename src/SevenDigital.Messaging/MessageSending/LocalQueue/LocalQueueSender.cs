@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.MessageSending.LocalQueue
 	/// <summary>
 	/// Sender node for local queues
 	/// </summary>
-	public class LocalQueueSender : ISenderNode
+	public sealed class LocalQueueSender : ISenderNode
 	{
 		readonly IMessageSerialiser _serialiser;
 		readonly string _incomingPath;

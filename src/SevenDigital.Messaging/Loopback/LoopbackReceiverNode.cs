@@ -6,7 +6,7 @@ namespace SevenDigital.Messaging.Loopback
 	/// <summary>
 	/// Loopback receiver node
 	/// </summary>
-	public class LoopbackReceiverNode : IReceiverNode
+	public sealed class LoopbackReceiverNode : IReceiverNode
 	{
 		readonly LoopbackReceiver _loopbackReceiver;
 		

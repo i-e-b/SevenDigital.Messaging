@@ -4,22 +4,32 @@ using System.Threading;
 
 namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerived
 {
+	static class UnsafeNativeMethods
+	{
+		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_FromSignum")]
+		public static extern int FromSignum(Signum value, out int rval);
+
+		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_ToSignum")]
+		public static extern int ToSignum(int value, out Signum rval);
+
+		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_FromRealTimeSignum")]
+		public static extern int FromRealTimeSignum(int offset, out int rval);
+	}
+
 	class UnixSignal : WaitHandle
 	{
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int Mono_Posix_RuntimeIsShuttingDown();
 
 		
-		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_ToSignum")]
-		private static extern int ToSignum(int value, out Signum rval);
 		public static bool TryToSignum(int value, out Signum rval)
 		{
-			return ToSignum(value, out rval) == 0;
+			return UnsafeNativeMethods.ToSignum(value, out rval) == 0;
 		}
 		public static Signum ToSignum(int value)
 		{
 			Signum result;
-			if (ToSignum(value, out result) == -1)
+			if (UnsafeNativeMethods.ToSignum(value, out result) == -1)
 			{
 				throw new ArgumentException("value "+value+" is not an acceptable signum");
 			}
@@ -30,27 +40,23 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 		{
 			return new RealTimeSignum(offset);
 		}
-		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_FromSignum")]
-		private static extern int FromSignum(Signum value, out int rval);
 		public static bool TryFromSignum(Signum value, out int rval)
 		{
-			return FromSignum(value, out rval) == 0;
+			return UnsafeNativeMethods.FromSignum(value, out rval) == 0;
 		}
 		public static int FromSignum(Signum value)
 		{
 			int result;
-			if (FromSignum(value, out result) == -1)
+			if (UnsafeNativeMethods.FromSignum(value, out result) == -1)
 			{
 				throw new ArgumentException("value "+value+" is not an acceptable signum");
 			}
 			return result;
 		}
-		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_FromRealTimeSignum")]
-		private static extern int FromRealTimeSignum(int offset, out int rval);
 		public static int FromRealTimeSignum(RealTimeSignum sig)
 		{
 			int result;
-			if (FromRealTimeSignum(sig.Offset, out result) == -1)
+			if (UnsafeNativeMethods.FromRealTimeSignum(sig.Offset, out result) == -1)
 			{
 				throw new ArgumentException("sig.Offset "+sig.Offset+" is not an acceptable offset");
 			}

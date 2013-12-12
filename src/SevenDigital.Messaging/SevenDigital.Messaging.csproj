@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="EventHooks\LocalQueueExceptionHook.cs" />
     <Compile Include="ConfigurationActions\SDM_LocalQueueOptions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IHandlerExceptionMessage.cs" />
     <Compile Include="MessageReceiving\LocalQueue\DummyMessageRouter.cs" />
     <Compile Include="MessageReceiving\LocalQueue\DummyRouter.cs" />

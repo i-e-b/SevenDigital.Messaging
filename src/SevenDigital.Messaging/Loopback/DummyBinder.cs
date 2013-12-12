@@ -7,7 +7,7 @@ namespace SevenDigital.Messaging.Loopback
 	/// <summary>
 	/// A receiver node that does nothing.
 	/// </summary>
-	public class DummyReceiver : IReceiverNode
+	public sealed class DummyReceiver : IReceiverNode
 	{
 		/// <summary>
 		/// No action in dummy
