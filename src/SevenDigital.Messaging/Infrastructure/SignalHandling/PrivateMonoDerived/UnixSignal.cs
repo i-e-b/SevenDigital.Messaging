@@ -6,6 +6,9 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 {
 	static class UnsafeNativeMethods
 	{
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int Mono_Posix_RuntimeIsShuttingDown();
+
 		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_FromSignum")]
 		public static extern int FromSignum(Signum value, out int rval);
 
@@ -14,14 +17,27 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 
 		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_FromRealTimeSignum")]
 		public static extern int FromRealTimeSignum(int offset, out int rval);
+
+		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Unix_UnixSignal_install", SetLastError = true)]
+		public static extern IntPtr install(int signum);
+
+		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Unix_UnixSignal_uninstall")]
+		public static extern int uninstall(IntPtr info);
+
+		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Unix_UnixSignal_WaitAny")]
+		public static extern int WaitAny(IntPtr[] infos, int count, int timeout, Mono_Posix_RuntimeIsShuttingDown shutting_down);
+
+		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Posix_SIGRTMIN")]
+		public static extern int GetSIGRTMIN();
+
+		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Posix_SIGRTMAX")]
+		public static extern int GetSIGRTMAX();
 	}
 
 	class UnixSignal : WaitHandle
 	{
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate int Mono_Posix_RuntimeIsShuttingDown();
 
-		
+
 		public static bool TryToSignum(int value, out Signum rval)
 		{
 			return UnsafeNativeMethods.ToSignum(value, out rval) == 0;
@@ -31,11 +47,11 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 			Signum result;
 			if (UnsafeNativeMethods.ToSignum(value, out result) == -1)
 			{
-				throw new ArgumentException("value "+value+" is not an acceptable signum");
+				throw new ArgumentException("value " + value + " is not an acceptable signum");
 			}
 			return result;
 		}
-		
+
 		public static RealTimeSignum ToRealTimeSignum(int offset)
 		{
 			return new RealTimeSignum(offset);
@@ -49,7 +65,7 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 			int result;
 			if (UnsafeNativeMethods.FromSignum(value, out result) == -1)
 			{
-				throw new ArgumentException("value "+value+" is not an acceptable signum");
+				throw new ArgumentException("value " + value + " is not an acceptable signum");
 			}
 			return result;
 		}
@@ -58,13 +74,13 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 			int result;
 			if (UnsafeNativeMethods.FromRealTimeSignum(sig.Offset, out result) == -1)
 			{
-				throw new ArgumentException("sig.Offset "+sig.Offset+" is not an acceptable offset");
+				throw new ArgumentException("sig.Offset " + sig.Offset + " is not an acceptable offset");
 			}
 			return result;
 		}
 
 #pragma warning disable 169
-// ReSharper disable FieldCanBeMadeReadOnly.Local, MemberCanBePrivate.Local
+		// ReSharper disable FieldCanBeMadeReadOnly.Local, MemberCanBePrivate.Local
 		[StructLayout(LayoutKind.Sequential)]
 		private struct SignalInfo
 		{
@@ -76,12 +92,12 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 			public int pipecnt;
 			public IntPtr handler;
 		}
-// ReSharper restore FieldCanBeMadeReadOnly.Local, MemberCanBePrivate.Local
+		// ReSharper restore FieldCanBeMadeReadOnly.Local, MemberCanBePrivate.Local
 #pragma warning restore 169
 
 		private readonly int signum;
 		private IntPtr signal_info;
-		private static readonly Mono_Posix_RuntimeIsShuttingDown ShuttingDown = RuntimeShuttingDownCallback;
+		private static readonly UnsafeNativeMethods.Mono_Posix_RuntimeIsShuttingDown ShuttingDown = RuntimeShuttingDownCallback;
 		public Signum Signum
 		{
 			get
@@ -101,7 +117,7 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 				{
 					throw new InvalidOperationException("This signal is not a RealTimeSignum");
 				}
-				return ToRealTimeSignum(signum - GetSIGRTMIN());
+				return ToRealTimeSignum(signum - UnsafeNativeMethods.GetSIGRTMIN());
 			}
 		}
 		public bool IsRealTimeSignal
@@ -109,7 +125,7 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 			get
 			{
 				AssertValid();
-				int sIGRTMIN = GetSIGRTMIN();
+				int sIGRTMIN = UnsafeNativeMethods.GetSIGRTMIN();
 				return sIGRTMIN != -1 && signum >= sIGRTMIN;
 			}
 		}
@@ -142,26 +158,16 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 		public UnixSignal(Signum signum)
 		{
 			this.signum = FromSignum(signum);
-			signal_info = install(this.signum);
+			signal_info = UnsafeNativeMethods.install(this.signum);
 			if (signal_info == IntPtr.Zero)
 			{
 				throw new ArgumentException("Unable to handle signal", "signum");
 			}
 		}
-		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Unix_UnixSignal_install", SetLastError = true)]
-		private static extern IntPtr install(int signum);
-		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Unix_UnixSignal_uninstall")]
-		private static extern int uninstall(IntPtr info);
 		private static int RuntimeShuttingDownCallback()
 		{
 			return (!Environment.HasShutdownStarted) ? 0 : 1;
 		}
-		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Unix_UnixSignal_WaitAny")]
-		private static extern int WaitAny(IntPtr[] infos, int count, int timeout, Mono_Posix_RuntimeIsShuttingDown shutting_down);
-		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Posix_SIGRTMIN")]
-		internal static extern int GetSIGRTMIN();
-		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Posix_SIGRTMAX")]
-		internal static extern int GetSIGRTMAX();
 		private void AssertValid()
 		{
 			if (signal_info == IntPtr.Zero)
@@ -181,7 +187,7 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 			{
 				return;
 			}
-			uninstall(signal_info);
+			UnsafeNativeMethods.uninstall(signal_info);
 			signal_info = IntPtr.Zero;
 		}
 		public override bool WaitOne()
@@ -241,7 +247,7 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 					throw new InvalidOperationException("Disposed UnixSignal");
 				}
 			}
-			return WaitAny(array, array.Length, millisecondsTimeout, ShuttingDown);
+			return UnsafeNativeMethods.WaitAny(array, array.Length, millisecondsTimeout, ShuttingDown);
 		}
 	}
 }

@@ -70,15 +70,18 @@ namespace SevenDigital.Messaging.MessageReceiving.LocalQueue
 			if (queue[0] == null) throw new Exception("Unexpected null queue");
 			try
 			{
+				if (queue[0].EstimatedCountOfItemsInQueue < 1)
+				{
+					TryPumpingMessages(queue[0]);
+				}
+
 				var session = queue[0].OpenSession();
 				var data = session.Dequeue();
 				if (data == null) // queue is empty
 				{
 					session.Dispose();
-					TryPumpingMessages(queue[0]);
 					queue[0].Dispose();
 					_sleeper.SleepMore();
-
 					return new WorkQueueItem<IPendingMessage<object>>();
 				}
 
@@ -96,7 +99,8 @@ namespace SevenDigital.Messaging.MessageReceiving.LocalQueue
 				_sleeper.Reset();
 				return new WorkQueueItem<IPendingMessage<object>>(
 					new PendingMessage<object>(new DummyRouter(), msg, 0UL),
-					m => { // Finish a message
+					m => {
+						// Finish a message
 						session.Flush();
 						session.Dispose();
 						if (queue[0] != null) queue[0].Dispose();

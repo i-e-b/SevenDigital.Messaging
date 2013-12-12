@@ -5,7 +5,7 @@ namespace SevenDigital.Messaging.Infrastructure.SignalHandling.PrivateMonoDerive
 	struct RealTimeSignum : IEquatable<RealTimeSignum>
 	{
 		private readonly int rt_offset;
-		private static readonly int MaxOffset = UnixSignal.GetSIGRTMAX() - UnixSignal.GetSIGRTMIN() - 1;
+		private static readonly int MaxOffset = UnsafeNativeMethods.GetSIGRTMAX() - UnsafeNativeMethods.GetSIGRTMIN() - 1;
 		public static readonly RealTimeSignum MinValue = new RealTimeSignum(0);
 		public static readonly RealTimeSignum MaxValue = new RealTimeSignum(MaxOffset);
 		public int Offset
