@@ -83,6 +83,7 @@ namespace SevenDigital.Messaging.ConfigurationActions
 		{
 			lock (MessagingSystem.ConfigurationLock)
 			{
+				MessagingSystem.Concurrency = 1;
 				if (MessagingSystem.IsConfigured() || MessagingSystem.UsingLoopbackMode())
 					return new SDM_LocalQueueOptions();
 

@@ -81,6 +81,7 @@ namespace SevenDigital.Messaging.ConfigurationActions
 		public void SetConcurrentHandlers(int max)
 		{
 			if (MessagingSystem.UsingLoopbackMode()) return;
+			if (MessagingSystem.UsingLocalQueues()) return;
 
 			if (max < 1) throw new ArgumentException("Concurrent handlers must be at least 1", "max");
 

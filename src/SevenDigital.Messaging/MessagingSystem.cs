@@ -5,6 +5,7 @@ using SevenDigital.Messaging.ConfigurationActions;
 using SevenDigital.Messaging.EventHooks;
 using SevenDigital.Messaging.Logging;
 using SevenDigital.Messaging.Loopback;
+using SevenDigital.Messaging.MessageSending.LocalQueue;
 using StructureMap;
 
 namespace SevenDigital.Messaging
@@ -65,8 +66,17 @@ namespace SevenDigital.Messaging
 		/// </summary>
 		internal static bool UsingLoopbackMode()
 		{
-			return 
-				ObjectFactory.GetAllInstances<IReceiver>().Any(n => n is LoopbackReceiver);
+			return ObjectFactory.GetAllInstances<IReceiver>()
+				.Any(n => n is LoopbackReceiver);
+		}
+
+		/// <summary>
+		/// Returns true if in LocalQueue mode
+		/// </summary>
+		public static bool UsingLocalQueues()
+		{
+			return ObjectFactory.GetAllInstances<ISenderNode>()
+				.Any(n => n is LocalQueueSender);
 		}
 
 		/// <summary>
@@ -103,13 +113,17 @@ namespace SevenDigital.Messaging
 		void SetShutdownTimeout(TimeSpan maxWait);
 
 		/// <summary>
-		/// Set maximum concurrent handlers. Set to 1 for single-thread mode
+		/// Set maximum concurrent handlers. Set to 1 for single-thread mode.
+		/// <para>This is ignored for Loopback and LocalQueue modes.</para>
 		/// </summary>
+		/// <remarks>LocalQueue mode could be made to be multi-dispatch, but it's not
+		/// implemented at the moment.</remarks>
 		void SetConcurrentHandlers(int max);
 
 		/// <summary>
 		/// Sets maximum number of handlers to zero. No new messages will be picked up.
 		/// Use `SetConcurentHanders()` to resume.
+		/// <para>This is ignored for Loopback and LocalQueue modes.</para>
 		/// </summary>
 		void Pause();
 
