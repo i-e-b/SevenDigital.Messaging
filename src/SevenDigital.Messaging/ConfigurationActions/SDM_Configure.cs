@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Threading;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.Routing;
@@ -14,18 +13,11 @@ using SevenDigital.Messaging.MessageSending;
 using SevenDigital.Messaging.MessageSending.LocalQueue;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
-using StructureMap.Pipeline;
 
 namespace SevenDigital.Messaging.ConfigurationActions
 {
 	class SDM_Configure : IMessagingConfigure
 	{
-		/// <summary> Subpath for handler transactions </summary>
-		public const string DispatchQueueSubpath = "dispatch";
-
-		/// <summary> Subpath for storing incoming messages </summary>
-		public const string IncomingQueueSubpath = "incoming";
-
 		public IMessagingConfigureOptions WithDefaults()
 		{
 			lock (MessagingSystem.ConfigurationLock)
@@ -119,9 +111,11 @@ namespace SevenDigital.Messaging.ConfigurationActions
 					map.For<IReceiverControl>().Use(() => ObjectFactory.GetInstance<IReceiver>() as IReceiverControl);
 
 					// Local queue specific
+					var defaultRW = Path.Combine(storagePath, LocalQueueConfig.IncomingQueueSubpath);
 					map.For<LocalQueueConfig>().Use(new LocalQueueConfig {
-						DispatchPath = Path.Combine(storagePath, DispatchQueueSubpath),
-						IncomingPath = Path.Combine(storagePath, IncomingQueueSubpath)
+						DispatchPath = Path.Combine(storagePath, LocalQueueConfig.DispatchQueueSubpath),
+						IncomingPath = defaultRW,
+						WritePath = defaultRW
 					}
 					);
 					map.For<IPollingNodeFactory>().Use<LocalQueuePollingNodeFactory>();

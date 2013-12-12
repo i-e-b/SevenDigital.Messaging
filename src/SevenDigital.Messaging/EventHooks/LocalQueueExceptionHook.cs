@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging.ConfigurationActions
 		public LocalQueueExceptionHook(IMessageSerialiser serialiser, string errorQueuePath)
 		{
 			_serialiser = serialiser;
-			_errorQueueStorage = Path.Combine(errorQueuePath, SDM_Configure.IncomingQueueSubpath);
+			_errorQueueStorage = Path.Combine(errorQueuePath, LocalQueueConfig.IncomingQueueSubpath);
 		}
 
 		/// <summary>

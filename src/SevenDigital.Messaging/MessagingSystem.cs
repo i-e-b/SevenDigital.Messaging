@@ -249,5 +249,13 @@ namespace SevenDigital.Messaging
 		/// to the named locally available storage
 		/// </summary>
 		ILocalQueueOptions SendHandlerErrorsToQueue(string errorQueueStorage);
+
+		/// <summary>
+		/// Send messages to a different queue.
+		/// <para>`MessagingSystem.Receiver()` will read from the originally configured queue</para>
+		/// <para>`MessagingSystem.Sender()` will write to the queue specified by `writeQueuePath`</para>
+		/// <para>This is useful for chaining steps between processes.</para>
+		/// </summary>
+		ILocalQueueOptions SendTo(string writeQueuePath);
 	}
 }

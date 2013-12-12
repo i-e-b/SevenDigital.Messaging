@@ -12,7 +12,7 @@ namespace SevenDigital.Messaging.MessageSending.LocalQueue
 	public sealed class LocalQueueSender : ISenderNode
 	{
 		readonly IMessageSerialiser _serialiser;
-		readonly string _incomingPath;
+		readonly string _writePath;
 
 		/// <summary>
 		/// Create a local queue sender node
@@ -24,7 +24,7 @@ namespace SevenDigital.Messaging.MessageSending.LocalQueue
 		                        IMessageSerialiser serialiser)
 		{
 			_serialiser = serialiser;
-			_incomingPath = config.IncomingPath;
+			_writePath = config.WritePath;
 		}
 
 		/// <summary>
@@ -40,7 +40,7 @@ namespace SevenDigital.Messaging.MessageSending.LocalQueue
 		{
 			var data = Encoding.UTF8.GetBytes(_serialiser.Serialise(message));
 
-			using (var queue = PersistentQueue.WaitFor(_incomingPath, TimeSpan.FromMinutes(1)))
+			using (var queue = PersistentQueue.WaitFor(_writePath, TimeSpan.FromMinutes(1)))
 			using (var session = queue.OpenSession())
 			{
 				session.Enqueue(data);

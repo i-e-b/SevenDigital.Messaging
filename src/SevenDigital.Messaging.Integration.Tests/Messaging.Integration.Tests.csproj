@@ -70,13 +70,14 @@
     <Compile Include="Api\AutoShutdownTests.cs" />
     <Compile Include="Api\ConcurrencyLimit.cs" />
     <Compile Include="Api\ConfiguringAcrossMethods.cs" />
-    <Compile Include="Api\LocalQueueErrorHookTests.cs" />
+    <Compile Include="LocalQueue\LocalQueueErrorHookTests.cs" />
     <Compile Include="Api\RegisteringMultipleHandlers.cs" />
     <Compile Include="EdgeCases\PartiallyAvailableContracts.cs" />
     <Compile Include="EdgeCases\SenderDisposalTests.cs" />
     <Compile Include="EdgeCases\ShutDownBeforeConfiguration.cs" />
     <Compile Include="Hooks\FailingEventHookTests.cs" />
     <Compile Include="Hooks\FailingHandlerEventHookTests.cs" />
+    <Compile Include="LocalQueue\SendToTests.cs" />
     <Compile Include="Loopback\LoopbackModeTests.cs" />
     <Compile Include="MessageSending\BaseCases\SendingAndReceivingBase.cs" />
     <Compile Include="MessageSending\NonPersistentQueueTests.cs" />

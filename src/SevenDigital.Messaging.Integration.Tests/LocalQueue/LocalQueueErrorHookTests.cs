@@ -9,7 +9,7 @@ using SevenDigital.Messaging.Integration.Tests._Helpers.Messages;
 using SevenDigital.Messaging.Routing;
 using StructureMap;
 
-namespace SevenDigital.Messaging.Integration.Tests.Api
+namespace SevenDigital.Messaging.Integration.Tests.LocalQueue
 {
 	[TestFixture]
 	public class LocalQueueErrorHookTests
