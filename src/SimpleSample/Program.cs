@@ -7,11 +7,10 @@ namespace SimpleSample
 	{
 		static void Main(string[] args)
 		{
+			AskUserAndConfigureMessaging();
+
 			Console.WriteLine("Type lines to echo across messaging");
 			Console.WriteLine("Type a blank line to exit");
-
-			// Hook up to "localhost" RabbitMQ
-			MessagingSystem.Configure.WithDefaults();
 
 			// Route incoming messages
 			MessagingSystem.Receiver().Listen(_=>_
@@ -34,6 +33,38 @@ namespace SimpleSample
 
 			Console.WriteLine("Done. Shutting down...");
 			MessagingSystem.Control.Shutdown();
+		}
+
+		static void AskUserAndConfigureMessaging()
+		{
+			Console.WriteLine("Pick a messaging mode:");
+			Console.WriteLine("  1  Local host RabbitMQ broker (default)");
+			Console.WriteLine("  2  Loopback mode");
+			Console.WriteLine("  3  Local disk queue storage");
+			var selection = Console.ReadKey(true);
+			switch (selection.KeyChar)
+			{
+				case '2':
+					{
+						Console.WriteLine("Using loopback mode");
+						MessagingSystem.Configure.WithLoopbackMode();
+					}
+					return;
+
+				case '3':
+					{
+						Console.WriteLine("Using local disk queue storage");
+						MessagingSystem.Configure.WithLocalQueue("./simpleSampleQueue");
+					}
+					return;
+
+				default:
+					{
+						Console.WriteLine("Using localhost RabbitMQ");
+						MessagingSystem.Configure.WithDefaults();
+					}
+					return;
+			}
 		}
 	}
 
