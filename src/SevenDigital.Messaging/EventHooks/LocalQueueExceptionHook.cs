@@ -4,6 +4,7 @@ using System.Text;
 using DiskQueue;
 using SevenDigital.Messaging.Base.Serialisation;
 using SevenDigital.Messaging.Logging;
+using StructureMap;
 
 namespace SevenDigital.Messaging.ConfigurationActions
 {
@@ -20,11 +21,26 @@ namespace SevenDigital.Messaging.ConfigurationActions
 
 		/// <summary>
 		/// Create a new event hook, with the given storage queue.
+		/// <para>You should use the static <see cref="Inject"/> method to
+		/// add this hook.</para>
 		/// </summary>
 		public LocalQueueExceptionHook(IMessageSerialiser serialiser, string errorQueuePath)
 		{
 			_serialiser = serialiser;
 			_errorQueueStorage = Path.Combine(errorQueuePath, SDM_Configure.IncomingQueueSubpath);
+		}
+
+		/// <summary>
+		/// Inject this hook into the messaging system.
+		/// Any handler exceptions will be written to the queue
+		/// as `<see cref="IHandlerExceptionMessage"/>`s
+		/// </summary>
+		public static void Inject(string errorQueuePath)
+		{
+			ObjectFactory.Configure(map => map
+				.For<IEventHook>()
+				.Add<LocalQueueExceptionHook>()
+				.Ctor<string>().Is(errorQueuePath));
 		}
 
 		/// <summary>
