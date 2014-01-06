@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenDigital.Messaging", "src\SevenDigital.Messaging\SevenDigital.Messaging.csproj", "{703B2D01-1D82-4249-979E-2A9EE5BE27AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Unit.Tests", "src\SevenDigital.Messaging.Unit.Tests\Messaging.Unit.Tests.csproj", "{1578F154-1C86-4A00-881C-CB7517C594AE}"
@@ -23,6 +25,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{12147509-77F0-4F0A-8B16-8F85CF80DAEF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSample", "src\SimpleSample\SimpleSample.csproj", "{854C1ADF-CC9C-4B4A-B636-A2D9D30823AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{ECF8C460-2859-4691-BBE7-730B72409CA6}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
