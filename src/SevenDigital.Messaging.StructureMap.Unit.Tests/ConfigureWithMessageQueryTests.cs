@@ -12,14 +12,14 @@ namespace SevenDigital.Messaging.StructureMap.Unit.Tests
 		[TestFixtureSetUp]
 		public void Configured_with_message_query ()
 		{
-			MessagingSystem.Configure.WithDefaults().SetManagementServer("host", "user", "pass", "vhost");
+			MessagingSystem.Configure.WithDefaults().SetManagementServer("host", 12345, "user", "pass", "vhost");
 			subject = ObjectFactory.GetInstance<IRabbitMqQuery>();
 		}
 
 		[Test]
 		public void Should_get_query_with_configured_host ()
 		{
-			Assert.That(subject.HostUri.ToString(), Is.EqualTo("http://host:55672/"));
+			Assert.That(subject.HostUri.ToString(), Is.EqualTo("http://host:12345/"));
 		}
 
 		[Test]

@@ -32,9 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NSubstitute, Version=1.6.1.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+    <Reference Include="NSubstitute, Version=1.7.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\NSubstitute.1.6.1.0\lib\NET40\NSubstitute.dll</HintPath>
+      <HintPath>..\..\packages\NSubstitute.1.7.0.0\lib\NET40\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -42,19 +42,15 @@
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=2.8.1.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MessagingBase.1.2.3\lib\net40\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\..\packages\MessagingBase.1.2.4\lib\net40\RabbitMQ.Client.dll</HintPath>
     </Reference>
-    <Reference Include="SevenDigital.Messaging.Base, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SevenDigital.Messaging.Base, Version=1.2.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MessagingBase.1.2.3\lib\net40\SevenDigital.Messaging.Base.dll</HintPath>
+      <HintPath>..\..\packages\MessagingBase.1.2.4\lib\net40\SevenDigital.Messaging.Base.dll</HintPath>
     </Reference>
-    <Reference Include="SevenDigital.ServiceStack.Merged, Version=3.9.59.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SevenDigital.ServiceStack.Merged, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\ServiceStackSnapShot.3.9.59\lib\net40\SevenDigital.ServiceStack.Merged.dll</HintPath>
-    </Reference>
-    <Reference Include="ShiftIt, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Shift-it.1.5.0.0\lib\net40\ShiftIt.dll</HintPath>
+      <HintPath>..\..\packages\ServiceStackSnapShot.3.9.71\lib\net40\SevenDigital.ServiceStack.Merged.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap">
       <HintPath>..\..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
